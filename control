@@ -1,0 +1,10 @@
+Package: com.pixelfiredev.libcolorpicker
+Name: libcolorpicker
+Depends: 
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome library of some sort!!
+Maintainer: Bailey Seymour
+Author: Bailey Seymour
+Section: System
+Tag: role::developer
