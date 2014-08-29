@@ -5,26 +5,10 @@
 //  Created by Bailey Seymour on 1/23/14.
 //
 //
-
 #import <UIKit/UIKit.h>
-@class PFColorTransparentView, PFColorPicker;
-@protocol PFColorPickerDelegate;
 
-@interface PFColorViewController : UIViewController <PFColorPickerDelegate, UIAlertViewDelegate>
-{
-    //HSB
-    UISlider *hueSlider;
-    UISlider *saturationSlider;
-    UISlider *brightnessSlider;
-    UISlider *alphaSlider;
-    
-    UIView *controlsContainer;
-    PFColorTransparentView *transparent;
-    
-    CGFloat currentAlpha;
-}
+@interface PFColorViewController : UIViewController
 
-@property (nonatomic, strong) PFColorPicker *colorPicker;
 @property (nonatomic, assign) NSString *defaults; //Required example: @"com.baileyseymour.test"
 @property (nonatomic, assign) NSString *key; //Required example @"aColor"
 @property (nonatomic, assign) BOOL usesRGB; //Default: false

@@ -12,11 +12,26 @@
 #import "PFColorTransparentView.h"
 #import <objc/runtime.h>
 
-@interface PFColorViewController ()
+@interface PFColorViewController()  <PFColorPickerDelegate, UIAlertViewDelegate>
 {
     UIColor *loadedColor;
     UIView *backdrop;
+    PFColorTransparentView *transparent;
+
+    //HSB
+    UISlider *hueSlider;
+    UISlider *saturationSlider;
+    UISlider *brightnessSlider;
+    UISlider *alphaSlider;
+    
+    UIView *controlsContainer;
+
+    
+    CGFloat currentAlpha;
 }
+
+@property (nonatomic, strong) PFColorPicker *colorPicker;
+
 @end
 
 @implementation PFColorViewController
@@ -57,6 +72,7 @@
 
     return self;
 }
+#define isiPhone4  ([[UIScreen mainScreen] bounds].size.height == 480)?TRUE:FALSE
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -77,6 +93,10 @@
         transparent.hidden = YES;
         
         CGFloat height = self.view.frame.size.height/2;
+        if (isiPhone4)
+        {
+            height = height-40;
+        }
 
         self.colorPicker = [[[PFColorPicker alloc] initWithFrame:CGRectMake(0, 64,self.view.frame.size.width, height)] autorelease];
 
