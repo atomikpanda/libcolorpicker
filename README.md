@@ -15,6 +15,46 @@ Here are some of it's main features:_
 * iPhone 3.5 inch & 4inch screen compatibility
 * Open source
 
+How to add libcolorpicker into your tweak:
+
+First add a this into your Tweaks Preferences specifier plist and modify to your liking:
+
+			<dict>
+                <key>cell</key>
+                <string>PSLinkCell</string>
+                <key>cellClass</key>
+                <string>PFColorCell</string>
+                <key>label</key>
+                <string>A Color</string>
+                <key>color_defaults</key>
+                <string>com.yourcompany.tweak</string>
+                <key>color_key</key>
+                <string>aColor</string>
+                <key>title</key>
+                <string>A Color</string>
+                <key>color_fallback</key>
+                <string>#10b6ec</string>
+				<key>usesRGB</key>
+				<false/>
+				<key>usesAlpha</key>
+				<true/>
+            </dict>
+			
+Next, Place the libcolorpicker.dylib in TweakPreferencesFolder/lib/
+
+Next, Add the following to your Preference Bundle's Makefile:
+
+		$(shell install_name_tool -id /usr/lib/libcolorpicker_PUTTWEAKNAMEHERE.dylib lib/libcolorpicker.dylib)
+
+		TWEAKNAMEPreferences_LDFLAGS = -Llib -lcolorpicker
+
+		include $(THEOS_MAKE_PATH)/bundle.mk
+
+		internal-stage::
+	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
+	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/usr/lib/$(ECHO_END)
+	$(ECHO_NOTHING)cp lib/libcolorpicker.dylib $(THEOS_STAGING_DIR)/usr/lib/libcolorpicker_PUTTWEAKNAMEHERE.dylib$(ECHO_END)
+
 __Check out the screen shots below__
 
 ![iOS Simulator Screen shot Aug 27, 2014, 3.49.02 PM.png](https://bitbucket.org/repo/poAx5p/images/3203715933-iOS%20Simulator%20Screen%20shot%20Aug%2027,%202014,%203.49.02%20PM.png)![iOS Simulator Screen shot Aug 27, 2014, 3.55.09 PM.png](https://bitbucket.org/repo/poAx5p/images/3068646252-iOS%20Simulator%20Screen%20shot%20Aug%2027,%202014,%203.55.09%20PM.png)
