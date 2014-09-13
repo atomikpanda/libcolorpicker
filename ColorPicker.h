@@ -8,4 +8,4 @@
 //Import this header and link with libcolorpicker.
 
 #import "PFColorViewController.h"
-
+UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback);

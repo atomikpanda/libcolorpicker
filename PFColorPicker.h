@@ -9,12 +9,16 @@
 #import <UIKit/UIKit.h>
 
 @interface PFColorPicker : UIView
+{
+	BOOL shouldSaveNewCache;
+}
 
 @property (nonatomic, assign) id delegate;
 @property (nonatomic, readonly, retain) UIColor *lastSelectedColor;
 
 - (id)initWithFrame:(CGRect)frame;
 - (void)makeReadyForDisplay;
+- (void)saveCache;
 @end
 
 

@@ -25,8 +25,14 @@
         //bgLayer.frame = self.bounds;
         //[self.layer insertSublayer:bgLayer atIndex:0];
         [self setBackgroundColor:[UIColor clearColor]];
+        
     }
     return self;
+}
+
++ (NSString *)cacheImageNameWithFrame:(CGRect)frame
+{
+    return [NSString stringWithFormat:@"/tmp/_PFColorPickerImage_%gx%g.png", frame.size.width, frame.size.height];
 }
 
 + (UIColor *)colorWithHueForLocation:(CGFloat)location
@@ -34,14 +40,33 @@
     return [UIColor colorWithHue:location saturation:1 brightness:1 alpha:1];
 }
 
+- (UIImage *)captureView
+{
+    CGRect rect = [self frame];
+
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [self.layer renderInContext:context];   
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return img;
+}
+
 - (void)drawRect:(CGRect)rect
 {
     float widthX = rect.size.width;
     float widthY = rect.size.height;
-    
-    int size = 1;
-    
+
     CGContextRef context = UIGraphicsGetCurrentContext();
+
+    BOOL imageExists = [[NSFileManager defaultManager] fileExistsAtPath:[PFColorPicker cacheImageNameWithFrame:rect]];
+
+    UIImage *image = imageExists ? [[UIImage alloc] initWithContentsOfFile:[PFColorPicker cacheImageNameWithFrame:rect]] : nil;
+
+    if (!image || !CGSizeEqualToSize(image.size, rect.size))
+    {
+    int size = 1;
     
     for (float posY = 0; posY <= widthY; posY += size)
     {
@@ -55,12 +80,27 @@
             CGContextFillRect(context, CGRectMake(posX, posY, size, size));
         }
     }
+    shouldSaveNewCache = YES;
+    }
+    else if (image)
+    {
+        [image drawInRect:rect];
+        [image release];
+    }
+}
+
+- (void)saveCache
+{
+    if(shouldSaveNewCache)
+    {
+    NSData *imageData = UIImagePNGRepresentation([self captureView]);
+    [imageData writeToFile:[PFColorPicker cacheImageNameWithFrame:self.frame] atomically:YES];
+    shouldSaveNewCache = NO;
+    }
 }
 
 - (void)makeReadyForDisplay
 {
-
-    
     UIPanGestureRecognizer *drag = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(selectColor:)];
     [self addGestureRecognizer:drag];
     [self setUserInteractionEnabled:YES];
