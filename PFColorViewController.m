@@ -459,6 +459,8 @@ CGSize _size;
     {
     [preferencesPlist setObject:saveValue forKey:self.key];
     [preferencesPlist writeToFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.defaults] atomically:YES];
+    CFPreferencesSetAppValue((CFStringRef)self.key,(CFStringRef)saveValue, (CFStringRef)self.defaults);
+    CFPreferencesAppSynchronize((CFStringRef)self.defaults);
     }
 
     
