@@ -38,6 +38,8 @@ First add a this into your Tweaks Preferences specifier plist and modify to your
 				<false/>
 				<key>usesAlpha</key>
 				<true/>
+                <key>color_postNotification</key>
+                <string>com.yourcompany.tweak.settingschanged</string>
             </dict>
 			
 Next, Place the libcolorpicker.dylib in TweakPreferencesFolder/lib/
@@ -46,7 +48,7 @@ Next, Add the following to your Preference Bundle's Makefile:
 
 		$(shell install_name_tool -id /usr/lib/libcolorpicker_PUTTWEAKNAMEHERE.dylib lib/libcolorpicker.dylib)
 
-		TWEAKNAMEPreferences_LDFLAGS = -Llib -lcolorpicker
+		TWEAKNAMEPREFERENCES_LDFLAGS = -Llib -lcolorpicker
 
 		include $(THEOS_MAKE_PATH)/bundle.mk
 
@@ -54,6 +56,16 @@ Next, Add the following to your Preference Bundle's Makefile:
 	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
 	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/usr/lib/$(ECHO_END)
 	$(ECHO_NOTHING)cp lib/libcolorpicker.dylib $(THEOS_STAGING_DIR)/usr/lib/libcolorpicker_PUTTWEAKNAMEHERE.dylib$(ECHO_END)
+
+
+Next, Add the following to to your Preference Bundle's PSListController @implementation:
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self clearCache];
+    [self reload];  
+    [super viewWillAppear:animated];
+}
 
 __Check out the screen shots below__
 
