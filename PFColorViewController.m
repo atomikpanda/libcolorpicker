@@ -174,7 +174,7 @@ CGSize _size;
         CGPoint blue = CGPointMake(controlsContainer.frame.size.width/2, green.y+40);
         CGPoint alpha = CGPointMake(controlsContainer.frame.size.width/2, blue.y+40);
     
-        CGRect sliderFrame = CGRectMake(controlsContainer.frame.size.width/2, 0, controlsContainer.frame.size.width-30, 20);
+        CGRect sliderFrame = CGRectMake(controlsContainer.frame.size.width/2, 0, controlsContainer.frame.size.width-40, 20);
         
         Class viewClass;
         if(objc_getClass("_UIBackdropView"))
