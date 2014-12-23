@@ -42,6 +42,30 @@ First add a this into your Tweaks Preferences specifier plist and modify to your
                 <string>com.yourcompany.tweak.settingschanged</string>
             </dict>
 			
+##Using Version on BigBoss (Recommended)
+* Search and install __libcolorpicker__ from Cydia. 
+
+* Copy __/usr/lib/libcolorpicker.dylib__ from your iOS device to your __$THEOS/lib__ folder.
+
+* Add `TWEAKNAME_LIBRARIES = colorpicker` to your Tweak's Makefile
+
+*  Add  `TWEAKNAMEPREFS_LIBRARIES = colorpicker` to your Pref's Makefile
+
+* Next
+ Add the following to to your Preference Bundle's `PSListController @implementation`
+
+		- (void)viewWillAppear:(BOOL)animated
+		{
+  	  		[self clearCache];
+ 	 		  [self reload];  
+   			 [super viewWillAppear:animated];
+		}
+		
+-------------		
+
+
+##Using Custom Build	
+			
 Next, Place the libcolorpicker.dylib in TweakPreferencesFolder/lib/
 
 Next, Add the following to your Preference Bundle's Makefile:
@@ -60,12 +84,26 @@ Next, Add the following to your Preference Bundle's Makefile:
 
 Next, Add the following to to your Preference Bundle's PSListController @implementation:
 
-- (void)viewWillAppear:(BOOL)animated
-{
+	- (void)viewWillAppear:(BOOL)animated
+	{
     [self clearCache];
     [self reload];  
     [super viewWillAppear:animated];
-}
+	}
+
+##Getting the color from the plist:
+
+To get the color from your tweak you can use the `UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback)` function found in __libcolorpicker.mm__
+
+First you need to define the function in your header (.h) file:
+`UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback);`
+
+An example on how to use it would be:
+	`UIColor *someColor = colorFromDefaultsWithKey(@"com.example.tweak", @"someColor", @"#ffffff");`
+	
+This would fallback to white *(#ffffff)* if the color is `nil`;
+
+
 
 __Check out the screen shots below__
 
