@@ -2,17 +2,185 @@ int main(int argc, char **argv, char **envp) {
 	return 0;
 }
 
+#import <iostream>
+#import <string>
+#import <vector>
+
+int convertFromHex(std::string hex)
+{
+    
+    int value = 0;
+    
+    
+    int a = 0;
+    int b = ((int)hex.length()) - 1;
+    
+    for (; b >= 0; a++, b--)
+        
+    {
+        
+        if (hex[b] >= '0' && hex[b] <= '9')
+        {
+            
+            value += (hex[b] - '0') * (1 << (a * 4));
+            
+        }
+        
+        else
+        {
+            
+            switch (hex[b])
+            {
+                    
+                case 'A':
+                case 'a':
+                    
+                    value += 10 * (1 << (a * 4));
+                    
+                    break;
+                    
+                case 'B':
+                case 'b':
+                    
+                    value += 11 * (1 << (a * 4));
+                    
+                    break;
+                    
+                case 'C':
+                case 'c':
+                    
+                    value += 12 * (1 << (a * 4));
+                    
+                    break;
+                    
+                case 'D':
+                case 'd':
+                    
+                    value += 13 * (1 << (a * 4));
+                    
+                    break;
+                    
+                case 'E':
+                case 'e':
+                    
+                    value += 14 * (1 << (a * 4));
+                    
+                    break;
+                    
+                case 'F':
+                case 'f':
+                    
+                    value += 15 * (1 << (a * 4));
+                    
+                    break;
+                    
+                default:
+                    NSLog(@"Error, invalid char '%d' in hex number", hex[a]);
+                    
+                    break;
+                    
+            }
+            
+        }
+        
+    }
+    
+    return value;
+    
+}
+
+
+void hextodec(std::string hex, std::vector<unsigned char>& rgb)
+
+{
+    
+    // since there is no prefix attached to hex, use this code
+    int prefix_len = 0;
+    std::string redString = hex.substr(0+prefix_len, 2);
+    std::string greenString = hex.substr(2+prefix_len, 2);
+    std::string blueString = hex.substr(4+prefix_len, 2);
+    
+    
+    
+    /*
+     
+     if the prefix # was attached to hex, use the following code
+     
+     string redString = hex.substr(1, 2);
+     
+     string greenString = hex.substr(3, 2);
+     
+     string blueString = hex.substr(5, 2);
+     
+     */
+    
+    unsigned char red = (unsigned char)(convertFromHex(redString));
+    unsigned char green = (unsigned char)(convertFromHex(greenString));
+    unsigned char blue = (unsigned char)(convertFromHex(blueString));
+    
+    
+    
+    rgb[0] = red;
+    rgb[1] = green;
+    rgb[2] = blue;
+    
+}
+
+extern "C" UIColor *colorFromHex(NSString *hexString);
+extern "C" UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback);
+
 UIColor *colorFromHex(NSString *hexString)
 {
-    unsigned rgbValue = 0;
-    if (hexString) {
-    NSScanner *scanner = [NSScanner scannerWithString:hexString];
-    if ([hexString hasPrefix:@"#"])
-    [scanner setScanLocation:1]; // bypass '#' character
+	if (hexString.length > 0) {
+	if ([hexString hasPrefix:@"#"])
+		hexString = [hexString substringFromIndex:1];
+    // if (hexString) {
+    // NSScanner *scanner = [NSScanner scannerWithString:hexString];
+    // if ([hexString hasPrefix:@"#"])
+    // [scanner setScanLocation:1]; // bypass '#' character
 
-    [scanner scanHexInt:&rgbValue];
-    return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
+    // [scanner scanHexInt:&rgbValue];
+    // return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
+
+	    std::string hexColor;
+
+        std::vector<unsigned char> rgbColor(3);
+        hexColor = hexString.UTF8String;
+    
+    if (hexColor.length() != 6)
+    {
+        std::string sixDigitHexColor = "";
+        for (int i=0; 6 > i; i++) {
+            switch (i) {
+                case 0:
+                    sixDigitHexColor.append(hexColor.substr(i, 1));
+                    sixDigitHexColor.append(hexColor.substr(i, 1));
+                    break;
+                    
+                case 1:
+                    sixDigitHexColor.append(hexColor.substr(i, 1));
+                    sixDigitHexColor.append(hexColor.substr(i, 1));
+                    break;
+                    
+                case 2:
+                    sixDigitHexColor.append(hexColor.substr(i, 1));
+                    sixDigitHexColor.append(hexColor.substr(i, 1));
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+        
+        hexColor = sixDigitHexColor;
+        
     }
+
+        hextodec(hexColor, rgbColor);
+    
+    
+    return [UIColor colorWithRed:int(rgbColor[0])/255.f green:int(rgbColor[1])/255.f blue:int(rgbColor[2])/255.f alpha:1];
+     }
     else {
         //Random
         CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
@@ -37,6 +205,12 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
         if([colorAndOrAlpha objectAtIndex:1]) {
             currentAlpha = [colorAndOrAlpha[1] floatValue];
         }
+        else {
+            currentAlpha = 1;
+        }
+        }
+        else {
+            currentAlpha = 1;
         }
 
         if(!value) return fallbackColor;

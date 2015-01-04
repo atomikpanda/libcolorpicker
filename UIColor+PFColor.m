@@ -8,14 +8,25 @@
 
 #import "UIColor+PFColor.h"
 
+#ifdef __cplusplus /* If this is a C++ compiler, use C linkage */
+extern "C" {
+#endif
+UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback);
+UIColor *colorFromHex(NSString *hexString);
+#ifdef __cplusplus /* If this is a C++ compiler, end C linkage */
+}
+#endif
+
+
 @implementation UIColor (PFColor)
 
-+ (UIColor*)colorWithHex:(NSString*)hexString {
-    unsigned rgbValue = 0;
-    NSScanner *scanner = [NSScanner scannerWithString:hexString];
-    [scanner setScanLocation:1]; // bypass '#' character
-    [scanner scanHexInt:&rgbValue];
-    return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
++ (UIColor*)PF_colorWithHex:(NSString*)hexString {
+    // unsigned rgbValue = 0;
+    // NSScanner *scanner = [NSScanner scannerWithString:hexString];
+    // [scanner setScanLocation:1]; // bypass '#' character
+    // [scanner scanHexInt:&rgbValue];
+    // return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
+    return colorFromHex(hexString);
 }
 
 + (NSString*)hexFromColor:(UIColor*)color {

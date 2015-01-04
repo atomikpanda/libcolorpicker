@@ -93,33 +93,51 @@
 
 @synthesize colorPicker, key, defaults, postNotification, fallback;
 
+#ifdef __cplusplus /* If this is a C++ compiler, use C linkage */
+extern "C" {
+#endif
+UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback);
+
+#ifdef __cplusplus /* If this is a C++ compiler, end C linkage */
+}
+#endif
 
 - (UIColor *)colorFromDefaults:(NSString*)def withKey:(NSString*)aKey
 {
-    NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", def]];
-    //light gray fallback
-    UIColor *fallbackColor = [UIColor colorWithHex:self.fallback];
+    UIColor *_color = colorFromDefaultsWithKey(def, key, self.fallback);
+
+    currentAlpha = _color.alpha;
+    alphaSlider.value = _color.alpha;
+
+    return _color;
+    // NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", def]];
+    // //light gray fallback
+    // UIColor *fallbackColor = [UIColor PF_colorWithHex:self.fallback];
     
-    if(preferencesPlist&&[preferencesPlist objectForKey:aKey]) {
-        NSString *value = [preferencesPlist objectForKey:aKey];
-        NSArray *colorAndOrAlpha = [value componentsSeparatedByString:@":"];
-        if([value rangeOfString:@":"].location != NSNotFound){
+    // if(preferencesPlist&&[preferencesPlist objectForKey:aKey]) {
+    //     NSString *value = [preferencesPlist objectForKey:aKey];
+    //     NSArray *colorAndOrAlpha = [value componentsSeparatedByString:@":"];
+    //     if([value rangeOfString:@":"].location != NSNotFound){
         
-        if([colorAndOrAlpha objectAtIndex:1]) {
-            currentAlpha = [colorAndOrAlpha[1] floatValue];
-            alphaSlider.value = [colorAndOrAlpha[1] floatValue];
-        }
-        }
+    //     if([colorAndOrAlpha objectAtIndex:1]) {
+    //         currentAlpha = [colorAndOrAlpha[1] floatValue];
+    //         alphaSlider.value = [colorAndOrAlpha[1] floatValue];
+    //     }
+    //     }
+    //     else {
+    //         currentAlpha = 1;
+    //         alphaSlider.value = 1;
+    //     }
 
-        if(!value) return fallbackColor;
+    //     if(!value) return fallbackColor;
         
-        NSString *color = colorAndOrAlpha[0];
+    //     NSString *color = colorAndOrAlpha[0];
 
-        return [[UIColor colorWithHex:color] colorWithAlphaComponent:currentAlpha];
-    }
-    else {
-        return fallbackColor;
-    }
+    //     return [[UIColor PF_colorWithHex:color] colorWithAlphaComponent:currentAlpha];
+    // }
+    // else {
+    //     return fallbackColor;
+    // }
 
 }
 
@@ -224,9 +242,10 @@ CGSize _size;
         [alphaSlider setMinimumValue:0];
         if (!self.usesAlpha) alphaSlider.hidden = YES;
 
-        UIColor *loadColor = [self colorFromDefaults:self.defaults withKey:self.key];
-        alphaSlider.value = currentAlpha;
-        [self pickedColor:loadColor];
+        // UIColor *loadColor = [self colorFromDefaults:self.defaults withKey:self.key];
+        // currentAlpha = loadColor.alpha;
+        // alphaSlider.value = currentAlpha;
+        // [self pickedColor:loadColor];
         
         alphaSlider.continuous = YES;
         
@@ -300,6 +319,17 @@ CGSize _size;
             [controlsContainer addSubview:alphaSlider];
 
 
+        if(self.defaults && self.key) {
+   
+
+        loadedColor = [self colorFromDefaults:self.defaults withKey:self.key];
+        currentAlpha = loadedColor.alpha;
+        alphaSlider.value = currentAlpha;
+        [self pickedColor:loadedColor];
+         [[loadedColor retain] autorelease];
+        }
+
+
         [UIView animateWithDuration:0.2
                           delay:0
                         options:UIViewAnimationOptionTransitionCrossDissolve
@@ -330,8 +360,8 @@ CGSize _size;
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        if ([[alertView textFieldAtIndex:0].text hasPrefix:@"#"] && [UIColor colorWithHex:[alertView textFieldAtIndex:0].text]) {
-            [self pickedColor:[UIColor colorWithHex:[alertView textFieldAtIndex:0].text]];
+        if ([[alertView textFieldAtIndex:0].text hasPrefix:@"#"] && [UIColor PF_colorWithHex:[alertView textFieldAtIndex:0].text]) {
+            [self pickedColor:[UIColor PF_colorWithHex:[alertView textFieldAtIndex:0].text]];
         }
     }
     else if (buttonIndex == 2)
@@ -351,7 +381,7 @@ CGSize _size;
                                 [UIColor colorWithWhite:0 alpha:0.25].CGColor);
     CGContextSetFillColorWithColor(context, [color CGColor]);
     CGContextAddArc(context,rect.size.width/2,rect.size.width/2,size/2,size/2,2*3.1415926535898,1);
-    CGContextSetStrokeColorWithColor(context, [[UIColor colorWithHex:@"#f0f0f0"] colorWithAlphaComponent:0].CGColor);
+    CGContextSetStrokeColorWithColor(context, [[UIColor PF_colorWithHex:@"#f0f0f0"] colorWithAlphaComponent:0].CGColor);
 
     CGContextDrawPath(context, kCGPathFill);
     
@@ -375,15 +405,9 @@ CGSize _size;
 {
     [super viewDidAppear:animated];
 
-    if(self.defaults && self.key)
-    loadedColor = [self colorFromDefaults:self.defaults withKey:self.key];
-    [[loadedColor retain] autorelease];
+    
 
-    UIColor *loadColor = [self colorFromDefaults:self.defaults withKey:self.key];
-    alphaSlider.value = currentAlpha;
-    [self pickedColor:loadColor];
-
-    [self performSelector:@selector(loadCustomViews) withObject:nil afterDelay:0.1];
+    [self performSelector:@selector(loadCustomViews) withObject:nil afterDelay:0];
     [self.colorPicker performSelector:@selector(saveCache) withObject:nil afterDelay:0.5];
 }
 
