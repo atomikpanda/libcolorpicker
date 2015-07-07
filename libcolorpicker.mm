@@ -1,6 +1,5 @@
-int main(int argc, char **argv, char **envp) {
-	return 0;
-}
+#import <CoreGraphics/CoreGraphics.h>
+#import <UIKit/UIKit.h>
 
 #import <iostream>
 #import <string>
@@ -8,122 +7,122 @@ int main(int argc, char **argv, char **envp) {
 
 int convertFromHex(std::string hex)
 {
-    
+
     int value = 0;
-    
-    
+
+
     int a = 0;
     int b = ((int)hex.length()) - 1;
-    
+
     for (; b >= 0; a++, b--)
-        
+
     {
-        
+
         if (hex[b] >= '0' && hex[b] <= '9')
         {
-            
+
             value += (hex[b] - '0') * (1 << (a * 4));
-            
+
         }
-        
+
         else
         {
-            
+
             switch (hex[b])
             {
-                    
+
                 case 'A':
                 case 'a':
-                    
+
                     value += 10 * (1 << (a * 4));
-                    
+
                     break;
-                    
+
                 case 'B':
                 case 'b':
-                    
+
                     value += 11 * (1 << (a * 4));
-                    
+
                     break;
-                    
+
                 case 'C':
                 case 'c':
-                    
+
                     value += 12 * (1 << (a * 4));
-                    
+
                     break;
-                    
+
                 case 'D':
                 case 'd':
-                    
+
                     value += 13 * (1 << (a * 4));
-                    
+
                     break;
-                    
+
                 case 'E':
                 case 'e':
-                    
+
                     value += 14 * (1 << (a * 4));
-                    
+
                     break;
-                    
+
                 case 'F':
                 case 'f':
-                    
+
                     value += 15 * (1 << (a * 4));
-                    
+
                     break;
-                    
+
                 default:
                     NSLog(@"Error, invalid char '%d' in hex number", hex[a]);
-                    
+
                     break;
-                    
+
             }
-            
+
         }
-        
+
     }
-    
+
     return value;
-    
+
 }
 
 
 void hextodec(std::string hex, std::vector<unsigned char>& rgb)
 
 {
-    
+
     // since there is no prefix attached to hex, use this code
     int prefix_len = 0;
     std::string redString = hex.substr(0+prefix_len, 2);
     std::string greenString = hex.substr(2+prefix_len, 2);
     std::string blueString = hex.substr(4+prefix_len, 2);
-    
-    
-    
+
+
+
     /*
-     
+
      if the prefix # was attached to hex, use the following code
-     
+
      string redString = hex.substr(1, 2);
-     
+
      string greenString = hex.substr(3, 2);
-     
+
      string blueString = hex.substr(5, 2);
-     
+
      */
-    
+
     unsigned char red = (unsigned char)(convertFromHex(redString));
     unsigned char green = (unsigned char)(convertFromHex(greenString));
     unsigned char blue = (unsigned char)(convertFromHex(blueString));
-    
-    
-    
+
+
+
     rgb[0] = red;
     rgb[1] = green;
     rgb[2] = blue;
-    
+
 }
 
 extern "C" UIColor *colorFromHex(NSString *hexString);
@@ -146,7 +145,7 @@ UIColor *colorFromHex(NSString *hexString)
 
         std::vector<unsigned char> rgbColor(3);
         hexColor = hexString.UTF8String;
-    
+
     if (hexColor.length() != 6)
     {
         std::string sixDigitHexColor = "";
@@ -156,29 +155,29 @@ UIColor *colorFromHex(NSString *hexString)
                     sixDigitHexColor.append(hexColor.substr(i, 1));
                     sixDigitHexColor.append(hexColor.substr(i, 1));
                     break;
-                    
+
                 case 1:
                     sixDigitHexColor.append(hexColor.substr(i, 1));
                     sixDigitHexColor.append(hexColor.substr(i, 1));
                     break;
-                    
+
                 case 2:
                     sixDigitHexColor.append(hexColor.substr(i, 1));
                     sixDigitHexColor.append(hexColor.substr(i, 1));
                     break;
-                    
+
                 default:
                     break;
             }
         }
-        
+
         hexColor = sixDigitHexColor;
-        
+
     }
 
         hextodec(hexColor, rgbColor);
-    
-    
+
+
     return [UIColor colorWithRed:int(rgbColor[0])/255.f green:int(rgbColor[1])/255.f blue:int(rgbColor[2])/255.f alpha:1];
      }
     else {
@@ -196,12 +195,12 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
     //fallback
     UIColor *fallbackColor = colorFromHex(fallback);
     CGFloat currentAlpha = 1;
-    
+
     if(preferencesPlist && [preferencesPlist objectForKey:key]) {
         NSString *value = [preferencesPlist objectForKey:key];
         NSArray *colorAndOrAlpha = [value componentsSeparatedByString:@":"];
         if([value rangeOfString:@":"].location != NSNotFound){
-        
+
         if([colorAndOrAlpha objectAtIndex:1]) {
             currentAlpha = [colorAndOrAlpha[1] floatValue];
         }
@@ -214,7 +213,7 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
         }
 
         if(!value) return fallbackColor;
-        
+
         NSString *color = colorAndOrAlpha[0];
 
         return [colorFromHex(color) colorWithAlphaComponent:currentAlpha];
