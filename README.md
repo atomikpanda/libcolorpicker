@@ -10,7 +10,7 @@ Here are some of it's main features:_
 * No images or "extra components" just the library
 * Post settings changed notifications on save (Optional)
 * Enter a hex color or copy one to your clipboard
-* Made for iOS 7 & Compatible with iOS 6 
+* Made for iOS 7 & 8, Compatible with iOS 6 
 * Saves colors instantly to your preferences plist
 * iPhone 3.5 inch & 4inch screen compatibility
 * Open source
@@ -104,13 +104,12 @@ An example on how to use it would be:
 This would fallback to white *(#ffffff)* if the color is `nil`;
 
 
+## Example Tweak to change UILabel text's color and shadow: ##
+[https://bitbucket.org/rob311/pflibcolorpickerexample](https://bitbucket.org/rob311/pflibcolorpickerexample)
 
 __Check out the screen shots below__
 
 ![iOS Simulator Screen shot Aug 27, 2014, 3.49.02 PM.png](https://bitbucket.org/repo/poAx5p/images/3203715933-iOS%20Simulator%20Screen%20shot%20Aug%2027,%202014,%203.49.02%20PM.png)![iOS Simulator Screen shot Aug 27, 2014, 3.55.09 PM.png](https://bitbucket.org/repo/poAx5p/images/3068646252-iOS%20Simulator%20Screen%20shot%20Aug%2027,%202014,%203.55.09%20PM.png)
-
-Example Tweak to change all UILabels text color and shadow.
-[https://bitbucket.org/rob311/pflibcolorpickerexample](https://bitbucket.org/rob311/pflibcolorpickerexample)
 
 #License
 
