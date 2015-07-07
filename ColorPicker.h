@@ -11,6 +11,8 @@
 #ifdef __cplusplus /* If this is a C++ compiler, use C linkage */
 extern "C" {
 #endif
+UIColor *LCPParseColorString(NSString *colorStringFromPrefs, NSString *colorStringFallback);
+//old
 UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback);
 
 #ifdef __cplusplus /* If this is a C++ compiler, end C linkage */

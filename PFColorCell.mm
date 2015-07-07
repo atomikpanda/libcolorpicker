@@ -50,12 +50,12 @@
 
 - (id)initWithStyle:(long long)style reuseIdentifier:(id)identifier specifier:(PSSpecifier *)specifier
 {
-	
+
 	self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier specifier:specifier];
 	// if ([specifier respondsToSelector:@selector(properties)])
 	// if (specifier && [[specifier properties] objectForKey:@"color_key"] && [[specifier properties] objectForKey:@"color_defaults"])
 	// {
-	
+
 	// }
 
 	return self;
@@ -98,10 +98,10 @@
     colorViewController.fallback = [_specifier.properties objectForKey:@"color_fallback"] ? [_specifier.properties objectForKey:@"color_fallback"] : @"#a1a1a1";
     colorViewController.postNotification = specifier.properties[@"color_postNotification"] ? specifier.properties[@"color_postNotification"] : nil;
     }
-    
+
     colorViewController.view.frame = viewController.view.frame;
 	[viewController.navigationController pushViewController:colorViewController animated:YES];
-    
+
     [colorViewController release];
 
 }
@@ -117,11 +117,11 @@
 	colorPreview.layer.borderColor = [UIColor lightGrayColor].CGColor;
 	NSString *fallback = [_specifier.properties objectForKey:@"color_fallback"] ? [_specifier.properties objectForKey:@"color_fallback"] : @"#a1a1a1";
 	colorPreview.backgroundColor = colorFromDefaultsWithKey([_specifier properties][@"color_defaults"], [_specifier properties][@"color_key"], fallback);
-	
+
 	[self setAccessoryView:colorPreview];
 
 	[colorPreview release];
-	
+
 	[_specifier setTarget:self];
 	[_specifier setButtonAction:@selector(openColorPicker)];
 }

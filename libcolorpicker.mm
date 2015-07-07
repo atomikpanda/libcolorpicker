@@ -127,7 +127,7 @@ void hextodec(std::string hex, std::vector<unsigned char>& rgb)
 
 extern "C" UIColor *colorFromHex(NSString *hexString);
 extern "C" UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback);
-
+extern "C" UIColor *LCPParseColorString(NSString *colorStringFromPrefs, NSString *colorStringFallback);
 UIColor *colorFromHex(NSString *hexString)
 {
 	if (hexString.length > 0) {
@@ -188,7 +188,7 @@ UIColor *colorFromHex(NSString *hexString)
         return [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
     }
 }
-
+// do not use this method anymore
 UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback)
 {
     NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", defaults]];
@@ -222,6 +222,42 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
         return fallbackColor;
     }
 
+}
+
+UIColor *LCPParseColorString(NSString *colorStringFromPrefs, NSString *colorStringFallback)
+{
+
+	//fallback
+	UIColor *fallbackColor = colorFromHex(colorStringFallback);
+	CGFloat currentAlpha = 1;
+
+	if(colorStringFromPrefs && colorStringFromPrefs.length > 0) {
+			NSString *value = colorStringFromPrefs;
+			if (!value || value.length == 0) return fallbackColor;
+
+			NSArray *colorAndOrAlpha = [value componentsSeparatedByString:@":"];
+			if([value rangeOfString:@":"].location != NSNotFound){
+
+			if([colorAndOrAlpha objectAtIndex:1]) {
+					currentAlpha = [colorAndOrAlpha[1] floatValue];
+			}
+			else {
+					currentAlpha = 1;
+			}
+			}
+			else {
+					currentAlpha = 1;
+			}
+
+			if(!value) return fallbackColor;
+
+			NSString *color = colorAndOrAlpha[0];
+
+			return [colorFromHex(color) colorWithAlphaComponent:currentAlpha];
+	}
+	else {
+			return fallbackColor;
+	}
 }
 
 // vim:ft=objc

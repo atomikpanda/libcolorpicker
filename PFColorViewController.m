@@ -76,11 +76,11 @@
     UISlider *saturationSlider;
     UISlider *brightnessSlider;
     UISlider *alphaSlider;
-    
+
     UIView *controlsContainer;
     UIBarButtonItem *hexButton;
 
-    
+
     CGFloat currentAlpha;
 
     UIPushedView *_pushedView;
@@ -113,12 +113,12 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
     // NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", def]];
     // //light gray fallback
     // UIColor *fallbackColor = [UIColor PF_colorWithHex:self.fallback];
-    
+
     // if(preferencesPlist&&[preferencesPlist objectForKey:aKey]) {
     //     NSString *value = [preferencesPlist objectForKey:aKey];
     //     NSArray *colorAndOrAlpha = [value componentsSeparatedByString:@":"];
     //     if([value rangeOfString:@":"].location != NSNotFound){
-        
+
     //     if([colorAndOrAlpha objectAtIndex:1]) {
     //         currentAlpha = [colorAndOrAlpha[1] floatValue];
     //         alphaSlider.value = [colorAndOrAlpha[1] floatValue];
@@ -130,7 +130,7 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
     //     }
 
     //     if(!value) return fallbackColor;
-        
+
     //     NSString *color = colorAndOrAlpha[0];
 
     //     return [[UIColor PF_colorWithHex:color] colorWithAlphaComponent:currentAlpha];
@@ -160,7 +160,20 @@ CGSize _size;
 
 
     return self;
-	
+
+}
+
+- (id)initForContentSize:(CGSize)size defaults:(NSString *)cdefaults key:(NSString *)ckey usesRGB:(BOOL)cusesRGB usesAlpha:(BOOL)cusesAlpha postNotification:(NSString *)cpostNotification fallback:(NSString *)cfallback
+{
+  self = [self initForContentSize:size];
+  self.defaults = cdefaults;
+  self.key = ckey;
+  self.usesRGB = cusesRGB;
+  self.usesAlpha = cusesAlpha;
+  self.postNotification = cpostNotification;
+  self.fallback = cfallback;
+
+  return self;
 }
 
 - (void)loadCustomViews
@@ -171,7 +184,7 @@ CGSize _size;
 
         transparent ? [transparent setFrame:_pushedView.frame] : (transparent = [[PFColorTransparentView alloc] initWithFrame:_pushedView.frame]);
         if (!self.usesAlpha) transparent.hidden = YES;
-        
+
         CGFloat height = _pushedView.frame.size.height/2;
         if (isiPhone4)
         {
@@ -181,7 +194,7 @@ CGSize _size;
         self.colorPicker ? [self.colorPicker setFrame:colorPickerFrame] : (self.colorPicker = [[[PFColorPicker alloc] initWithFrame:colorPickerFrame] autorelease]);
         [self.colorPicker makeReadyForDisplay];
         [self.colorPicker setDelegate:self];
-        
+
         CGRect controlsContainerFrame = CGRectMake((_pushedView.frame.size.width / 2) - (_pushedView.frame.size.width / 2), _pushedView.frame.size.height - (self.usesAlpha ? 180 : 140), self.colorPicker.frame.size.width, (self.usesAlpha ? 180 : 140));
         controlsContainer ? [controlsContainer setFrame:controlsContainerFrame] : (controlsContainer = [[[UIView alloc] initWithFrame:controlsContainerFrame] autorelease]);
 
@@ -191,25 +204,25 @@ CGSize _size;
         CGPoint green = CGPointMake(controlsContainer.frame.size.width/2,red.y+40);
         CGPoint blue = CGPointMake(controlsContainer.frame.size.width/2, green.y+40);
         CGPoint alpha = CGPointMake(controlsContainer.frame.size.width/2, blue.y+40);
-    
+
         CGRect sliderFrame = CGRectMake(controlsContainer.frame.size.width/2, 0, controlsContainer.frame.size.width-40, 20);
-        
+
         Class viewClass;
         if(objc_getClass("_UIBackdropView"))
             viewClass = NSClassFromString(@"_UIBackdropView");
         else
             viewClass = [UIView class];
-        
+
         CGRect backdropFrame = CGRectMake(0, 0, controlsContainer.frame.size.width, controlsContainer.frame.size.height);
         backdrop ? [backdrop setFrame:backdropFrame] : (backdrop = [[[viewClass alloc] initWithFrame:backdropFrame] autorelease]);
 
 
         hexButton = [[UIBarButtonItem alloc] initWithTitle:@"#" style:UIBarButtonItemStylePlain target:self action:@selector(chooseHexColor)];
         self.navigationItem.rightBarButtonItem = hexButton;
-        
+
         if (viewClass == [UIView class])
         [backdrop setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5]];
-        
+
         hueSlider ? [hueSlider setFrame:sliderFrame] : (hueSlider = [[[UISlider alloc] initWithFrame:sliderFrame] autorelease]);
         [hueSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
         [hueSlider setCenter:red];
@@ -217,7 +230,7 @@ CGSize _size;
         [hueSlider setMaximumValue:1];
         [hueSlider setMinimumValue:0];
         hueSlider.continuous = YES;
-        
+
         saturationSlider ? [saturationSlider setFrame:sliderFrame] : (saturationSlider = [[[UISlider alloc] initWithFrame:sliderFrame] autorelease]);
         [saturationSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
         [saturationSlider setCenter:green];
@@ -225,7 +238,7 @@ CGSize _size;
         [saturationSlider setMaximumValue:1];
         [saturationSlider setMinimumValue:0];
         saturationSlider.continuous = YES;
-        
+
         brightnessSlider ? [brightnessSlider setFrame:sliderFrame] : (brightnessSlider = [[[UISlider alloc] initWithFrame:sliderFrame] autorelease]);
         [brightnessSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
         [brightnessSlider setCenter:blue];
@@ -237,7 +250,7 @@ CGSize _size;
         alphaSlider ? [alphaSlider setFrame:sliderFrame] : (alphaSlider = [[[UISlider alloc] initWithFrame:sliderFrame] autorelease]);
         [alphaSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
         [alphaSlider setCenter:alpha];
-        
+
         [alphaSlider setMaximumValue:1];
         [alphaSlider setMinimumValue:0];
         if (!self.usesAlpha) alphaSlider.hidden = YES;
@@ -246,9 +259,9 @@ CGSize _size;
         // currentAlpha = loadColor.alpha;
         // alphaSlider.value = currentAlpha;
         // [self pickedColor:loadColor];
-        
+
         alphaSlider.continuous = YES;
-        
+
         if (self.usesRGB) {
             //Tint For RGB
             if(![hueSlider respondsToSelector:@selector(setTintColor:)]){
@@ -285,7 +298,7 @@ CGSize _size;
                 brightnessSlider.tintColor = [UIColor blackColor];
                 alphaSlider.tintColor = [UIColor grayColor];
             }
-            
+
             [hueSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'H'] forState:UIControlStateNormal];
             [saturationSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'S'] forState:UIControlStateNormal];
             [brightnessSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'B'] forState:UIControlStateNormal];
@@ -320,7 +333,7 @@ CGSize _size;
 
 
         if(self.defaults && self.key) {
-   
+
 
         loadedColor = [self colorFromDefaults:self.defaults withKey:self.key];
         currentAlpha = loadedColor.alpha;
@@ -335,9 +348,9 @@ CGSize _size;
                         options:UIViewAnimationOptionTransitionCrossDissolve
                      animations:^{
                         [_pushedView setAlpha:1];
-                     } 
+                     }
                      completion:^(BOOL finished){
-                        
+
                      }];
 
 
@@ -345,7 +358,7 @@ CGSize _size;
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];   
+    [super viewDidLoad];
 }
 
 - (void)chooseHexColor
@@ -384,7 +397,7 @@ CGSize _size;
     CGContextSetStrokeColorWithColor(context, [[UIColor PF_colorWithHex:@"#f0f0f0"] colorWithAlphaComponent:0].CGColor);
 
     CGContextDrawPath(context, kCGPathFill);
-    
+
     CGContextSetShadow(context, CGSizeMake(0, 0), 0);
     CGContextTranslateCTM(context, 0, rect.size.height);
     CGContextScaleCTM(context, 1, -1);
@@ -394,10 +407,10 @@ CGSize _size;
     CGContextSetCharacterSpacing(context, 1.7);
     CGContextSetTextDrawingMode(context, kCGTextFill);
     CGContextShowTextAtPoint(context, 10, 15, [NSString stringWithCharacters:&letter length:1].UTF8String, 1);
-    
+
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
+
     return image;
 }
 
@@ -405,7 +418,7 @@ CGSize _size;
 {
     [super viewDidAppear:animated];
 
-    
+
 
     [self performSelector:@selector(loadCustomViews) withObject:nil afterDelay:0];
     [self.colorPicker performSelector:@selector(saveCache) withObject:nil afterDelay:0.5];
@@ -432,7 +445,7 @@ CGSize _size;
     color = (UIColor*)[UIColor colorWithHue:hueSlider.value saturation:saturationSlider.value brightness:brightnessSlider.value alpha:alphaSlider.value];
     else
     color = (UIColor*)[UIColor colorWithRed:hueSlider.value green:saturationSlider.value blue:brightnessSlider.value alpha:alphaSlider.value];
-    
+
     [self pickedColor:color];
 }
 
@@ -451,20 +464,20 @@ CGSize _size;
         [hueSlider setValue:hue];
         [saturationSlider setValue:saturation];
         [brightnessSlider setValue:brightness];
-        
+
     }
     else {
         CGFloat red;
         CGFloat green;
         CGFloat blue;
-        
+
         [color getRed:&red green:&green blue:&blue alpha:NULL];
         [hueSlider setValue:red];
         [saturationSlider setValue:green];
         [brightnessSlider setValue:blue];
 
     }
-    
+
     if(self.usesAlpha){
         transparent.alpha = 1-alphaSlider.value;
         currentAlpha = alphaSlider.value;
@@ -478,7 +491,7 @@ CGSize _size;
     saveValue = [NSString stringWithFormat:@"%@:%f", [UIColor hexFromColor:color], currentAlpha]; //should be something like @"#a1a1a1:0.5" with the the decimal being the alpha you can ge the color and alpha seperately by [value componentsSeparatedByString:@":"]
     else
         saveValue = [UIColor hexFromColor:color]; // should be something like @"#a1a1a1"
-    
+
     if (saveValue && self.key)
     {
     [preferencesPlist setObject:saveValue forKey:self.key];
@@ -487,7 +500,7 @@ CGSize _size;
     CFPreferencesAppSynchronize((CFStringRef)self.defaults);
     }
 
-    
+
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
@@ -502,11 +515,11 @@ CGSize _size;
                         options:UIViewAnimationOptionTransitionCrossDissolve
                      animations:^{
                         [self loadCustomViews];
-                     } 
+                     }
                      completion:^(BOOL finished){
-                        
+
                      }];
-        
+
 
     }
     else {
@@ -517,12 +530,12 @@ CGSize _size;
                         options:UIViewAnimationOptionTransitionCrossDissolve
                      animations:^{
                         [self loadCustomViews];
-                     } 
+                     }
                      completion:^(BOOL finished){
-                        
+
                      }];
     }
-    
+
 }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
@@ -544,7 +557,7 @@ CGSize _size;
 }
 
 
-- (void)didReceiveMemoryWarning 
+- (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

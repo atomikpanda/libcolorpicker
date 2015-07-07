@@ -7,9 +7,11 @@
 //
 #import <UIKit/UIKit.h>
 @class PSViewController;
-@interface PFColorViewController : PSViewController
+@interface PFColorViewController : UIViewController
 
 - (id)initForContentSize:(CGSize)size;
+// convenience initForContentSize:defaults:key:usesRGB:usesAlpha:postNotification:fallback:
+- (id)initForContentSize:(CGSize)size defaults:(NSString *)cdefaults key:(NSString *)ckey usesRGB:(BOOL)cusesRGB usesAlpha:(BOOL)cusesAlpha postNotification:(NSString *)cpostNotification fallback:(NSString *)cfallback;
 - (void)loadCustomViews;
 
 @property (nonatomic, strong) NSString *defaults; //Required example: @"com.baileyseymour.test"
