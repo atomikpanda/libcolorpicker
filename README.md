@@ -39,6 +39,9 @@ UIColor *coolColor = LCPParseColorString(coolColorHex, @"#ff0000"); // fallback 
 // do something with coolColor
 ```
 
+## Example Tweak to change UILabel text's color and shadow: ##
+[https://bitbucket.org/rob311/pflibcolorpickerexample](https://bitbucket.org/rob311/pflibcolorpickerexample)
+
 ![screen shot](https://pbs.twimg.com/media/CKKQ1OqWoAAF7_W.png:large)
 
 # The old libcolorpicker:
