@@ -39,6 +39,7 @@ UIColor *coolColor = LCPParseColorString(coolColorHex, @"#ff0000"); // fallback 
 // do something with coolColor
 ```
 
+![screen shot](https://pbs.twimg.com/media/CKKQ1OqWoAAF7_W.png:large)
 
 # The old libcolorpicker:
 
@@ -179,7 +180,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 =======
-# libcolorpicker 
+# libcolorpicker
 
 _libcolorpicker is a iOS library that provides an easy to implement Color Picker.
 Here are some of it's main features:_
@@ -191,7 +192,7 @@ Here are some of it's main features:_
 * No images or "extra components" just the library
 * Post settings changed notifications on save (Optional)
 * Enter a hex color or copy one to your clipboard
-* Made for iOS 7 & 8, Compatible with iOS 6 
+* Made for iOS 7 & 8, Compatible with iOS 6
 * Saves colors instantly to your preferences plist
 * iPhone 3.5 inch & 4inch screen compatibility
 * Open source
@@ -222,9 +223,9 @@ First add a this into your Tweaks Preferences specifier plist and modify to your
                 <key>color_postNotification</key>
                 <string>com.yourcompany.tweak.settingschanged</string>
             </dict>
-			
+
 ## Using Version on BigBoss (Recommended)
-* Search and install __libcolorpicker__ from Cydia. 
+* Search and install __libcolorpicker__ from Cydia.
 
 * Copy __/usr/lib/libcolorpicker.dylib__ from your iOS device to your __$THEOS/lib__ folder.
 
@@ -241,14 +242,14 @@ First add a this into your Tweaks Preferences specifier plist and modify to your
  	 		  [self reload];  
    			 [super viewWillAppear:animated];
 		}
-		
--------------		
+
+-------------
 
 PLEASE DO NOT DO THIS :P
 It will result in loading different versions of libcolorpicker.
 
-## Using Custom Build	
-			
+## Using Custom Build
+
 Next, Place the libcolorpicker.dylib in TweakPreferencesFolder/lib/
 
 Next, Add the following to your Preference Bundle's Makefile:
@@ -283,7 +284,7 @@ First you need to define the function in your header (.h) file:
 
 An example on how to use it would be:
 	`UIColor *someColor = colorFromDefaultsWithKey(@"com.example.tweak", @"someColor", @"#ffffff");`
-	
+
 This would fallback to white *(#ffffff)* if the color is `nil`;
 
 
@@ -300,21 +301,21 @@ The MIT License (MIT)
 
 Copyright (c) 2014 PixelFireDev
 
-Permission is hereby granted, free of charge, to any person obtaining a copy    
-of this software and associated documentation files (the "Software"), to deal    
-in the Software without restriction, including without limitation the rights    
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    
-copies of the Software, and to permit persons to whom the Software is    
-furnished to do so, subject to the following conditions:    
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in    
+The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,    
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER    
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,    
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN    
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 >>>>>>> ccf619b6fce20f4958f2b25e89ee4ff49579acde
