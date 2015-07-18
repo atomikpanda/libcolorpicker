@@ -19,12 +19,13 @@ The new libcolorpicker `PFColorAlert` is focused on being lightweight, portable,
 ```
 PFColorAlert *alert = [PFColorAlert new]; // init WILL GET RELEASED ON CLOSE
 
-	UIColor *startColor = [UIColor colorWithRed:0.769  green:0.286  blue:0.008 alpha:0.75]; // this color will be used at startup
+	UIColor *startColor = [UIColor colorWithRed:0.769  green:0.286  blue:0.008 alpha:0.75]; // this color will be used at startup // if you are using a color from prefs then
 	// show alert                               // Show alpha slider? // Code to run after close
 	[alert showWithStartColor:startColor showAlpha:YES completion:
 	^void (UIColor *pickedColor){
 		// save pickedColor or do something with it
 		NSString *hexString = [UIColor hexFromColor:pickedColor];
+		hexString = [hexString stringByAppendingFormat:@":%g", pickedColor.alpha]; //if you want to use alpha
 
 		// save hexString to your plist if desired
 	}];
@@ -32,7 +33,7 @@ PFColorAlert *alert = [PFColorAlert new]; // init WILL GET RELEASED ON CLOSE
 ##### Reading saved color later on (From Tweak):
 ```
 NSDictionary *prefsDict = ... // assuming this holds your prefs
-NSString *coolColorHex = [prefsDict objectForKey:@"someCoolKey"]; // assuming that the key has a value saved using LCPParseColorString()
+NSString *coolColorHex = [prefsDict objectForKey:@"someCoolKey"]; // assuming that the key has a value saved like #FFFFFF:0.75423
 
 UIColor *coolColor = LCPParseColorString(coolColorHex, @"#ff0000"); // fallback to red (#ff0000)
 // do something with coolColor
