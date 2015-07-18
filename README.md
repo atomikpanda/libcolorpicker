@@ -1,4 +1,4 @@
-#libcolorpicker 
+# libcolorpicker 
 
 _libcolorpicker is a iOS library that provides an easy to implement Color Picker.
 Here are some of it's main features:_
@@ -42,7 +42,7 @@ First add a this into your Tweaks Preferences specifier plist and modify to your
                 <string>com.yourcompany.tweak.settingschanged</string>
             </dict>
 			
-##Using Version on BigBoss (Recommended)
+## Using Version on BigBoss (Recommended)
 * Search and install __libcolorpicker__ from Cydia. 
 
 * Copy __/usr/lib/libcolorpicker.dylib__ from your iOS device to your __$THEOS/lib__ folder.
@@ -63,8 +63,10 @@ First add a this into your Tweaks Preferences specifier plist and modify to your
 		
 -------------		
 
+PLEASE DO NOT DO THIS :P
+It will result in loading different versions of libcolorpicker.
 
-##Using Custom Build	
+## Using Custom Build	
 			
 Next, Place the libcolorpicker.dylib in TweakPreferencesFolder/lib/
 
@@ -91,7 +93,7 @@ Next, Add the following to to your Preference Bundle's PSListController @impleme
     [super viewWillAppear:animated];
 	}
 
-##Getting the color from the plist:
+## Getting the color from the plist:
 
 To get the color from your tweak you can use the `UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback)` function found in __libcolorpicker.mm__
 
@@ -111,7 +113,7 @@ __Check out the screen shots below__
 
 ![iOS Simulator Screen shot Aug 27, 2014, 3.49.02 PM.png](https://bitbucket.org/repo/poAx5p/images/3203715933-iOS%20Simulator%20Screen%20shot%20Aug%2027,%202014,%203.49.02%20PM.png)![iOS Simulator Screen shot Aug 27, 2014, 3.55.09 PM.png](https://bitbucket.org/repo/poAx5p/images/3068646252-iOS%20Simulator%20Screen%20shot%20Aug%2027,%202014,%203.55.09%20PM.png)
 
-#License
+# License
 
 The MIT License (MIT)
 
