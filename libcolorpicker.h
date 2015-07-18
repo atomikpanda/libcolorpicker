@@ -9,6 +9,7 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
 
 #ifdef __cplusplus /* If this is a C++ compiler, end C linkage */
 }
+#endif
 
 @interface PFColorAlert : NSObject
 @property (nonatomic, retain) UIWindow *popWindow;
