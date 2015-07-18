@@ -18,7 +18,7 @@ The new libcolorpicker `PFColorAlert` is focused on being lightweight, portable,
 
 ##### Showing the alert:
 ```
-PFColorAlert *alert = [[[PFColorAlert alloc] init] autorelease]; // init
+PFColorAlert *alert = [PFColorAlert new]; // init WILL GET RELEASED ON CLOSE
 
 	UIColor *startColor = [UIColor colorWithRed:0.769  green:0.286  blue:0.008 alpha:0.75]; // this color will be used at startup
 	// show alert                               // Show alpha slider? // Code to run after close
