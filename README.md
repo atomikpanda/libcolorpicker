@@ -21,7 +21,7 @@ PFColorAlert *alert = [PFColorAlert new]; // init WILL GET RELEASED ON CLOSE
 
 	UIColor *startColor = [UIColor colorWithRed:0.769  green:0.286  blue:0.008 alpha:0.75]; // this color will be used at startup
 	// show alert                               // Show alpha slider? // Code to run after close
-	[liteColor showWithStartColor:startColor showAlpha:YES completion:
+	[alert showWithStartColor:startColor showAlpha:YES completion:
 	^void (UIColor *pickedColor){
 		// save pickedColor or do something with it
 		NSString *hexString = LCPParseColorString([UIColor hexFromColor:pickedColor], @"#ff0000");
