@@ -24,8 +24,8 @@ PFColorAlert *alert = [PFColorAlert new]; // init WILL GET RELEASED ON CLOSE
 	[alert showWithStartColor:startColor showAlpha:YES completion:
 	^void (UIColor *pickedColor){
 		// save pickedColor or do something with it
-		NSString *hexString = LCPParseColorString([UIColor hexFromColor:pickedColor], @"#ff0000");
-		// 																																^^ parse fallback to ^red
+		NSString *hexString = [UIColor hexFromColor:pickedColor];
+
 		// save hexString to your plist if desired
 	}];
 ```
