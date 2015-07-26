@@ -401,11 +401,11 @@
 - (void)setPrimaryColor:(UIColor *)primary
 {
 	//UIColor *pr = [primary retain];
-	[self.litePreviewView updateWithColor:pr];
+	[self.litePreviewView updateWithColor:primary];
 
-	[self.saturationSlider updateGraphicsWithColor:pr];
-	[self.brightnessSlider updateGraphicsWithColor:pr];
-	[self.alphaSlider updateGraphicsWithColor:pr];
+	[self.saturationSlider updateGraphicsWithColor:primary];
+	[self.brightnessSlider updateGraphicsWithColor:primary];
+	[self.alphaSlider updateGraphicsWithColor:primary];
 }
 
 - (void)hueChanged:(float)hue
