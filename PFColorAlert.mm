@@ -411,44 +411,49 @@
 - (void)hueChanged:(float)hue
 {
 	[self.litePreviewView updateWithColor:
-		[[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha] retain]];
+		[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
 	
 	[self.saturationSlider updateGraphicsWithColor:
-		[[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha] retain]];
+		[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
 	
 	[self.brightnessSlider updateGraphicsWithColor:
-		[[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha] retain]];
+		[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
 	
 	[self.alphaSlider updateGraphicsWithColor:
-		[[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha] retain]];
+		[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
 }
 
 - (void)saturationChanged:(UISlider *)_slider
 {
 	[self.litePreviewView updateWithColor:
-	[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:_slider.value brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha] retain]];
+		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:_slider.value brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
+	
 	[self.saturationSlider updateGraphicsWithColor:
-	[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:_slider.value brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha] retain]];
+		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:_slider.value brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
 
-	[self.alphaSlider updateGraphicsWithColor:[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:_slider.value brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha] retain]];
+	[self.alphaSlider updateGraphicsWithColor:
+		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:_slider.value brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
 }
 
 - (void)brightnessChanged:(UISlider *)_slider
 {
 	[self.litePreviewView updateWithColor:
-	[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:_slider.value alpha:self.litePreviewView.mainColor.alpha] retain]];
+		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:_slider.value alpha:self.litePreviewView.mainColor.alpha]];
+	
 	[self.brightnessSlider updateGraphicsWithColor:
-	[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:_slider.value alpha:self.litePreviewView.mainColor.alpha] retain]];
+		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:_slider.value alpha:self.litePreviewView.mainColor.alpha]];
 
-	[self.alphaSlider updateGraphicsWithColor:[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:_slider.value alpha:self.litePreviewView.mainColor.alpha] retain]];
+	[self.alphaSlider updateGraphicsWithColor:
+		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:_slider.value alpha:self.litePreviewView.mainColor.alpha]];
 }
 
 - (void)alphaChanged:(UISlider *)_slider
 {
 	[self.litePreviewView updateWithColor:
-	[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:_slider.value] retain]];
+		[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:_slider.value]];
+	
 	[self.alphaSlider updateGraphicsWithColor:
-	[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:_slider.value] retain]];
+		[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:_slider.value]];
 }
 
 - (void)chooseHexColor
