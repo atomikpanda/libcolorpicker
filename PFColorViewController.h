@@ -14,11 +14,11 @@
 - (id)initForContentSize:(CGSize)size defaults:(NSString *)cdefaults key:(NSString *)ckey usesRGB:(BOOL)cusesRGB usesAlpha:(BOOL)cusesAlpha postNotification:(NSString *)cpostNotification fallback:(NSString *)cfallback;
 - (void)loadCustomViews;
 
-@property (nonatomic, strong) NSString *defaults; //Required example: @"com.baileyseymour.test"
-@property (nonatomic, strong) NSString *key; //Required example @"aColor"
+@property (nonatomic, retain) NSString *defaults; //Required example: @"com.baileyseymour.test"
+@property (nonatomic, retain) NSString *key; //Required example @"aColor"
 @property (nonatomic, assign) BOOL usesRGB; //Default: false
 @property (nonatomic, assign) BOOL usesAlpha; //Default: false
-@property (nonatomic, strong) NSString *postNotification;
-@property (nonatomic, strong) NSString *fallback;
+@property (nonatomic, retain) NSString *postNotification;
+@property (nonatomic, retain) NSString *fallback;
 
 @end
