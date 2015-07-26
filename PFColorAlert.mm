@@ -463,6 +463,7 @@
 	[prompt setAlertViewStyle:UIAlertViewStylePlainTextInput];
 	[[prompt textFieldAtIndex:0] setText:[UIColor hexFromColor:self.litePreviewView.mainColor]];
 	[prompt show];
+	[prompt release];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
