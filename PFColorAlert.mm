@@ -450,10 +450,10 @@
 - (void)alphaChanged:(UISlider *)_slider
 {
 	[self.litePreviewView updateWithColor:
-		[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:_slider.value]];
+		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:_slider.value]];
 	
 	[self.alphaSlider updateGraphicsWithColor:
-		[[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:_slider.value]];
+		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:_slider.value]];
 }
 
 - (void)chooseHexColor

@@ -100,17 +100,17 @@
 	if (self.previousColor)
 	{
 		CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, (M_PI * 3) + (M_PI / 2), (M_PI / 2), 1);
-		CGContextSetFillColorWithColor(context, _mainColor.CGColor);
+		CGContextSetFillColorWithColor(context, self.mainColor.CGColor);
 		CGContextDrawPath(context, kCGPathEOFill);
 
 		CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, (M_PI * 2) / 4, (M_PI * 3) / 2, 0);
-		CGContextSetFillColorWithColor(context, _previousColor.CGColor);
+		CGContextSetFillColorWithColor(context, self.previousColor.CGColor);
 		CGContextDrawPath(context, kCGPathEOFill);
 	}
 	else 
 	{
 		CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, 0, 2 * M_PI, 1);
-		CGContextSetFillColorWithColor(context, _mainColor.CGColor);
+		CGContextSetFillColorWithColor(context, self.mainColor.CGColor);
 		CGContextDrawPath(context, kCGPathEOFill);
 	}
 }

@@ -9,7 +9,6 @@
 
 @implementation PFColorSliderBackgroundView
 @synthesize color;
-@synthesize slider;
 
 - (id)initWithFrame:(CGRect)frame color:(UIColor *)color style:(PFSliderBackgroundStyle)s
 {
@@ -59,6 +58,7 @@
 
 @implementation PFColorLiteSlider
 @synthesize backgroundView;
+@synthesize slider;
 
 - (id)initWithFrame:(CGRect)frame color:(UIColor *)c style:(PFSliderBackgroundStyle)s
 {
@@ -75,8 +75,8 @@
 	internalFrame.origin.y = ((frame.size.height - 10) / 2);
 	self.backgroundView = [[[PFColorSliderBackgroundView alloc] initWithFrame:internalFrame color:c style:s] autorelease];
 
-	[self addSubview:_backgroundView];
-	[self addSubview:_slider];
+	[self addSubview:self.backgroundView];
+	[self addSubview:self.slider];
 
 	[self updateGraphicsWithColor:c];
 
