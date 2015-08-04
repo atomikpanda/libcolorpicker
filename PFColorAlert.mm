@@ -22,6 +22,7 @@
 @property (nonatomic, retain) PFColorLiteSlider *alphaSlider;
 @property (nonatomic, retain) PFColorLitePreviewView *litePreviewView;
 @property (nonatomic, assign) BOOL isOpen;
+@property (nonatomic, assign) BOOL showsDeprecatedAlert;
 @property (nonatomic, copy) void (^completionBlock)(UIColor *pickedColor);
 
 @end
@@ -61,6 +62,8 @@
 - (PFColorAlert *)init
 {
 	[super init];
+
+	self.isOpen = NO;
 
 	UIColor *startColor = [UIColor whiteColor];
 
@@ -185,10 +188,10 @@
 	[self init];
 
 	[self.haloView setValue:startColor.hue];
-	[self.saturationSlider setColor:startColor];
-	[self.brightnessSlider setColor:startColor];
-	[self.alphaSlider setColor:startColor];
-	[self.litePreviewView setMainColor:[UIColor colorWithHue:startColor.hue saturation:startColor.saturation brightness:startColor.brightness alpha:startColor.alpha] previousColor:startColor];
+	[self.saturationSlider updateGraphicsWithColor:startColor];
+	[self.brightnessSlider updateGraphicsWithColor:startColor];
+	[self.alphaSlider updateGraphicsWithColor:startColor];
+	// [self.litePreviewView setMainColor:[UIColor colorWithHue:startColor.hue saturation:startColor.saturation brightness:startColor.brightness alpha:startColor.alpha] previousColor:startColor];
 
 	[self setPrimaryColor:startColor];
 
@@ -215,11 +218,11 @@
 	return [[[PFColorAlert alloc] initWithStartColor:startColor showAlpha:showAlpha] autorelease];
 }
 
-- (void)displayWithCompletion:(void (^)(UIColor *pickedColor))completionBlock
+- (void)displayWithCompletion:(void (^)(UIColor *pickedColor))fcompletionBlock
 {
 	if (self.isOpen) return;
 
-	self.completionBlock = completionBlock;
+	self.completionBlock = fcompletionBlock;
 
 	[self.popWindow makeKeyAndVisible];
 
@@ -234,17 +237,24 @@
 		UITapGestureRecognizer *tgr = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close)] autorelease];
 		self.darkeningWindow.userInteractionEnabled = YES;
 		[self.darkeningWindow addGestureRecognizer:tgr];
-	
+
+		if (self.showsDeprecatedAlert)
+		{
+			UIAlertView *deprecated = [[UIAlertView alloc] initWithTitle:@"libColorPicker" message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK, Show Anyway", nil];
+			[deprecated show];
+			[deprecated release];
+		}
+
 	}];
 }
 
-- (void)showWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha completion:(void (^)(UIColor *pickedColor))completionBlock
+- (void)showWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha completion:(void (^)(UIColor *pickedColor))fcompletionBlock
 {
-	UIAlertView *deprecated = [[UIAlertView alloc] initWithTitle:@"libColorPicker" message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-	[deprecated show];
-	[deprecated release];
+	PFColorAlert *ca = [[PFColorAlert colorAlertWithStartColor:startColor showAlpha:showAlpha] retain];
+	ca.showsDeprecatedAlert = YES;
+	[ca displayWithCompletion:fcompletionBlock];
 
-	completionBlock(startColor);
+
 }
 
 - (void)setPrimaryColor:(UIColor *)primary
@@ -261,13 +271,13 @@
 {
 	[self.litePreviewView updateWithColor:
 		[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
-	
+
 	[self.saturationSlider updateGraphicsWithColor:
 		[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
-	
+
 	[self.brightnessSlider updateGraphicsWithColor:
 		[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
-	
+
 	[self.alphaSlider updateGraphicsWithColor:
 		[UIColor colorWithHue:hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
 }
@@ -276,7 +286,7 @@
 {
 	[self.litePreviewView updateWithColor:
 		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:_slider.value brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
-	
+
 	[self.saturationSlider updateGraphicsWithColor:
 		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:_slider.value brightness:self.litePreviewView.mainColor.brightness alpha:self.litePreviewView.mainColor.alpha]];
 
@@ -288,7 +298,7 @@
 {
 	[self.litePreviewView updateWithColor:
 		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:_slider.value alpha:self.litePreviewView.mainColor.alpha]];
-	
+
 	[self.brightnessSlider updateGraphicsWithColor:
 		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:_slider.value alpha:self.litePreviewView.mainColor.alpha]];
 
@@ -300,7 +310,7 @@
 {
 	[self.litePreviewView updateWithColor:
 		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:_slider.value]];
-	
+
 	[self.alphaSlider updateGraphicsWithColor:
 		[UIColor colorWithHue:self.litePreviewView.mainColor.hue saturation:self.litePreviewView.mainColor.saturation brightness:self.litePreviewView.mainColor.brightness alpha:_slider.value]];
 }
@@ -338,7 +348,7 @@
 
 		self.darkeningWindow.alpha = 0.0f;
 		self.popWindow.alpha = 0.0f;
-		
+
 	} completion:^(BOOL finished) {
 
 		if (self.completionBlock)
