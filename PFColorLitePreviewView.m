@@ -15,6 +15,12 @@
   [self setNeedsDisplay];
 }
 
+- (void)setMainColor:(UIColor *)mc previousColor:(UIColor *)prev
+{
+  self.mainColor = mc;
+  if (prev) self.previousColor = prev;
+}
+
 - (id)initWithFrame:(CGRect)frame mainColor:(UIColor *)mc previousColor:(UIColor *)prev
 {
 	self = [super initWithFrame:frame];
@@ -22,10 +28,10 @@
 	if (self)
 	{
 		self.mainColor = mc;
-		
+
 		if (prev) self.previousColor = prev;
 		[self setBackgroundColor:[UIColor clearColor]];
-		
+
 		[self setNeedsDisplay];
 	}
 
@@ -36,7 +42,7 @@
 {
 
 	if (!self.mainColor) self.mainColor = [UIColor whiteColor];
-	
+
 	CGContextRef context = UIGraphicsGetCurrentContext();
 
 	// CGContextSetLineWidth(context, 4.0);
@@ -107,7 +113,7 @@
 		CGContextSetFillColorWithColor(context, self.previousColor.CGColor);
 		CGContextDrawPath(context, kCGPathEOFill);
 	}
-	else 
+	else
 	{
 		CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, 0, 2 * M_PI, 1);
 		CGContextSetFillColorWithColor(context, self.mainColor.CGColor);

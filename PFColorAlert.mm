@@ -190,7 +190,7 @@
 	[self.saturationSlider updateGraphicsWithColor:startColor];
 	[self.brightnessSlider updateGraphicsWithColor:startColor];
 	[self.alphaSlider updateGraphicsWithColor:startColor];
-	// [self.litePreviewView setMainColor:[UIColor colorWithHue:startColor.hue saturation:startColor.saturation brightness:startColor.brightness alpha:startColor.alpha] previousColor:startColor];
+	[self.litePreviewView setMainColor:[UIColor colorWithHue:startColor.hue saturation:startColor.saturation brightness:startColor.brightness alpha:startColor.alpha] previousColor:startColor];
 
 	[self setPrimaryColor:startColor];
 
