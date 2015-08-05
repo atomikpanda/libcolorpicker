@@ -15,7 +15,8 @@ The new libcolorpicker `PFColorAlert` is focused on being lightweight, portable,
 
 * Download libcolorpicker.h from the root of this git and place in __$THEOS/include__ folder.
 
-##### Adding libcolorpicker into your tweak prefs bundle (Simple)
+### Adding libcolorpicker into your tweak prefs bundle (Simple)
+##### This simple method is for devs that don't need much customization.
 
 add a new dictionary in your preference's specifier plist like this (also see example below)
 ### ** Preferences Plist Specifier Format **
@@ -66,8 +67,9 @@ add a new dictionary in your preference's specifier plist like this (also see ex
 			<string>Favorite Color 1</string>
 		</dict>
 ```
-
-##### Showing the alert (Advanced):
+## Advanced
+#### Showing the alert (Advanced):
+**this way can be used inside any application like a UIAlertView and is fully customizable.**
 
 ```
 NSString *readFromKey = @"someCoolKey"; //  (You want to load from prefs probably)
