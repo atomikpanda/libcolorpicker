@@ -22,7 +22,6 @@
 @property (nonatomic, retain) PFColorLiteSlider *alphaSlider;
 @property (nonatomic, retain) PFColorLitePreviewView *litePreviewView;
 @property (nonatomic, assign) BOOL isOpen;
-@property (nonatomic, assign) BOOL showsDeprecatedAlert;
 @property (nonatomic, copy) void (^completionBlock)(UIColor *pickedColor);
 
 @end
@@ -224,6 +223,8 @@
 
 	self.completionBlock = fcompletionBlock;
 
+	[self retain];
+
 	[self.popWindow makeKeyAndVisible];
 
 	[UIView animateWithDuration:0.3f animations:^{
@@ -238,23 +239,14 @@
 		self.darkeningWindow.userInteractionEnabled = YES;
 		[self.darkeningWindow addGestureRecognizer:tgr];
 
-		if (self.showsDeprecatedAlert)
-		{
-			UIAlertView *deprecated = [[UIAlertView alloc] initWithTitle:@"libColorPicker" message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK, Show Anyway", nil];
-			[deprecated show];
-			[deprecated release];
-		}
-
 	}];
 }
 
 - (void)showWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha completion:(void (^)(UIColor *pickedColor))fcompletionBlock
 {
-	PFColorAlert *ca = [[PFColorAlert colorAlertWithStartColor:startColor showAlpha:showAlpha] retain];
-	ca.showsDeprecatedAlert = YES;
-	[ca displayWithCompletion:fcompletionBlock];
-
-
+		UIAlertView *deprecated = [[UIAlertView alloc] initWithTitle:@"libColorPicker" message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+		[deprecated show];
+		[deprecated release];
 }
 
 - (void)setPrimaryColor:(UIColor *)primary
@@ -356,6 +348,8 @@
 
 		self.popWindow.hidden = YES;
 		self.isOpen = NO;
+
+		[self release];
 
 	}];
 }

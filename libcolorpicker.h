@@ -27,7 +27,20 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
 @end
 
 @interface PFColorAlert : NSObject
-@property (nonatomic, retain) UIWindow *popWindow;
-- (void)showWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha completion:(void (^)(UIColor *pickedColor))completionBlock;
+// DO NOT USE OLD METHOD
+//- (void)showWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha completion:(void (^)(UIColor *pickedColor))completionBlock;
++ (PFColorAlert *)colorAlertWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha;
+- (PFColorAlert *)initWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha;
+- (void)displayWithCompletion:(void (^)(UIColor *pickedColor))fcompletionBlock;
 - (void)close;
+@end
+
+@interface PFLiteColorCell : UITableViewCell
+- (id)initWithStyle:(long long)style reuseIdentifier:(id)identifier specifier:(id)specifier;
+- (UIColor *)previewColor; // this will be used for the circle preview view. override in a subclass
+- (id)specifier;
+- (void)updateCellDisplay;
+@end
+
+@interface PFSimpleLiteColorCell : PFLiteColorCell
 @end

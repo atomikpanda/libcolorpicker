@@ -99,8 +99,8 @@
     colorViewController.postNotification = specifier.properties[@"color_postNotification"] ? specifier.properties[@"color_postNotification"] : nil;
     }
 
-    colorViewController.view.frame = viewController.view.frame;
-	[viewController.navigationController pushViewController:colorViewController animated:YES];
+     colorViewController.view.frame = viewController.view.frame;
+	   [viewController.navigationController pushViewController:colorViewController animated:YES];
 
     [colorViewController release];
 
