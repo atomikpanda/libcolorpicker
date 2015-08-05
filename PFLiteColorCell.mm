@@ -181,8 +181,6 @@ static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observe
       CFNotificationSuspensionBehaviorCoalesce
     );
   }
-  [[NSDistributedNotificationCenter defaultCenter] addObserver:self
-  selector:@selector(updateCellDisplay) name:notificationId object:nil];
 
 	self.colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
 	// _colorPreview = colorPreview;

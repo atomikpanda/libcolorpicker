@@ -157,9 +157,15 @@
 	[self.litePreviewView removeFromSuperview]; // why even xD adding view1 to view2 automatically removes view1 from its prior superview
 	[self.mainViewController.view addSubview:self.litePreviewView];
 
+	self.darkeningWindow.hidden = NO;
+	self.darkeningWindow.alpha = 0.0f;
+	[self.darkeningWindow makeKeyAndVisible];
+
 	self.popWindow.rootViewController = self.mainViewController;
 	self.popWindow.windowLevel = UIWindowLevelAlert - 1.0f;
 	self.popWindow.backgroundColor = [UIColor clearColor];
+	self.popWindow.hidden = NO;
+	self.popWindow.alpha = 0.0f;
 
 	[self makeViewDynamic:self.popWindow];
 	CGRect popWindowFrame = self.popWindow.frame;
@@ -188,7 +194,7 @@
 
 	[self setPrimaryColor:startColor];
 
-	self.alphaSlider.hidden = showAlpha;
+	self.alphaSlider.hidden = showAlpha ? 0 : 1; // invert logic
 
 	return self;
 }
@@ -219,12 +225,6 @@
 
 	[self retain];
 
-	self.darkeningWindow.hidden = NO;
-	self.darkeningWindow.alpha = 0.0f;
-	[self.darkeningWindow makeKeyAndVisible];
-
-	self.popWindow.hidden = NO;
-	self.popWindow.alpha = 0.0f;
 	[self.popWindow makeKeyAndVisible];
 
 	[UIView animateWithDuration:0.3f animations:^{
@@ -347,7 +347,6 @@
 		self.completionBlock(self.litePreviewView.mainColor);
 
 		self.popWindow.hidden = YES;
-		self.darkeningWindow.hidden = YES;
 		self.isOpen = NO;
 
 		[self release];
