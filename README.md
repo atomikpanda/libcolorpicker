@@ -15,28 +15,86 @@ The new libcolorpicker `PFColorAlert` is focused on being lightweight, portable,
 
 * Download libcolorpicker.h from the root of this git and place in __$THEOS/include__ folder.
 
-##### Showing the alert:
+##### Adding libcolorpicker into your tweak prefs bundle (Simple)
+
+add a new dictionary in your preference's specifier plist like this (also see example below)
+### ** Preferences Plist Specifier Format **
+
 ```
-PFColorAlert *alert = [PFColorAlert new]; // init WILL GET RELEASED ON CLOSE
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>PFSimpleLiteColorCell</string>
+			<key>libcolorpicker</key>
+			<dict>
+				<key>defaults</key>
+				<string>YOUR PREFS PLIST IDENTIFIER</string>
+				<key>key</key>
+				<string>SAVE KEY</string>
+				<key>fallback</key>
+				<string>FALLBACK HEX COLOR</string>
+				<key>PostNotification</key>
+				<string>NOTIFICATION TO POST (OPTIONAL)</string>
+				<key>alpha</key>
+				<true/> <!-- <true/> or <false/> Show alpha slider -->
+			</dict>
+			<key>label</key>
+			<string>COLOR TEXT LABEL</string>
+		</dict>
+```
+### ** Example Preferences Plist**
 
-	UIColor *startColor = [UIColor colorWithRed:0.769  green:0.286  blue:0.008 alpha:0.75]; // this color will be used at startup // if you are using a color from prefs then
-	// show alert                               // Show alpha slider? // Code to run after close
-	[alert showWithStartColor:startColor showAlpha:YES completion:
-	^void (UIColor *pickedColor){
-		// save pickedColor or do something with it
-		NSString *hexString = [UIColor hexFromColor:pickedColor];
-		hexString = [hexString stringByAppendingFormat:@":%g", pickedColor.alpha]; //if you want to use alpha
+```
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>PFSimpleLiteColorCell</string>
+			<key>libcolorpicker</key>
+			<dict>
+				<key>defaults</key>
+				<string>com.baileyseymour.someawesometweak</string>
+				<key>key</key>
+				<string>favoriteColor</string>
+				<key>fallback</key>
+				<string>#ff0000</string>
+				<key>alpha</key>
+				<false/>
+			</dict>
+			<key>label</key>
+			<string>Favorite Color 1</string>
+		</dict>
+```
 
-		// save hexString to your plist if desired
-	}];
+##### Showing the alert (Advanced):
+
+```
+NSString *readFromKey = @"someCoolKey"; //  (You want to load from prefs probably)
+NSString *fallbackHex = @"#ff0000";  // (You want to load from prefs probably)
+
+	  UIColor *startColor = LCPParseColorString(readFromKey, fallbackHex); // this color will be used at startup
+		PFColorAlert *alert = [PFColorAlert colorAlertWithStartColor:startColor showAlpha:YES];
+    // show alert and set completion callback
+    [alert displayWithCompletion:
+    ^void (UIColor *pickedColor){
+        // save pickedColor or do something with it
+        NSString *hexString = [UIColor hexFromColor:pickedColor];
+		hexString = [hexString stringByAppendingFormat:@":%f", pickedColor.alpha];
+		// you probably want to save hexString to your prefs
+		// maybe post a notification here if you need to
+    
+    }];
 ```
 ##### Reading saved color later on (From Tweak):
+
 ```
 NSDictionary *prefsDict = ... // assuming this holds your prefs
 NSString *coolColorHex = [prefsDict objectForKey:@"someCoolKey"]; // assuming that the key has a value saved like #FFFFFF:0.75423
 
 UIColor *coolColor = LCPParseColorString(coolColorHex, @"#ff0000"); // fallback to red (#ff0000)
 // do something with coolColor
+
 ```
 
 ## Example Tweak to change UILabel text's color and shadow: ##
