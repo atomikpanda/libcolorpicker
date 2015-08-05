@@ -81,7 +81,12 @@
 
 static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     PFLiteColorCell *l = (PFLiteColorCell *)observer;
-    [l updateCellDisplay];
+    [UIView animateWithDuration:0.45
+                         animations:^{
+                           [l updateCellDisplay];
+                         }
+     completion:^(BOOL finished){}];
+
 }
 
 @implementation PFLiteColorCell
@@ -173,6 +178,10 @@ static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observe
 
   if (notificationId)
   {
+
+    CFNotificationCenterRemoveEveryObserver ( CFNotificationCenterGetDarwinNotifyCenter(),
+    (void *)self);
+
     CFNotificationCenterAddObserver ( CFNotificationCenterGetDarwinNotifyCenter(),
       (void *)self,
       PFLiteColorCellNotifCB,
@@ -202,6 +211,8 @@ static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observe
 
 - (void)dealloc
 {
+  CFNotificationCenterRemoveEveryObserver ( CFNotificationCenterGetDarwinNotifyCenter(),
+  (void *)self);
   self.colorPreview = nil;
 	[super dealloc];
 }
