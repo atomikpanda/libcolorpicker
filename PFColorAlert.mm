@@ -257,6 +257,8 @@
 	[self.saturationSlider updateGraphicsWithColor:primary];
 	[self.brightnessSlider updateGraphicsWithColor:primary];
 	[self.alphaSlider updateGraphicsWithColor:primary];
+
+	[self.haloView setValue:primary.hue];
 }
 
 - (void)hueChanged:(float)hue
