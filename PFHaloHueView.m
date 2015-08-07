@@ -18,10 +18,11 @@
     @property (assign) float barRadius;
     @property (assign) float knobRadius;
     @property (assign) float knobAngle;
+    @property (nonatomic, retain) UIPanGestureRecognizer *gest;
 @end
 
 @implementation PFHaloHueView
-@synthesize isKnobBeingTouched, barCenter, knobCenter, barRadius, knobRadius, knobAngle;
+@synthesize isKnobBeingTouched, barCenter, knobCenter, barRadius, knobRadius, knobAngle, gest;
 
 - (id)initWithFrame:(CGRect)frame minValue:(float)minimumValue maxValue:(float)maximumValue value:(float)initialValue delegate:(id<PFHaloHueViewDelegate>)del;
 {
@@ -30,6 +31,15 @@
     if (self)
     {
         knobRadius = 15;
+
+        UIPanGestureRecognizer *pan = [UIPanGestureRecognizer new];
+        [pan addTarget:self action:@selector(dragged:)];
+        pan.maximumNumberOfTouches = 1;
+        pan.minimumNumberOfTouches = 1;
+
+        self.gest = pan;
+        [self addGestureRecognizer:self.gest];
+
         [self setBackgroundColor:[UIColor clearColor]];
 
         self.maxValue = maximumValue;
@@ -53,26 +63,53 @@
     return self;
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    if (touches.count > 1) return;
+// - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+// {
+//     if (touches.count > 1) return;
+//
+//     CGPoint touchLocation = [[touches anyObject] locationInView:self];
+//     isKnobBeingTouched = false;
+//     CGFloat xDist = touchLocation.x - knobCenter.x;
+//     CGFloat yDist = touchLocation.y - knobCenter.y;
+//
+//     if (sqrt((xDist*xDist)+(yDist*yDist)) <= knobRadius) //if the touch is within the slider knob
+//     {
+//         isKnobBeingTouched = true;
+//     }
+// }
 
-    CGPoint touchLocation = [[touches anyObject] locationInView:self];
+// - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)dragged:(UIPanGestureRecognizer *)pan
+{
+
+  if (pan.state == UIGestureRecognizerStateBegan)
+  {
+    CGPoint touchLocationA = [self.gest locationInView:self];
     isKnobBeingTouched = false;
-    CGFloat xDist = touchLocation.x - knobCenter.x;
-    CGFloat yDist = touchLocation.y - knobCenter.y;
+    CGFloat xDist = touchLocationA.x - knobCenter.x;
+    CGFloat yDist = touchLocationA.y - knobCenter.y;
 
     if (sqrt((xDist*xDist)+(yDist*yDist)) <= knobRadius) //if the touch is within the slider knob
     {
         isKnobBeingTouched = true;
     }
-}
+    else {
+      return;
+    }
+  }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    if (isKnobBeingTouched)
-    {
-        CGPoint touchLocation = [[touches anyObject] locationInView:self];
+  if ((self.gest.state == UIGestureRecognizerStateChanged) ||
+      (self.gest.state == UIGestureRecognizerStateEnded)) {
+
+
+
+
+    // if (isKnobBeingTouched)
+    // {
+        CGPoint touchLocation = [self.gest locationInView:self];//[[touches anyObject] locationInView:self];
+
+
+
         float touchVector[2] = {touchLocation.x - knobCenter.x, touchLocation.y - knobCenter.y}; //gets the vector of the difference between the touch location and the knob center
         float tangentVector[2] = {knobCenter.y - barCenter.y, barCenter.x - knobCenter.x}; //gets a vector tangent to the circle at the center of the knob
         float scalarProj = (touchVector[0] * tangentVector[0] + touchVector[1] * tangentVector[1]) / sqrt((tangentVector[0] * tangentVector[0]) + (tangentVector[1] * tangentVector[1])); //calculates the scalar projection of the touch vector onto the tangent vector
@@ -90,18 +127,19 @@
 
         if (self.delegate && [self.delegate respondsToSelector:@selector(hueChanged:)])
             [self.delegate hueChanged:[self hue]];
-    }
+    // }
+  }
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    isKnobBeingTouched = false;
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    isKnobBeingTouched = false;
-}
+// - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+// {
+//     isKnobBeingTouched = false;
+// }
+//
+// - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+// {
+//     isKnobBeingTouched = false;
+// }
 
 - (float)value
 {
@@ -133,8 +171,35 @@
 
     knobAngle = MIN_ANGLE + (h * (MAX_ANGLE - MIN_ANGLE));
 
+    if (self.delegate && [self.delegate respondsToSelector:@selector(hueChanged:)])
+        [self.delegate hueChanged:[self hue]];
+
     [self setNeedsDisplay];
 }
+
+// - (void)setValue:(float)val
+// {
+//     if (val == 0) val = 0.0000001f;
+//     if (val == 1) val = val - 0.0000001f;
+//     if (val == 0.5) val = val - 0.0000001f;
+//     //calclulate initial angle from initial value
+//     float percentDone = 1 - (val / (self.maxValue - self.minValue));
+//
+//     float h = percentDone * (self.maxValue - self.minValue);
+//
+//     if (h > 0.75f && h < 1)
+//         h = 1 - (fabsf(1 - (h * 2)) / 2);
+//     else if (h < 0.75f && h > 0.5f)
+//         h = 1 - (fabsf(1 - (h * 2)) / 2);
+//     else if (h < 0.25f && h > 0)
+//         h = (1 - h) / 2;
+//     else if (h > 0.25f && h < 0.5f)
+//         h = (fabsf(1 - (h * 2)) / 2);
+//
+//     knobAngle = MIN_ANGLE + (h * (MAX_ANGLE - MIN_ANGLE));
+//
+//     [self setNeedsDisplay];
+// }
 
 - (float)hue
 {
@@ -229,6 +294,14 @@
     CGContextAddArc(context, knobCenter.x, knobCenter.y, knobRadius, 0, 2 * M_PI, 1);
     CGContextSetFillColorWithColor(context, [UIColor colorWithHue:[self hue] saturation:1 brightness:1 alpha:1].CGColor);
     CGContextDrawPath(context, kCGPathEOFill);
+}
+
+- (void)dealloc
+{
+
+  self.gest = nil;
+
+  [super dealloc];
 }
 
 @end
