@@ -93,16 +93,21 @@
 
 	if (blurCls != [UIView class])
 	{
+		#pragma clang diagnostic push
+	  #pragma clang diagnostic ignored "-Wobjc-method-access"
 		NSObject *backSettings = [objc_getClass("_UIBackdropViewSettings") settingsForStyle:2010];
 		self.blurView = (UIView *)[[[blurCls alloc] initWithFrame:CGRectZero autosizesToFitSuperview:YES settings:backSettings] autorelease];
+		#pragma clang diagnostic pop
 	}
 	else
 	{
 		// UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
 		// self.blurView = [[[UIVisualEffectView alloc] initWithEffect:blurEffect] autorelease];
 		// self.blurView.frame = CGRectMake(0, 0, mainFrame.size.width, mainFrame.size.height);
-
+		#pragma clang diagnostic push
+		#pragma clang diagnostic ignored "-Wobjc-method-access"
 		 self.blurView = [[[blurCls alloc] initWithFrame:mainFrame] autorelease];
+		#pragma clang diagnostic pop
 		 self.blurView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9f];
 	}
 
@@ -117,6 +122,7 @@
 		[[[PFHaloHueView alloc] initWithFrame:haloViewFrame minValue:0 maxValue:1 value:startColor.hue delegate:self] autorelease];
 
 	// [self.haloView makeReadyForDisplay];
+
 	[self.haloView removeFromSuperview];
 	[self.mainViewController.view addSubview:self.haloView];
 

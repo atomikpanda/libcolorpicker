@@ -7,6 +7,10 @@
 //
 #import "PSSpecifier.h"
 
+@interface UIViewController()
+- (id)initForContentSize:(CGSize)size;
+@end
+
 
 @interface PSViewController : UIViewController
 {
@@ -442,7 +446,7 @@ CGSize _size;
 {
 	[_pushedView setBackgroundColor:color];
 	[self.view setBackgroundColor:color];
-	
+
 	if (!self.usesRGB)
 	{
 		CGFloat hue;
@@ -475,10 +479,10 @@ CGSize _size;
 
 	// hax ?
 	NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.defaults]];
-	
+
 	if (!preferencesPlist)
 		preferencesPlist = [NSMutableDictionary new];
-	
+
 	NSString *saveValue;
 	if (self.usesAlpha)
 		saveValue = [NSString stringWithFormat:@"%@:%f", [UIColor hexFromColor:color], currentAlpha]; //should be something like @"#a1a1a1:0.5" with the the decimal being the alpha you can ge the color and alpha seperately by [value componentsSeparatedByString:@":"]
@@ -503,9 +507,9 @@ CGSize _size;
 		_size = self.view.frame.size;
 		_size.height = (_size.height - 20) - 44;
 		[UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-			
+
 			[self loadCustomViews];
-		
+
 		}
 		completion:nil];
 	}
@@ -514,9 +518,9 @@ CGSize _size;
 		_size = self.view.frame.size;
 		_size.height = (_size.height - 20) - 44;
 		[UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-			
+
 			[self loadCustomViews];
-		
+
 		}
 		completion:nil];
 	}
@@ -552,7 +556,7 @@ CGSize _size;
 	self.key = nil;
 	self.postNotification = nil;
 	self.fallback = nil;
-	
+
 	[super dealloc];
 }
 

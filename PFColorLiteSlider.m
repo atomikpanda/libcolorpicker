@@ -10,10 +10,10 @@
 @implementation PFColorSliderBackgroundView
 @synthesize color;
 
-- (id)initWithFrame:(CGRect)frame color:(UIColor *)color style:(PFSliderBackgroundStyle)s
+- (id)initWithFrame:(CGRect)frame color:(UIColor *)col style:(PFSliderBackgroundStyle)s
 {
 	self = [super initWithFrame:frame];
-	self.color = color;
+	self.color = col;
 	self.style = s;
 	self.backgroundColor = [UIColor clearColor];
 
@@ -65,7 +65,7 @@
 	self = [super initWithFrame:frame];
 
 	CGRect internalFrame = CGRectMake(0, 0, frame.size.width, frame.size.height);
-	
+
 	self.style = s;
 
 	self.slider = [[[UISlider alloc] initWithFrame:internalFrame] autorelease];
