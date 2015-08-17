@@ -264,7 +264,9 @@
 	[self.brightnessSlider updateGraphicsWithColor:primary];
 	[self.alphaSlider updateGraphicsWithColor:primary];
 
-	[self.haloView setValue:primary.hue];
+	// THIS LINE SHOULD BE ACTIVE BUT DISABLED IT FOR NOW
+	// UNTIL WE CAN GET THE HUE SLIDER WORKING
+	// [self.haloView setValue:primary.hue];
 }
 
 - (void)hueChanged:(float)hue
