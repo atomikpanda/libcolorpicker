@@ -1,7 +1,6 @@
 stages:
-	- build
+  - build
 
 job1:
-	script: "make"
-	stage: build
-allow_failure: true
+  stage: build
+  script: "make"
