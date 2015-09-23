@@ -2,6 +2,6 @@ stages:
 	- build
 
 job1:
-	stage: build
 	script: "make"
+	stage: build
 allow_failure: true
