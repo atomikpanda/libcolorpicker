@@ -3,4 +3,4 @@ stages:
 
 job1:
   stage: build
-  script: "make"
+  script: "export THEOS=/opt/theos && make"
