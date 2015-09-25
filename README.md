@@ -1,4 +1,5 @@
 # libcolorpicker
+[<img src="http://git.pixelfiredev.com/ci/projects/3/status.png?ref=master">](http://git.pixelfiredev.com/ci/projects/3?ref=master)
 
 # The new libcolorpicker:
 
