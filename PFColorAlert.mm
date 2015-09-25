@@ -60,7 +60,7 @@
 
 - (PFColorAlert *)init
 {
-	[super init];
+	self = [super init];
 
 	self.isOpen = NO;
 
@@ -190,7 +190,7 @@
 
 - (PFColorAlert *)initWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha
 {
-	[self init];
+	self = [self init];
 
 	[self.haloView setValue:startColor.hue];
 	[self.saturationSlider updateGraphicsWithColor:startColor];

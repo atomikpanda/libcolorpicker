@@ -191,7 +191,7 @@ static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observe
     );
   }
 
-	self.colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
+	self.colorPreview = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 29, 29)] autorelease];
 	// _colorPreview = colorPreview;
 	self.colorPreview.tag = 199; //Stop UIColors from overriding the color :P
 	self.colorPreview.layer.cornerRadius = self.colorPreview.frame.size.width / 2;

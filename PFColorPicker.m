@@ -66,23 +66,24 @@
 
     if (!image || !CGSizeEqualToSize(image.size, rect.size))
     {
-    int size = 1;
+        int size = 1;
     
-    for (float posY = 0; posY <= widthY; posY += size)
-    {
-        for (float posX = 0; posX <= widthX; posX += size)
+        for (float posY = 0; posY <= widthY; posY += size)
         {
-            float h = (posY / widthY);
-            float s = (((posX / widthX) <= 0.5 ? 1 : 1 - (posX / widthX))) * 2;
-            float b = (((posX / widthX) <= 0.5 ? (posX / widthX) : 1)) * 2;
+            for (float posX = 0; posX <= widthX; posX += size)
+            {
+                float h = (posY / widthY);
+                float s = (((posX / widthX) <= 0.5 ? 1 : 1 - (posX / widthX))) * 2;
+                float b = (((posX / widthX) <= 0.5 ? (posX / widthX) : 1)) * 2;
             
-            [[UIColor colorWithHue:h saturation:s brightness:b alpha:1] setFill];
-            CGContextFillRect(context, CGRectMake(posX, posY, size, size));
+                [[UIColor colorWithHue:h saturation:s brightness:b alpha:1] setFill];
+                CGContextFillRect(context, CGRectMake(posX, posY, size, size));
+            }
         }
+        shouldSaveNewCache = YES;
     }
-    shouldSaveNewCache = YES;
-    }
-    else if (image)
+    
+    if (image)
     {
         [image drawInRect:rect];
         [image release];
@@ -149,13 +150,15 @@
     r.origin = CGPointZero;
     
     if (CGRectContainsPoint(r, point)) {
-        UIColor *color = [[self colorAtPoint:point] retain];
-        if(!color) {
+        UIColor *color = [self colorAtPoint:point];
+        if (!color) {
             return;
         }
         const CGFloat *components = CGColorGetComponents(color.CGColor);
         if (components[3]!=0) {
-            _lastSelectedColor = color;
+            if (_lastSelectedColor)
+                [_lastSelectedColor release];
+            _lastSelectedColor = [color retain];
         }
     }
     
@@ -172,6 +175,12 @@
     // Drawing code
 }
 */
+
+- (void)dealloc
+{
+    [_lastSelectedColor release];
+    [super dealloc];
+}
 
 @end
 #endif

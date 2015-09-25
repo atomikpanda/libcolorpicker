@@ -481,7 +481,7 @@ CGSize _size;
 	NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.defaults]];
 
 	if (!preferencesPlist)
-		preferencesPlist = [NSMutableDictionary new];
+		preferencesPlist = [[NSMutableDictionary new] autorelease];
 
 	NSString *saveValue;
 	if (self.usesAlpha)
