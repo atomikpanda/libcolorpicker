@@ -1,0 +1,6 @@
+stages:
+  - build
+
+job1:
+  stage: build
+  script: "export THEOS=/opt/theos && make -j 2"
