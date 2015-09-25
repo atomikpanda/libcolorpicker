@@ -83,11 +83,11 @@
         shouldSaveNewCache = YES;
     }
     
-    if (image)
-    {
+    else if (image)
         [image drawInRect:rect];
+    
+    if (image)
         [image release];
-    }
 }
 
 - (void)saveCache
