@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <CoreGraphics/CoreGraphics.h>
-#import <libcolorpicker.h>
+#import "libcolorpicker.h"
 #import "PSSpecifier.h"
 
 @interface PFSimpleLiteColorCell()
