@@ -12,6 +12,7 @@ libcolorpicker_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorPicker.m PFCol
 
 libcolorpicker_FRAMEWORKS = UIKit CoreGraphics Foundation
 libcolorpicker_PRIVATE_FRAMEWORKS = Preferences
+libcolorpicker_LDFLAGS += -Wl,-segalign,4000
 
 after-install::
 	install.exec "killall -9 Preferences"
