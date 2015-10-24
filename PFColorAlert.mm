@@ -5,6 +5,8 @@
 #import "UIColor+PFColor.h"
 #import <objc/runtime.h>
 
+extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage, NSString *twitterUsername);
+
 @interface PFColorAlertViewController : UIViewController
 @end
 
@@ -244,6 +246,16 @@
 		UITapGestureRecognizer *tgr = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close)] autorelease];
 		self.darkeningWindow.userInteractionEnabled = YES;
 		[self.darkeningWindow addGestureRecognizer:tgr];
+
+		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist"];
+		if (!dict || ![dict objectForKey:@"didShowWelcomeScreen"])
+		{
+			LCPShowTwitterFollowAlert(@"Welcome to LibColorPicker!", @"Hey there! Thanks for installing libcolorpicker (the color picker library for devs)! If you'd like to follow our team on Twitter for more updates, tweak giveaways and other cool stuff, hit the button below!", @"PixelFireDev");
+
+			dict = dict ? dict : [NSMutableDictionary dictionary];
+			[dict setObject:@YES forKey:@"didShowWelcomeScreen"];
+			[dict writeToFile:@"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist" atomically:YES];
+		}
 
 	}];
 }

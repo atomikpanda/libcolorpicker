@@ -8,9 +8,9 @@ include $(THEOS)/makefiles/common.mk
 
 LIBRARY_NAME = libcolorpicker
 
-libcolorpicker_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorPicker.m PFColorTransparentView.m PFColorViewController.m PFColorCell.mm PFColorAlert.mm PFHaloHueView.m PFColorLitePreviewView.m PFColorLiteSlider.m PFLiteColorCell.mm PFSimpleLiteColorCell.mm
+libcolorpicker_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorPicker.m PFColorTransparentView.m PFColorViewController.m PFColorCell.mm PFColorAlert.mm PFHaloHueView.m PFColorLitePreviewView.m PFColorLiteSlider.m PFLiteColorCell.mm PFSimpleLiteColorCell.mm PFColorPickerWelcome.mm
 
-libcolorpicker_FRAMEWORKS = UIKit CoreGraphics Foundation
+libcolorpicker_FRAMEWORKS = UIKit CoreGraphics Foundation Social Accounts
 libcolorpicker_PRIVATE_FRAMEWORKS = Preferences
 libcolorpicker_LDFLAGS += -Wl,-segalign,4000
 
