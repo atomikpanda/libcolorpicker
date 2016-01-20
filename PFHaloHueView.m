@@ -8,8 +8,8 @@
 
 #import "PFHaloHueView.h"
 
-#define MIN_ANGLE -M_PI
-#define MAX_ANGLE M_PI
+#define MIN_ANGLE 0
+#define MAX_ANGLE (M_PI*2)
 
 @interface PFHaloHueView ()
     @property (assign) BOOL isKnobBeingTouched;
@@ -143,7 +143,7 @@
 
 - (float)value
 {
-    float percentDone = 1.0f - ((knobAngle - MIN_ANGLE) / (MAX_ANGLE - MIN_ANGLE));
+    float percentDone = ((knobAngle - MIN_ANGLE) / (MAX_ANGLE - MIN_ANGLE));
     if (percentDone > 1) percentDone = percentDone - 1;
     else if (percentDone < 0) percentDone = percentDone + 1;
 
@@ -152,22 +152,22 @@
 
 - (void)setValue:(float)val
 {
-    if (val == 0) val = 0.0000001f;
-    if (val == 1) val = val - 0.0000001f;
-    if (val == 0.5) val = val - 0.0000001f;
+    // if (val == 0) val = 0.0000001f;
+    // if (val == 1) val = val - 0.0000001f;
+    // if (val == 0.5) val = val - 0.0000001f;
     //calclulate initial angle from initial value
-    float percentDone = 1 - (val / (self.maxValue - self.minValue));
+    float percentDone = (val / (self.maxValue - self.minValue));
 
     float h = percentDone * (self.maxValue - self.minValue);
 
-    if (h > 0.75f && h < 1)
-        h = 1 - (fabsf(1 - (h * 2)) / 2);
-    else if (h < 0.75f && h > 0.5f)
-        h = 1 - (fabsf(1 - (h * 2)) / 2);
-    else if (h < 0.25f && h > 0)
-        h = (1 - h) / 2;
-    else if (h > 0.25f && h < 0.5f)
-        h = (fabsf(1 - (h * 2)) / 2);
+    // if (h > 0.75f && h < 1)
+    //     h = 1 - (fabsf(1 - (h * 2)) / 2);
+    // else if (h < 0.75f && h > 0.5f)
+    //     h = 1 - (fabsf(1 - (h * 2)) / 2);
+    // else if (h < 0.25f && h > 0)
+    //     h = (1 - h) / 2;
+    // else if (h > 0.25f && h < 0.5f)
+    //     h = (fabsf(1 - (h * 2)) / 2);
 
     knobAngle = MIN_ANGLE + (h * (MAX_ANGLE - MIN_ANGLE));
 
@@ -204,14 +204,14 @@
 - (float)hue
 {
     float h = [self value];
-    if (h > 0.75f && h < 1)
-        h = 1 - (fabsf(1 - (h * 2)) / 2);
-    else if (h < 0.75f && h > 0.5f)
-        h = 1 - (fabsf(1 - (h * 2)) / 2);
-    else if (h < 0.25f && h > 0)
-        h = (1 - h) / 2;
-    else if (h > 0.25f && h < 0.5f)
-        h = (fabsf(1 - (h * 2)) / 2);
+    // if (h > 0.75f && h < 1)
+    //     h = 1 - (fabsf(1 - (h * 2)) / 2);
+    // else if (h < 0.75f && h > 0.5f)
+    //     h = 1 - (fabsf(1 - (h * 2)) / 2);
+    // else if (h < 0.25f && h > 0)
+    //     h = (1 - h) / 2;
+    // else if (h > 0.25f && h < 0.5f)
+    //     h = (fabsf(1 - (h * 2)) / 2);
 
     return h;
 }

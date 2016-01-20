@@ -278,7 +278,7 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
 
 	// THIS LINE SHOULD BE ACTIVE BUT DISABLED IT FOR NOW
 	// UNTIL WE CAN GET THE HUE SLIDER WORKING
-	// [self.haloView setValue:primary.hue];
+	[self.haloView setValue:primary.hue];
 }
 
 - (void)hueChanged:(float)hue
