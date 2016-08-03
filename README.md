@@ -76,18 +76,18 @@ add a new dictionary in your preference's specifier plist like this (also see ex
 NSString *readFromKey = @"someCoolKey"; //  (You want to load from prefs probably)
 NSString *fallbackHex = @"#ff0000";  // (You want to load from prefs probably)
 
-	  UIColor *startColor = LCPParseColorString(readFromKey, fallbackHex); // this color will be used at startup
-		PFColorAlert *alert = [PFColorAlert colorAlertWithStartColor:startColor showAlpha:YES];
-    // show alert and set completion callback
-    [alert displayWithCompletion:
-    ^void (UIColor *pickedColor){
-        // save pickedColor or do something with it
-        NSString *hexString = [UIColor hexFromColor:pickedColor];
+UIColor *startColor = LCPParseColorString(readFromKey, fallbackHex); // this color will be used at startup
+PFColorAlert *alert = [PFColorAlert colorAlertWithStartColor:startColor showAlpha:YES];
+
+// show alert and set completion callback
+[alert displayWithCompletion:
+	^void (UIColor *pickedColor) {
+		// save pickedColor or do something with it
+		NSString *hexString = [UIColor hexFromColor:pickedColor];
 		hexString = [hexString stringByAppendingFormat:@":%f", pickedColor.alpha];
 		// you probably want to save hexString to your prefs
 		// maybe post a notification here if you need to
-    
-    }];
+	}];
 ```
 ##### Reading saved color later on (From Tweak):
 
@@ -127,27 +127,27 @@ How to add libcolorpicker into your tweak:
 First add a this into your Tweaks Preferences specifier plist and modify to your liking:
 
 			<dict>
-                <key>cell</key>
-                <string>PSLinkCell</string>
-                <key>cellClass</key>
-                <string>PFColorCell</string>
-                <key>label</key>
-                <string>A Color</string>
-                <key>color_defaults</key>
-                <string>com.yourcompany.tweak</string>
-                <key>color_key</key>
-                <string>aColor</string>
-                <key>title</key>
-                <string>A Color</string>
-                <key>color_fallback</key>
-                <string>#10b6ec</string>
+				<key>cell</key>
+				<string>PSLinkCell</string>
+				<key>cellClass</key>
+				<string>PFColorCell</string>
+				<key>label</key>
+				<string>A Color</string>
+				<key>color_defaults</key>
+				<string>com.yourcompany.tweak</string>
+				<key>color_key</key>
+				<string>aColor</string>
+				<key>title</key>
+				<string>A Color</string>
+				<key>color_fallback</key>
+				<string>#10b6ec</string>
 				<key>usesRGB</key>
 				<false/>
 				<key>usesAlpha</key>
 				<true/>
-                <key>color_postNotification</key>
-                <string>com.yourcompany.tweak.settingschanged</string>
-            </dict>
+				<key>color_postNotification</key>
+				<string>com.yourcompany.tweak.settingschanged</string>
+			</dict>
 
 ## Using Version on BigBoss (Recommended)
 * Search and install __libcolorpicker__ from Cydia.
@@ -163,9 +163,9 @@ First add a this into your Tweaks Preferences specifier plist and modify to your
 
 		- (void)viewWillAppear:(BOOL)animated
 		{
-  	  		[self clearCache];
- 	 		  [self reload];  
-   			 [super viewWillAppear:animated];
+			[self clearCache];
+			[self reload];
+			[super viewWillAppear:animated];
 		}
 
 -------------
@@ -179,13 +179,13 @@ Next, Place the libcolorpicker.dylib in TweakPreferencesFolder/lib/
 
 Next, Add the following to your Preference Bundle's Makefile:
 
-		$(shell install_name_tool -id /usr/lib/libcolorpicker_PUTTWEAKNAMEHERE.dylib lib/libcolorpicker.dylib)
+	$(shell install_name_tool -id /usr/lib/libcolorpicker_PUTTWEAKNAMEHERE.dylib lib/libcolorpicker.dylib)
 
-		TWEAKNAMEPREFERENCES_LDFLAGS = -Llib -lcolorpicker
+	TWEAKNAMEPREFERENCES_LDFLAGS = -Llib -lcolorpicker
 
-		include $(THEOS_MAKE_PATH)/bundle.mk
+	include $(THEOS_MAKE_PATH)/bundle.mk
 
-		internal-stage::
+	internal-stage::
 	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
 	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/usr/lib/$(ECHO_END)
 	$(ECHO_NOTHING)cp lib/libcolorpicker.dylib $(THEOS_STAGING_DIR)/usr/lib/libcolorpicker_PUTTWEAKNAMEHERE.dylib$(ECHO_END)
@@ -195,9 +195,9 @@ Next, Add the following to to your Preference Bundle's PSListController @impleme
 
 	- (void)viewWillAppear:(BOOL)animated
 	{
-    [self clearCache];
-    [self reload];  
-    [super viewWillAppear:animated];
+		[self clearCache];
+		[self reload];  
+		[super viewWillAppear:animated];
 	}
 
 ## Getting the color from the plist:
