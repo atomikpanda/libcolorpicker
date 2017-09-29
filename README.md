@@ -120,7 +120,7 @@ Here are some of it's main features:_
 * Made for iOS 7 & 8, Compatible with iOS 6
 * Saves colors instantly to your preferences plist
 * iPhone 3.5 inch & 4inch screen compatibility
-* Open source
+* Open Source
 
 How to add libcolorpicker into your tweak:
 
