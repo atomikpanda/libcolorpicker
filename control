@@ -1,7 +1,7 @@
 Package: org.thebigboss.libcolorpicker
 Name: libcolorpicker
 Depends:
-Version: 1.6
+Version: 1.6.1
 Architecture: iphoneos-arm
 Description: An awesome library of some sort!!
 Maintainer: Bailey Seymour
