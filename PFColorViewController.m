@@ -140,7 +140,7 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
 
 }
 
-#define isiPhone4 ([[UIScreen mainScreen] bounds].size.height == 480) ? TRUE : FALSE
+#define isiPhone4 ([[UIScreen mainScreen] bounds].size.height == 480)
 CGSize _size;
 
 - (id)initForContentSize:(CGSize)size {
@@ -198,7 +198,10 @@ CGSize _size;
                                                _pushedView.frame.size.height - controlsContainerHeight,
                                                self.colorPicker.frame.size.width,
                                                controlsContainerHeight);
-    controlsContainer ? [controlsContainer setFrame:controlsContainerFrame] : (controlsContainer = [[[UIView alloc] initWithFrame:controlsContainerFrame] autorelease]);
+    if (controlsContainer)
+        [controlsContainer setFrame:controlsContainerFrame];
+    else
+        controlsContainer = [[[UIView alloc] initWithFrame:controlsContainerFrame] autorelease];
 
     float halfWidth = controlsContainer.frame.size.width / 2;
     CGPoint red = CGPointMake(halfWidth, 30);

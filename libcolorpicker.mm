@@ -65,10 +65,10 @@ void hextodec(std::string hex, std::vector<unsigned char>& rgb) {
     std::string blueString = hex.substr(4+prefix_len, 2);
 
     /*
-         if the prefix # was attached to hex, use the following code
-         string redString = hex.substr(1, 2);
-         string greenString = hex.substr(3, 2);
-         string blueString = hex.substr(5, 2);
+        if the prefix # was attached to hex, use the following code
+        string redString = hex.substr(1, 2);
+        string greenString = hex.substr(3, 2);
+        string blueString = hex.substr(5, 2);
      */
 
     unsigned char red = (unsigned char)(convertFromHex(redString));
