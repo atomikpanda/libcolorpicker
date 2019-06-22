@@ -6,6 +6,7 @@
 @interface PFSimpleLiteColorCell()
 - (void)openColorAlert;
 @property (nonatomic, retain) NSMutableDictionary *options;
+@property (nonatomic, retain) PFColorAlert *alert;
 @end
 
 #define kPostNotification @"kPostNotification"
@@ -15,8 +16,6 @@
 #define kFallback @"fallback"
 
 @implementation PFSimpleLiteColorCell
-
-@synthesize options;
 
 - (id)initWithStyle:(long long)style reuseIdentifier:(id)identifier specifier:(PSSpecifier *)specifier {
     self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
@@ -75,11 +74,11 @@
 
     UIColor *startColor = LCPParseColorString([prefsDict objectForKey:self.options[kKey]], self.options[kFallback]); // this color will be used at startup
     BOOL showAlpha = self.options[kAlpha] ? [self.options[kAlpha] boolValue] : NO;
-    PFColorAlert *alert = [PFColorAlert colorAlertWithStartColor:startColor
-                                                       showAlpha:showAlpha];
+    self.alert = [PFColorAlert colorAlertWithStartColor:startColor
+                                              showAlpha:showAlpha];
 
     // show alert                               // Show alpha slider? // Code to run after close
-    [alert displayWithCompletion:^void (UIColor *pickedColor) {
+    [self.alert displayWithCompletion:^void (UIColor *pickedColor) {
         // save pickedColor or do something with it
         NSString *hexString = [UIColor hexFromColor:pickedColor];
         hexString = [hexString stringByAppendingFormat:@":%f", pickedColor.alpha]; //if you want to use alpha

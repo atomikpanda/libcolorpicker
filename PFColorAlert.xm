@@ -69,7 +69,6 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
     winFrame.size.width = winFrame.size.width - (winFrame.size.width * 0.09f);
     winFrame.size.height = winFrame.size.height - (winFrame.size.height * 0.09f);
 
-
     self.popWindow = [[UIWindow alloc] initWithFrame:winFrame];
     self.popWindow.layer.masksToBounds = true;
     self.popWindow.layer.cornerRadius = 15;
