@@ -89,17 +89,18 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
 
     [self.mainViewController.view addSubview:self.blurView];
 
-    float width = mainFrame.size.width / 6;
-    CGRect haloViewFrame = CGRectMake(width, width, width, width);
+    float padding = mainFrame.size.width / 6;
+    float width = mainFrame.size.width - padding * 2;
+    CGRect haloViewFrame = CGRectMake(padding, padding, width, width);
 
     // HUE HARDCODED !!
     self.haloView = [[PFHaloHueView alloc] initWithFrame:haloViewFrame minValue:0 maxValue:1 value:startColor.hue delegate:self];
 
     [self.mainViewController.view addSubview:self.haloView];
 
-    const CGRect sliderFrame = CGRectMake(width,
+    const CGRect sliderFrame = CGRectMake(padding,
                                           haloViewFrame.origin.y + haloViewFrame.size.height,
-                                          mainFrame.size.width / 6,
+                                          width,
                                           40);
 
     self.saturationSlider = [[PFColorLiteSlider alloc] initWithFrame:sliderFrame color:startColor style:PFSliderBackgroundStyleSaturation];
@@ -124,10 +125,10 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
     self.hexButton.frame = CGRectMake(self.mainViewController.view.frame.size.width - (25 + 10), 10, 25, 25);
     [self.mainViewController.view addSubview:self.hexButton];
 
-    CGRect litePreviewViewFrame = CGRectMake(mainFrame.size.width / 2 - mainFrame.size.width / 6,
-                                             (haloViewFrame.origin.y + haloViewFrame.size.height - mainFrame.size.width / 3 - mainFrame.size.width / 6),
-                                             mainFrame.size.width / 3,
-                                             mainFrame.size.width / 3);
+    CGRect litePreviewViewFrame = CGRectMake(mainFrame.size.width / 2 - padding,
+                                             haloViewFrame.origin.y + haloViewFrame.size.height - mainFrame.size.width / 2,
+                                             padding * 2,
+                                             padding * 2);
 
     // HUE HARDCODED !!
     self.litePreviewView = [[PFColorLitePreviewView alloc] initWithFrame:litePreviewViewFrame
