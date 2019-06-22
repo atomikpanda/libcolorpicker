@@ -23,7 +23,6 @@
     // UIGraphicsBeginImageContextWithOptions(CGSizeMake(rect.size.width, 10), NO, [UIScreen mainScreen].scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
 
-
     for (int x = 0; x < rect.size.width; x++) {
         float percent = 100 - (((rect.size.width - x) / rect.size.width) * 100.f);
 

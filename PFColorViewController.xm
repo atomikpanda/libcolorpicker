@@ -79,10 +79,7 @@
 
     UIView *controlsContainer;
     UIBarButtonItem *hexButton;
-
-
     CGFloat currentAlpha;
-
     UIPushedView *_pushedView;
 }
 
@@ -157,7 +154,13 @@ CGSize _size;
     return self;
 }
 
-- (id)initForContentSize:(CGSize)size defaults:(NSString *)cdefaults key:(NSString *)ckey usesRGB:(BOOL)cusesRGB usesAlpha:(BOOL)cusesAlpha postNotification:(NSString *)cpostNotification fallback:(NSString *)cfallback {
+- (id)initForContentSize:(CGSize)size
+                defaults:(NSString *)cdefaults
+                     key:(NSString *)ckey
+                 usesRGB:(BOOL)cusesRGB
+               usesAlpha:(BOOL)cusesAlpha
+        postNotification:(NSString *)cpostNotification
+                fallback:(NSString *)cfallback {
     self = [self initForContentSize:size];
     self.defaults = cdefaults;
     self.key = ckey;
@@ -185,7 +188,7 @@ CGSize _size;
     CGFloat height = _pushedView.frame.size.height / 2;
 
     if (isiPhone4)
-        height = height - 40;
+        height -= 40;
 
     CGRect colorPickerFrame = CGRectMake(0, 0, _pushedView.frame.size.width, height);
     if (self.colorPicker)
@@ -196,7 +199,7 @@ CGSize _size;
     [self.colorPicker setDelegate:self];
 
     float controlsContainerHeight = self.usesAlpha ? 180 : 140;
-    CGRect controlsContainerFrame = CGRectMake(_pushedView.frame.size.width / 2 - _pushedView.frame.size.width / 2,
+    CGRect controlsContainerFrame = CGRectMake(0,
                                                _pushedView.frame.size.height - controlsContainerHeight,
                                                self.colorPicker.frame.size.width,
                                                controlsContainerHeight);
@@ -214,8 +217,8 @@ CGSize _size;
     CGRect sliderFrame = CGRectMake(halfWidth, 0, controlsContainer.frame.size.width - 40, 20);
 
     Class viewClass;
-    if (objc_getClass("_UIBackdropView"))
-        viewClass = NSClassFromString(@"_UIBackdropView");
+    if (%c(UIBackdropView))
+        viewClass = %c(UIBackdropView);
     else
         viewClass = [UIView class];
 
@@ -225,8 +228,10 @@ CGSize _size;
     else
         backdrop = [[viewClass alloc] initWithFrame:backdropFrame];
 
-
-    hexButton = [[UIBarButtonItem alloc] initWithTitle:@"#" style:UIBarButtonItemStylePlain target:self action:@selector(chooseHexColor)];
+    hexButton = [[UIBarButtonItem alloc] initWithTitle:@"#"
+                                                 style:UIBarButtonItemStylePlain
+                                                target:self
+                                                action:@selector(chooseHexColor)];
     self.navigationItem.rightBarButtonItem = hexButton;
 
     if (viewClass == [UIView class])
@@ -285,14 +290,14 @@ CGSize _size;
     alphaSlider.continuous = YES;
 
     if (self.usesRGB) {
-        //Tint For RGB
+        // Tint For RGB
         if (![hueSlider respondsToSelector:@selector(setTintColor:)]) {
             hueSlider.minimumTrackTintColor = [UIColor redColor];
             saturationSlider.minimumTrackTintColor = [UIColor greenColor];
             brightnessSlider.minimumTrackTintColor = [UIColor blueColor];
             alphaSlider.minimumTrackTintColor = [UIColor grayColor];
         } else {
-            //iOS 7
+            // iOS 7
             hueSlider.tintColor = [UIColor redColor];
             saturationSlider.tintColor = [UIColor greenColor];
             brightnessSlider.tintColor = [UIColor blueColor];
@@ -314,7 +319,7 @@ CGSize _size;
             brightnessSlider.minimumTrackTintColor = black;
             alphaSlider.minimumTrackTintColor = gray;
         } else {
-            //iOS 7
+            // iOS 7
             hueSlider.tintColor = black;
             saturationSlider.tintColor = black;
             brightnessSlider.tintColor = black;
@@ -358,7 +363,6 @@ CGSize _size;
         alphaSlider.value = currentAlpha;
         [self pickedColor:loadedColor];
     }
-
 
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         [_pushedView setAlpha:1];
@@ -437,9 +441,9 @@ CGSize _size;
 - (void)hueSliderChanged {
     UIColor *color;
     if (!self.usesRGB)
-        color = (UIColor*)[UIColor colorWithHue:hueSlider.value saturation:saturationSlider.value brightness:brightnessSlider.value alpha:alphaSlider.value];
+        color = (UIColor *)[UIColor colorWithHue:hueSlider.value saturation:saturationSlider.value brightness:brightnessSlider.value alpha:alphaSlider.value];
     else
-        color = (UIColor*)[UIColor colorWithRed:hueSlider.value green:saturationSlider.value blue:brightnessSlider.value alpha:alphaSlider.value];
+        color = (UIColor *)[UIColor colorWithRed:hueSlider.value green:saturationSlider.value blue:brightnessSlider.value alpha:alphaSlider.value];
 
     [self pickedColor:color];
 }
@@ -497,22 +501,12 @@ CGSize _size;
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
     [self.colorPicker saveCache];
 
-    if (interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
-        _size = self.view.frame.size;
-        _size.height = _size.height - 20 - 44;
-        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-            [self loadCustomViews];
-        }
-        completion:nil];
-    } else {
-        // both cases seem to be executing the same code basically, right? if so, please fix
-        _size = self.view.frame.size;
-        _size.height = _size.height - 20 - 44;
-        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-            [self loadCustomViews];
-        }
-        completion:nil];
+    _size = self.view.frame.size;
+    _size.height = _size.height - 20 - 44;
+    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+        [self loadCustomViews];
     }
+    completion:nil];
 }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
@@ -520,10 +514,7 @@ CGSize _size;
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) // Custom Method to determine this is on the iPad
-        return UIInterfaceOrientationMaskPortrait;//UIInterfaceOrientationMaskAll;
-    else
-        return UIInterfaceOrientationMaskPortrait;
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 @end

@@ -60,9 +60,9 @@ int convertFromHex(std::string hex) {
 void hextodec(std::string hex, std::vector<unsigned char>& rgb) {
     // since there is no prefix attached to hex, use this code
     int prefix_len = 0;
-    std::string redString = hex.substr(0+prefix_len, 2);
-    std::string greenString = hex.substr(2+prefix_len, 2);
-    std::string blueString = hex.substr(4+prefix_len, 2);
+    std::string redString = hex.substr(0 + prefix_len, 2);
+    std::string greenString = hex.substr(2 + prefix_len, 2);
+    std::string blueString = hex.substr(4 + prefix_len, 2);
 
     /*
         if the prefix # was attached to hex, use the following code
@@ -129,7 +129,10 @@ UIColor *colorFromHex(NSString *hexString) {
         }
 
         hextodec(hexColor, rgbColor);
-        return [UIColor colorWithRed:int(rgbColor[0])/255.f green:int(rgbColor[1])/255.f blue:int(rgbColor[2])/255.f alpha:1];
+        return [UIColor colorWithRed:int(rgbColor[0]) / 255.f
+                               green:int(rgbColor[1]) / 255.f
+                                blue:int(rgbColor[2]) / 255.f
+                               alpha:1];
     } else { // Random
         CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
         CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
@@ -188,7 +191,6 @@ UIColor *LCPParseColorString(NSString *colorStringFromPrefs, NSString *colorStri
             return fallbackColor;
 
         NSString *color = colorAndOrAlpha[0];
-
         return [colorFromHex(color) colorWithAlphaComponent:currentAlpha];
     } else {
         return fallbackColor;

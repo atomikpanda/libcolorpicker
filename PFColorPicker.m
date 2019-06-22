@@ -126,7 +126,7 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch* touch = [touches anyObject];
+    UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInView:self]; //where image was tapped
     [self useColorAtPoint:point];
 }
