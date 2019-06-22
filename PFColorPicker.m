@@ -64,9 +64,10 @@
     
         for (float posY = 0; posY <= widthY; posY += size) {
             for (float posX = 0; posX <= widthX; posX += size) {
-                float h = (posY / widthY);
-                float s = (((posX / widthX) <= 0.5 ? 1 : 1 - (posX / widthX))) * 2;
-                float b = (((posX / widthX) <= 0.5 ? (posX / widthX) : 1)) * 2;
+                float h = posY / widthY;
+                float w = posX / widthX;
+                float s = (w <= 0.5 ? 1 : 1 - w) * 2;
+                float b = (w <= 0.5 ? w : 1) * 2;
             
                 [[UIColor colorWithHue:h saturation:s brightness:b alpha:1] setFill];
                 CGContextFillRect(context, CGRectMake(posX, posY, size, size));
