@@ -23,7 +23,7 @@
         //CAGradientLayer *bgLayer = [PFColorPicker rainbowGradient];
         //bgLayer.frame = self.bounds;
         //[self.layer insertSublayer:bgLayer atIndex:0];
-        [self setBackgroundColor:[UIColor clearColor]];
+        [self setBackgroundColor:UIColor.clearColor];
         
     }
     return self;
@@ -109,7 +109,10 @@
     
     //NSLog(@"pixel: %d %d %d %d", pixel[0], pixel[1], pixel[2], pixel[3]);
     
-    UIColor *color = [UIColor colorWithRed:pixel[0]/255.0 green:pixel[1]/255.0 blue:pixel[2]/255.0 alpha:pixel[3]/255.0];
+    UIColor *color = [UIColor colorWithRed:pixel[0] / 255.0
+                                     green:pixel[1] / 255.0
+                                      blue:pixel[2] / 255.0
+                                     alpha:pixel[3] / 255.0];
     
     if (!color)
         color = [self lastSelectedColor];

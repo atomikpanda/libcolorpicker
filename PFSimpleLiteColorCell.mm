@@ -8,6 +8,12 @@
 @property (nonatomic, retain) NSMutableDictionary *options;
 @end
 
+#define kPostNotification @"kPostNotification"
+#define kKey @"key"
+#define kDefaults @"defaults"
+#define kAlpha @"alpha"
+#define kFallback @"fallback"
+
 @implementation PFSimpleLiteColorCell
 
 @synthesize options;
@@ -21,27 +27,27 @@
 }
 
 - (void)setLCPOptions {
-    self.options = [[self.specifier properties] objectForKey:@"libcolorpicker"] ?
-                   [[self.specifier properties] objectForKey:@"libcolorpicker"] :
-                   [NSMutableDictionary dictionary];
+    self.options = [self.specifier properties][@"libcolorpicker"];
+    if (!self.options)
+        self.options = [NSMutableDictionary dictionary];
 
-    if (!self.options[@"PostNotification"]) {
+    if (!self.options[kPostNotification]) {
         NSString *option = [NSString stringWithFormat:@"%@_%@_libcolorpicker_refreshn",
-                                                          self.options[@"defaults"], self.options[@"key"]];
-        [self.options setObject:option forKey:@"PostNotification"];
+                                                          self.options[kDefaults], self.options[kKey]];
+        [self.options setObject:option forKey:kPostNotification];
     }
 
-    [(PSSpecifier *)self.specifier setProperty:self.options[@"PostNotification"] forKey:@"NotificationListener"];
+    [(PSSpecifier *)self.specifier setProperty:self.options[kPostNotification] forKey:@"NotificationListener"];
 }
 
 - (UIColor *)previewColor {
-    NSString *plistPath =  [NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.options[@"defaults"]];
+    NSString *plistPath =  [NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.options[kDefaults]];
 
     NSMutableDictionary *prefsDict = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
     if (!prefsDict)
         prefsDict = [NSMutableDictionary dictionary];
 
-    UIColor *color = LCPParseColorString([prefsDict objectForKey:self.options[@"key"]], self.options[@"fallback"]); // this color will be used at startup
+    UIColor *color = LCPParseColorString([prefsDict objectForKey:self.options[kKey]], self.options[kFallback]); // this color will be used at startup
 
     return color;
 }
@@ -56,41 +62,40 @@
 }
 
 - (void)openColorAlert {
-    if (!self.options[@"defaults"] || !self.options[@"key"] || !self.options[@"fallback"])
-    return;
+    if (!self.options[kDefaults] || !self.options[kKey] || !self.options[kFallback])
+        return;
 
-    NSLog(@"::::::::: %@", self.options);
+    // HBLogDebug(@"Loading with options %@", self.options);
 
-    NSString *plistPath =  [NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.options[@"defaults"]];
+    NSString *plistPath =  [NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.options[kDefaults]];
 
     NSMutableDictionary *prefsDict = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
     if (!prefsDict)
         prefsDict = [NSMutableDictionary dictionary];
 
-    UIColor *startColor = LCPParseColorString([prefsDict objectForKey:self.options[@"key"]], self.options[@"fallback"]); // this color will be used at startup
+    UIColor *startColor = LCPParseColorString([prefsDict objectForKey:self.options[kKey]], self.options[kFallback]); // this color will be used at startup
+    BOOL showAlpha = self.options[kAlpha] ? [self.options[kAlpha] boolValue] : NO;
     PFColorAlert *alert = [PFColorAlert colorAlertWithStartColor:startColor
-                                                       showAlpha:self.options[@"alpha"] ? [self.options[@"alpha"] boolValue] : NO
-    ];
+                                                       showAlpha:showAlpha];
 
     // show alert                               // Show alpha slider? // Code to run after close
-    [alert displayWithCompletion:
-    ^void (UIColor *pickedColor) {
+    [alert displayWithCompletion:^void (UIColor *pickedColor) {
         // save pickedColor or do something with it
         NSString *hexString = [UIColor hexFromColor:pickedColor];
         hexString = [hexString stringByAppendingFormat:@":%f", pickedColor.alpha]; //if you want to use alpha
-        //                                                                                                                              ^^ parse fallback to ^red
+        // ^^ parse fallback to ^red
         // save hexString to your plist if desired
 
-        [prefsDict setObject:hexString forKey:self.options[@"key"]];
+        [prefsDict setObject:hexString forKey:self.options[kKey]];
 
         [prefsDict writeToFile:plistPath atomically:YES];
 
-        if (self.options[@"PostNotification"])
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
-                        (CFStringRef) self.options[@"PostNotification"],
-                        (CFStringRef) self.options[@"PostNotification"],
-                        NULL,
-                        YES);
+        if (self.options[kPostNotification])
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
+                            (CFStringRef)self.options[kPostNotification],
+                            (CFStringRef)self.options[kPostNotification],
+                            NULL,
+                            YES);
     }];
 }
 

@@ -20,7 +20,7 @@ UIColor *colorFromHex(NSString *hexString);
 
 @implementation UIColor (PFColor)
 
-+ (UIColor*)PF_colorWithHex:(NSString*)hexString {
++ (UIColor *)PF_colorWithHex:(NSString *)hexString {
     // unsigned rgbValue = 0;
     // NSScanner *scanner = [NSScanner scannerWithString:hexString];
     // [scanner setScanLocation:1]; // bypass '#' character
@@ -29,12 +29,12 @@ UIColor *colorFromHex(NSString *hexString);
     return colorFromHex(hexString);
 }
 
-+ (NSString*)hexFromColor:(UIColor*)color {
++ (NSString *)hexFromColor:(UIColor *)color {
     const CGFloat *components = CGColorGetComponents(color.CGColor);
     CGFloat r = components[0];
     CGFloat g = components[1];
     CGFloat b = components[2];
-    NSString *hexString=[NSString stringWithFormat:@"#%02X%02X%02X", (int)(r * 255),  (int)(g * 255), (int)(b * 255)]; return hexString;
+    return [NSString stringWithFormat:@"#%02X%02X%02X", (int)(r * 255), (int)(g * 255), (int)(b * 255)];
 }
 
 #pragma mark Components
@@ -81,16 +81,25 @@ UIColor *colorFromHex(NSString *hexString);
 }
 
 #pragma mark Manipulation
-- (UIColor*)desaturate:(CGFloat)percent {
-        return [UIColor colorWithHue:[self hue] saturation:[self saturation]*(1-(percent/100)) brightness:[self brightness] alpha:[self alpha]];
+- (UIColor *)desaturate:(CGFloat)percent {
+        return [UIColor colorWithHue:[self hue]
+                          saturation:[self saturation] * (1 - (percent / 100))
+                          brightness:[self brightness]
+                               alpha:[self alpha]];
 }
 
-- (UIColor*)lighten:(CGFloat)percent {
-   return [UIColor colorWithHue:[self hue] saturation:[self saturation]*(1-(percent/100)) brightness:[self brightness]*(1+(percent/100)) alpha:[self alpha]];
+- (UIColor *)lighten:(CGFloat)percent {
+   return [UIColor colorWithHue:[self hue]
+                     saturation:[self saturation] * (1 - (percent / 100))
+                     brightness:[self brightness] * (1 + (percent / 100))
+                          alpha:[self alpha]];
 }
 
-- (UIColor*)darken:(CGFloat)percent {
-    return [UIColor colorWithHue:[self hue] saturation:[self saturation]*(1+(percent/100)) brightness:[self brightness]*(1-(percent/100)) alpha:[self alpha]];
+- (UIColor *)darken:(CGFloat)percent {
+    return [UIColor colorWithHue:[self hue]
+                      saturation:[self saturation] * (1 + (percent / 100))
+                      brightness:[self brightness] * (1 - (percent / 100))
+                           alpha:[self alpha]];
 }
 
 @end
