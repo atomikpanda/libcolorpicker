@@ -11,9 +11,6 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
 @end
 
 @interface PFColorAlert() <PFHaloHueViewDelegate>
-
-- (PFColorAlert *)init;
-
 @property (nonatomic, retain) PFHaloHueView *haloView;
 @property (nonatomic, retain) PFColorAlertViewController *mainViewController;
 @property (nonatomic, retain) UIView *blurView;
@@ -25,7 +22,7 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
 @property (nonatomic, retain) PFColorLitePreviewView *litePreviewView;
 @property (nonatomic, assign) BOOL isOpen;
 @property (nonatomic, copy) void (^completionBlock)(UIColor *pickedColor);
-
+- (PFColorAlert *)init;
 @end
 
 @implementation PFColorAlertViewController
@@ -45,17 +42,6 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
 @end
 
 @implementation PFColorAlert
-@synthesize popWindow;
-@synthesize haloView;
-@synthesize mainViewController;
-@synthesize blurView;
-@synthesize hexButton;
-@synthesize darkeningWindow;
-@synthesize brightnessSlider;
-@synthesize saturationSlider;
-@synthesize alphaSlider;
-@synthesize litePreviewView;
-@synthesize completionBlock;
 
 - (PFColorAlert *)init {
     self = [super init];
@@ -191,11 +177,12 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
     [self.saturationSlider updateGraphicsWithColor:startColor];
     [self.brightnessSlider updateGraphicsWithColor:startColor];
     [self.alphaSlider updateGraphicsWithColor:startColor];
-    [self.litePreviewView setMainColor:[UIColor colorWithHue:startColor.hue saturation:startColor.saturation brightness:startColor.brightness alpha:startColor.alpha] previousColor:startColor];
+    [self.litePreviewView setMainColor:[UIColor colorWithHue:startColor.hue saturation:startColor.saturation brightness:startColor.brightness alpha:startColor.alpha]
+                         previousColor:startColor];
 
     [self setPrimaryColor:startColor];
 
-    self.alphaSlider.hidden = showAlpha ? 0 : 1; // invert logic
+    self.alphaSlider.hidden = !showAlpha;
 
     return self;
 }
@@ -207,7 +194,7 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
                                    self.mainViewController.view.frame.size.width / 6 + self.alphaSlider.frame.size.height;
     else
         dynamicFrame.size.height = self.brightnessSlider.frame.origin.y +
-                                  (self.mainViewController.view.frame.size.width / 6) + self.brightnessSlider.frame.size.height;
+                                   self.mainViewController.view.frame.size.width / 6 + self.brightnessSlider.frame.size.height;
 
     view.frame = dynamicFrame;
 }
@@ -216,11 +203,11 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
     return [[[PFColorAlert alloc] initWithStartColor:startColor showAlpha:showAlpha] autorelease];
 }
 
-- (void)displayWithCompletion:(void (^)(UIColor *pickedColor))fcompletionBlock {
+- (void)displayWithCompletion:(void (^)(UIColor *pickedColor))completionBlock {
     if (self.isOpen)
         return;
 
-    self.completionBlock = fcompletionBlock;
+    self.completionBlock = completionBlock;
 
     [self retain];
 
@@ -235,19 +222,25 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
         self.darkeningWindow.userInteractionEnabled = YES;
         [self.darkeningWindow addGestureRecognizer:tgr];
 
-        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist"];
-        if (!dict || !dict[@"didShowWelcomeScreen"]) {
-            LCPShowTwitterFollowAlert(@"Welcome to LibColorPicker!", @"Hey there! Thanks for installing libcolorpicker (the color picker library for devs)! If you'd like to follow our team on Twitter for more updates, tweak giveaways and other cool stuff, hit the button below!", @"PixelFireDev");
+        NSString *prefPath = @"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist";
+        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:prefPath];
+        if (!dict)
+            dict = [NSMutableDictionary new];
 
-            dict = dict ? dict : [NSMutableDictionary dictionary];
-            [dict setObject:@YES forKey:@"didShowWelcomeScreen"];
-            [dict writeToFile:@"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist" atomically:YES];
-        }
+        NSString *kDidShow = @"didShowWelcomeScreen";
+        if (!dict[kDidShow])
+            LCPShowTwitterFollowAlert(@"Welcome to libcolorpicker!", @"Hey there! Thanks for installing libcolorpicker (the color picker library for devs)! If you'd like to follow our team on Twitter for more updates, tweak giveaways and other cool stuff, hit the button below!", @"PixelFireDev");
+
+        [dict setObject:@YES forKey:kDidShow];
+        [dict writeToFile:prefPath atomically:YES];
     }];
 }
 
-- (void)showWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha completion:(void (^)(UIColor *pickedColor))fcompletionBlock {
-    UIAlertView *deprecated = [[UIAlertView alloc] initWithTitle:@"libColorPicker" message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+- (void)showWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha completion:(void (^)(UIColor *pickedColor))completionBlock {
+    UIAlertView *deprecated = [[UIAlertView alloc] initWithTitle:@"libcolorpicker" message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it."
+                                                        delegate:nil
+                                               cancelButtonTitle:nil
+                                               otherButtonTitles:@"OK", nil];
     [deprecated show];
     [deprecated release];
 }
@@ -324,7 +317,7 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
         self.popWindow.alpha = 0.0f;
     } completion:^(BOOL finished) {
         if (self.completionBlock)
-        self.completionBlock(self.litePreviewView.mainColor);
+            self.completionBlock(self.litePreviewView.mainColor);
 
         self.popWindow.hidden = YES;
         self.isOpen = NO;
