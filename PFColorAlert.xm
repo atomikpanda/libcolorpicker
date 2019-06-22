@@ -207,9 +207,10 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
         self.popWindow.alpha = 1.0f;
     } completion:^(BOOL finished) {
         self.isOpen = YES;
-        UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close)];
+
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close)];
         self.darkeningWindow.userInteractionEnabled = YES;
-        [self.darkeningWindow addGestureRecognizer:tgr];
+        [self.darkeningWindow addGestureRecognizer:tapGesture];
 
         NSString *prefPath = @"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist";
         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:prefPath];
@@ -217,11 +218,11 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
             dict = [NSMutableDictionary new];
 
         NSString *kDidShow = @"didShowWelcomeScreen";
-        if (!dict[kDidShow])
+        if (!dict[kDidShow]) {
             LCPShowTwitterFollowAlert(@"Welcome to libcolorpicker!", @"Hey there! Thanks for installing libcolorpicker (the color picker library for devs)! If you'd like to follow our team on Twitter for more updates, tweak giveaways and other cool stuff, hit the button below!", @"PixelFireDev");
-
-        [dict setObject:@YES forKey:kDidShow];
-        [dict writeToFile:prefPath atomically:YES];
+            [dict setObject:@YES forKey:kDidShow];
+            [dict writeToFile:prefPath atomically:YES];
+        }
     }];
 }
 

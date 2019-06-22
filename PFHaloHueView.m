@@ -9,7 +9,7 @@
 #import "PFHaloHueView.h"
 
 #define MIN_ANGLE 0
-#define MAX_ANGLE (M_PI*2)
+#define MAX_ANGLE (M_PI * 2)
 
 @interface PFHaloHueView ()
 @property (assign) BOOL isKnobBeingTouched;
@@ -24,7 +24,11 @@
 @implementation PFHaloHueView
 @synthesize isKnobBeingTouched, barCenter, knobCenter, barRadius, knobRadius, knobAngle, gest;
 
-- (id)initWithFrame:(CGRect)frame minValue:(float)minimumValue maxValue:(float)maximumValue value:(float)initialValue delegate:(id<PFHaloHueViewDelegate>)del {
+- (id)initWithFrame:(CGRect)frame
+           minValue:(float)minimumValue
+           maxValue:(float)maximumValue
+              value:(float)initialValue
+           delegate:(id<PFHaloHueViewDelegate>)del {
     self = [super initWithFrame:frame];
 
     if (self) {
@@ -208,7 +212,8 @@
 - (void)drawRect:(CGRect)rect {
     barCenter.x = CGRectGetMidX(rect);
     barCenter.y = CGRectGetMidY(rect);
-    barRadius = (CGRectGetHeight(rect) <= CGRectGetWidth(rect)) ? CGRectGetHeight(rect) / 2 : CGRectGetWidth(rect) / 2; //gets the width or height, whichever is smallest, and stores it in radius
+    // Gets the width or height, whichever is smallest, and stores it in radius
+    barRadius = (CGRectGetHeight(rect) <= CGRectGetWidth(rect)) ? CGRectGetHeight(rect) / 2 : CGRectGetWidth(rect) / 2;
     barRadius = barRadius * 0.875f;
     knobRadius = barRadius * 0.11f;
 

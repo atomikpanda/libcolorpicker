@@ -40,9 +40,6 @@
 #import "ColorPicker.h"
 
 @interface PFColorCell : PSTableCell
-{
-
-}
 @end
 
 @implementation PFColorCell
@@ -75,19 +72,25 @@
 }
 
 - (void)openColorPicker {
-    PSViewController *viewController = (PSViewController *) [self _viewControllerForAncestor];
-
+    PSViewController *viewController = (PSViewController *)[self _viewControllerForAncestor];
     PFColorViewController *colorViewController = [[PFColorViewController alloc] initForContentSize:viewController.view.frame.size];
 
-    if (_specifier && [_specifier properties][@"color_key"] && [_specifier properties][@"color_defaults"]) {
-        PSSpecifier *specifier = _specifier;
-        colorViewController.key = specifier.properties[@"color_key"];
-        colorViewController.defaults = specifier.properties[@"color_defaults"];
-        colorViewController.usesAlpha = [specifier.properties[@"usesAlpha"] boolValue] ? [specifier.properties[@"usesAlpha"] boolValue] : NO;
-        colorViewController.usesRGB = [specifier.properties[@"usesRGB"] boolValue] ? [specifier.properties[@"usesRGB"] boolValue] : NO;
-        colorViewController.title = specifier.properties[@"title"] ? specifier.properties[@"title"] : @"Choose Color";
-        colorViewController.fallback = _specifier.properties[@"color_fallback"] ? _specifier.properties[@"color_fallback"] : @"#a1a1a1";
-        colorViewController.postNotification = specifier.properties[@"color_postNotification"] ? specifier.properties[@"color_postNotification"] : nil;
+    if (_specifier) {
+        NSDictionary *properties = _specifier.properties;
+        if (properties[@"color_key"] && properties[@"color_defaults"]) {
+            colorViewController.key = properties[@"color_key"];
+            colorViewController.defaults = properties[@"color_defaults"];
+
+            if (properties[@"usesAlpha"])
+                colorViewController.usesAlpha = [properties[@"usesAlpha"] boolValue];
+
+            if (properties[@"usesRGB"])
+                colorViewController.usesRGB = [properties[@"usesRGB"] boolValue];
+
+            colorViewController.title = properties[@"title"] ?: @"Choose Color";
+            colorViewController.fallback = properties[@"color_fallback"] ?: @"#a1a1a1";
+            colorViewController.postNotification = properties[@"color_postNotification"];
+        }
     }
 
     colorViewController.view.frame = viewController.view.frame;
@@ -102,7 +105,9 @@
     colorPreview.layer.cornerRadius = colorPreview.frame.size.width / 2;
     colorPreview.layer.borderWidth = 2;
     colorPreview.layer.borderColor = [UIColor lightGrayColor].CGColor;
-    NSString *fallback = _specifier.properties[@"color_fallback"] ? _specifier.properties[@"color_fallback"] : @"#a1a1a1";
+    NSString *fallback = _specifier.properties[@"color_fallback"];
+    if (!fallback)
+        fallback = @"#a1a1a1";
     colorPreview.backgroundColor = colorFromDefaultsWithKey([_specifier properties][@"color_defaults"], [_specifier properties][@"color_key"], fallback);
 
     [self setAccessoryView:colorPreview];

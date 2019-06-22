@@ -66,20 +66,21 @@
 
 @end
 
-@interface PFColorViewController ()  <PFColorPickerDelegate, UIAlertViewDelegate> {
-    UIColor *loadedColor;
-    UIView *backdrop;
-    PFColorTransparentView *transparent;
+@interface PFColorViewController () <PFColorPickerDelegate, UIAlertViewDelegate> {
+    UIColor *_loadedColor;
+    UIView *_backdrop;
+    PFColorTransparentView *_transparent;
+    CGSize _size;
 
-    //HSB
-    UISlider *hueSlider;
-    UISlider *saturationSlider;
-    UISlider *brightnessSlider;
-    UISlider *alphaSlider;
+    // HSB
+    UISlider *_hueSlider;
+    UISlider *_saturationSlider;
+    UISlider *_brightnessSlider;
+    UISlider *_alphaSlider;
 
-    UIView *controlsContainer;
-    UIBarButtonItem *hexButton;
-    CGFloat currentAlpha;
+    UIView *_controlsContainer;
+    UIBarButtonItem *_hexButton;
+    CGFloat _currentAlpha;
     UIPushedView *_pushedView;
 }
 
@@ -87,7 +88,6 @@
 @end
 
 @implementation PFColorViewController
-@synthesize colorPicker, key, defaults, postNotification, fallback;
 
 #ifdef __cplusplus /* If this is a C++ compiler, use C linkage */
 extern "C" {
@@ -98,13 +98,13 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
 }
 #endif
 
-- (UIColor *)colorFromDefaults:(NSString *)def withKey:(NSString *)aKey {
-    UIColor *_color = colorFromDefaultsWithKey(def, key, self.fallback);
+- (UIColor *)colorFromDefaults:(NSString *)def withKey:(NSString *)key {
+    UIColor *color = colorFromDefaultsWithKey(def, key, self.fallback);
 
-    currentAlpha = _color.alpha;
-    alphaSlider.value = _color.alpha;
+    _currentAlpha = color.alpha;
+    _alphaSlider.value = color.alpha;
 
-    return _color;
+    return color;
     // NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", def]];
     // //light gray fallback
     // UIColor *fallbackColor = [UIColor PF_colorWithHex:self.fallback];
@@ -116,12 +116,12 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
 
     //     if([colorAndOrAlpha objectAtIndex:1]) {
     //         currentAlpha = [colorAndOrAlpha[1] floatValue];
-    //         alphaSlider.value = [colorAndOrAlpha[1] floatValue];
+    //         _alphaSlider.value = [colorAndOrAlpha[1] floatValue];
     //     }
     //     }
     //     else {
     //         currentAlpha = 1;
-    //         alphaSlider.value = 1;
+    //         _alphaSlider.value = 1;
     //     }
 
     //     if(!value) return fallbackColor;
@@ -137,7 +137,6 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
 }
 
 #define isiPhone4 ([[UIScreen mainScreen] bounds].size.height == 480)
-CGSize _size;
 
 - (id)initForContentSize:(CGSize)size {
     if ([[PSViewController class] instancesRespondToSelector:@selector(initForContentSize:)])
@@ -175,15 +174,15 @@ CGSize _size;
 - (void)loadCustomViews {
     _pushedView.frame = CGRectMake(0, 20 + 44, _size.width, _size.height - 64);
 
-    currentAlpha = 1;
+    _currentAlpha = 1;
 
-    if (transparent)
-        [transparent setFrame:_pushedView.frame];
+    if (_transparent)
+        [_transparent setFrame:_pushedView.frame];
     else
-        transparent = [[PFColorTransparentView alloc] initWithFrame:_pushedView.frame];
+        _transparent = [[PFColorTransparentView alloc] initWithFrame:_pushedView.frame];
 
     if (!self.usesAlpha)
-        transparent.hidden = YES;
+        _transparent.hidden = YES;
 
     CGFloat height = _pushedView.frame.size.height / 2;
 
@@ -203,18 +202,18 @@ CGSize _size;
                                                _pushedView.frame.size.height - controlsContainerHeight,
                                                self.colorPicker.frame.size.width,
                                                controlsContainerHeight);
-    if (controlsContainer)
-        [controlsContainer setFrame:controlsContainerFrame];
+    if (_controlsContainer)
+        [_controlsContainer setFrame:controlsContainerFrame];
     else
-        controlsContainer = [[UIView alloc] initWithFrame:controlsContainerFrame];
+        _controlsContainer = [[UIView alloc] initWithFrame:controlsContainerFrame];
 
-    float halfWidth = controlsContainer.frame.size.width / 2;
+    float halfWidth = _controlsContainer.frame.size.width / 2;
     CGPoint red = CGPointMake(halfWidth, 30);
     CGPoint green = CGPointMake(halfWidth, red.y + 40);
     CGPoint blue = CGPointMake(halfWidth, green.y + 40);
     CGPoint alpha = CGPointMake(halfWidth, blue.y + 40);
 
-    CGRect sliderFrame = CGRectMake(halfWidth, 0, controlsContainer.frame.size.width - 40, 20);
+    CGRect sliderFrame = CGRectMake(halfWidth, 0, _controlsContainer.frame.size.width - 40, 20);
 
     Class viewClass;
     if (%c(UIBackdropView))
@@ -222,146 +221,146 @@ CGSize _size;
     else
         viewClass = [UIView class];
 
-    CGRect backdropFrame = CGRectMake(0, 0, controlsContainer.frame.size.width, controlsContainer.frame.size.height);
-    if (backdrop)
-        [backdrop setFrame:backdropFrame];
+    CGRect backdropFrame = CGRectMake(0, 0, _controlsContainer.frame.size.width, _controlsContainer.frame.size.height);
+    if (_backdrop)
+        [_backdrop setFrame:backdropFrame];
     else
-        backdrop = [[viewClass alloc] initWithFrame:backdropFrame];
+        _backdrop = [[viewClass alloc] initWithFrame:backdropFrame];
 
-    hexButton = [[UIBarButtonItem alloc] initWithTitle:@"#"
+    _hexButton = [[UIBarButtonItem alloc] initWithTitle:@"#"
                                                  style:UIBarButtonItemStylePlain
                                                 target:self
                                                 action:@selector(chooseHexColor)];
-    self.navigationItem.rightBarButtonItem = hexButton;
+    self.navigationItem.rightBarButtonItem = _hexButton;
 
     if (viewClass == [UIView class])
-        [backdrop setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5f]];
+        [_backdrop setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5f]];
 
-    if (hueSlider)
-        [hueSlider setFrame:sliderFrame];
+    if (_hueSlider)
+        [_hueSlider setFrame:sliderFrame];
     else
-        hueSlider = [[UISlider alloc] initWithFrame:sliderFrame];
-    [hueSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
-    [hueSlider setCenter:red];
+        _hueSlider = [[UISlider alloc] initWithFrame:sliderFrame];
+    [_hueSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
+    [_hueSlider setCenter:red];
 
-    [hueSlider setMaximumValue:1];
-    [hueSlider setMinimumValue:0];
-    hueSlider.continuous = YES;
+    [_hueSlider setMaximumValue:1];
+    [_hueSlider setMinimumValue:0];
+    _hueSlider.continuous = YES;
 
-    if (saturationSlider)
-        [saturationSlider setFrame:sliderFrame];
+    if (_saturationSlider)
+        [_saturationSlider setFrame:sliderFrame];
     else
-        saturationSlider = [[UISlider alloc] initWithFrame:sliderFrame];
-    [saturationSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
-    [saturationSlider setCenter:green];
+        _saturationSlider = [[UISlider alloc] initWithFrame:sliderFrame];
+    [_saturationSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
+    [_saturationSlider setCenter:green];
 
-    [saturationSlider setMaximumValue:1];
-    [saturationSlider setMinimumValue:0];
-    saturationSlider.continuous = YES;
+    [_saturationSlider setMaximumValue:1];
+    [_saturationSlider setMinimumValue:0];
+    _saturationSlider.continuous = YES;
 
-    if (brightnessSlider)
-        [brightnessSlider setFrame:sliderFrame];
+    if (_brightnessSlider)
+        [_brightnessSlider setFrame:sliderFrame];
     else
-        brightnessSlider = [[UISlider alloc] initWithFrame:sliderFrame];
-    [brightnessSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
-    [brightnessSlider setCenter:blue];
+        _brightnessSlider = [[UISlider alloc] initWithFrame:sliderFrame];
+    [_brightnessSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
+    [_brightnessSlider setCenter:blue];
 
-    [brightnessSlider setMaximumValue:1];
-    [brightnessSlider setMinimumValue:0];
-    brightnessSlider.continuous = YES;
+    [_brightnessSlider setMaximumValue:1];
+    [_brightnessSlider setMinimumValue:0];
+    _brightnessSlider.continuous = YES;
 
-    if (alphaSlider)
-        [alphaSlider setFrame:sliderFrame];
+    if (_alphaSlider)
+        [_alphaSlider setFrame:sliderFrame];
     else
-        alphaSlider = [[UISlider alloc] initWithFrame:sliderFrame];
-    [alphaSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
-    [alphaSlider setCenter:alpha];
+        _alphaSlider = [[UISlider alloc] initWithFrame:sliderFrame];
+    [_alphaSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
+    [_alphaSlider setCenter:alpha];
 
-    [alphaSlider setMaximumValue:1];
-    [alphaSlider setMinimumValue:0];
+    [_alphaSlider setMaximumValue:1];
+    [_alphaSlider setMinimumValue:0];
     if (!self.usesAlpha)
-        alphaSlider.hidden = YES;
+        _alphaSlider.hidden = YES;
 
     // UIColor *loadColor = [self colorFromDefaults:self.defaults withKey:self.key];
     // currentAlpha = loadColor.alpha;
-    // alphaSlider.value = currentAlpha;
+    // _alphaSlider.value = currentAlpha;
     // [self pickedColor:loadColor];
 
-    alphaSlider.continuous = YES;
+    _alphaSlider.continuous = YES;
 
     if (self.usesRGB) {
         // Tint For RGB
-        if (![hueSlider respondsToSelector:@selector(setTintColor:)]) {
-            hueSlider.minimumTrackTintColor = [UIColor redColor];
-            saturationSlider.minimumTrackTintColor = [UIColor greenColor];
-            brightnessSlider.minimumTrackTintColor = [UIColor blueColor];
-            alphaSlider.minimumTrackTintColor = [UIColor grayColor];
+        if (![_hueSlider respondsToSelector:@selector(setTintColor:)]) {
+            _hueSlider.minimumTrackTintColor = [UIColor redColor];
+            _saturationSlider.minimumTrackTintColor = [UIColor greenColor];
+            _brightnessSlider.minimumTrackTintColor = [UIColor blueColor];
+            _alphaSlider.minimumTrackTintColor = [UIColor grayColor];
         } else {
             // iOS 7
-            hueSlider.tintColor = [UIColor redColor];
-            saturationSlider.tintColor = [UIColor greenColor];
-            brightnessSlider.tintColor = [UIColor blueColor];
-            alphaSlider.tintColor = [UIColor grayColor];
+            _hueSlider.tintColor = [UIColor redColor];
+            _saturationSlider.tintColor = [UIColor greenColor];
+            _brightnessSlider.tintColor = [UIColor blueColor];
+            _alphaSlider.tintColor = [UIColor grayColor];
         }
 
-        [hueSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'R'] forState:UIControlStateNormal];
-        [saturationSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'G'] forState:UIControlStateNormal];
-        [brightnessSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'B'] forState:UIControlStateNormal];
-        [alphaSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'A'] forState:UIControlStateNormal];
-        [alphaSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'A'] forState:UIControlStateHighlighted];
+        [_hueSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'R'] forState:UIControlStateNormal];
+        [_saturationSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'G'] forState:UIControlStateNormal];
+        [_brightnessSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'B'] forState:UIControlStateNormal];
+        [_alphaSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'A'] forState:UIControlStateNormal];
+        [_alphaSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'A'] forState:UIControlStateHighlighted];
     } else {
         // Tint for HSB
         UIColor *black = [UIColor blackColor];
         UIColor *gray = [UIColor grayColor];
-        if (![hueSlider respondsToSelector:@selector(setTintColor:)]) {
-            hueSlider.minimumTrackTintColor = black;
-            saturationSlider.minimumTrackTintColor = black;
-            brightnessSlider.minimumTrackTintColor = black;
-            alphaSlider.minimumTrackTintColor = gray;
+        if (![_hueSlider respondsToSelector:@selector(setTintColor:)]) {
+            _hueSlider.minimumTrackTintColor = black;
+            _saturationSlider.minimumTrackTintColor = black;
+            _brightnessSlider.minimumTrackTintColor = black;
+            _alphaSlider.minimumTrackTintColor = gray;
         } else {
             // iOS 7
-            hueSlider.tintColor = black;
-            saturationSlider.tintColor = black;
-            brightnessSlider.tintColor = black;
-            alphaSlider.tintColor = gray;
+            _hueSlider.tintColor = black;
+            _saturationSlider.tintColor = black;
+            _brightnessSlider.tintColor = black;
+            _alphaSlider.tintColor = gray;
         }
 
-        [hueSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'H'] forState:UIControlStateNormal];
-        [saturationSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'S'] forState:UIControlStateNormal];
-        [brightnessSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'B'] forState:UIControlStateNormal];
-        [alphaSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'A'] forState:UIControlStateNormal];
-        [alphaSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'A'] forState:UIControlStateHighlighted];
+        [_hueSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'H'] forState:UIControlStateNormal];
+        [_saturationSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'S'] forState:UIControlStateNormal];
+        [_brightnessSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'B'] forState:UIControlStateNormal];
+        [_alphaSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'A'] forState:UIControlStateNormal];
+        [_alphaSlider setThumbImage:[PFColorViewController thumbImageWithColor:[UIColor whiteColor] letter:'A'] forState:UIControlStateHighlighted];
     }
 
-    if (!transparent.superview)
-        [_pushedView addSubview:transparent];
+    if (!_transparent.superview)
+        [_pushedView addSubview:_transparent];
 
     if (!self.colorPicker.superview)
         [_pushedView addSubview:self.colorPicker];
 
-    if (!controlsContainer.superview)
-        [_pushedView addSubview:controlsContainer];
+    if (!_controlsContainer.superview)
+        [_pushedView addSubview:_controlsContainer];
 
-    if (!backdrop.superview)
-        [controlsContainer addSubview:backdrop];
+    if (!_backdrop.superview)
+        [_controlsContainer addSubview:_backdrop];
 
-    if (!hueSlider.superview)
-        [controlsContainer addSubview:hueSlider];
+    if (!_hueSlider.superview)
+        [_controlsContainer addSubview:_hueSlider];
 
-    if (!saturationSlider.superview)
-        [controlsContainer addSubview:saturationSlider];
+    if (!_saturationSlider.superview)
+        [_controlsContainer addSubview:_saturationSlider];
 
-    if (!brightnessSlider.superview)
-        [controlsContainer addSubview:brightnessSlider];
+    if (!_brightnessSlider.superview)
+        [_controlsContainer addSubview:_brightnessSlider];
 
-    if (!alphaSlider.superview)
-        [controlsContainer addSubview:alphaSlider];
+    if (!_alphaSlider.superview)
+        [_controlsContainer addSubview:_alphaSlider];
 
     if (self.defaults && self.key) {
-        loadedColor = [self colorFromDefaults:self.defaults withKey:self.key];
-        currentAlpha = loadedColor.alpha;
-        alphaSlider.value = currentAlpha;
-        [self pickedColor:loadedColor];
+        _loadedColor = [self colorFromDefaults:self.defaults withKey:self.key];
+        _currentAlpha = _loadedColor.alpha;
+        _alphaSlider.value = _currentAlpha;
+        [self pickedColor:_loadedColor];
     }
 
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
@@ -429,7 +428,7 @@ CGSize _size;
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    if (self.postNotification && loadedColor != [self colorFromDefaults:self.defaults withKey:self.key]) {
+    if (self.postNotification && _loadedColor != [self colorFromDefaults:self.defaults withKey:self.key]) {
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
                                              (CFStringRef)self.postNotification,
                                              NULL,
@@ -441,9 +440,15 @@ CGSize _size;
 - (void)hueSliderChanged {
     UIColor *color;
     if (!self.usesRGB)
-        color = (UIColor *)[UIColor colorWithHue:hueSlider.value saturation:saturationSlider.value brightness:brightnessSlider.value alpha:alphaSlider.value];
+        color = [UIColor colorWithHue:_hueSlider.value
+                           saturation:_saturationSlider.value
+                           brightness:_brightnessSlider.value
+                                alpha:_alphaSlider.value];
     else
-        color = (UIColor *)[UIColor colorWithRed:hueSlider.value green:saturationSlider.value blue:brightnessSlider.value alpha:alphaSlider.value];
+        color = [UIColor colorWithRed:_hueSlider.value
+                                green:_saturationSlider.value
+                                 blue:_brightnessSlider.value
+                                alpha:_alphaSlider.value];
 
     [self pickedColor:color];
 }
@@ -459,23 +464,23 @@ CGSize _size;
 
         [color getHue:&hue saturation:&saturation brightness:&brightness alpha:NULL];
 
-        [hueSlider setValue:hue];
-        [saturationSlider setValue:saturation];
-        [brightnessSlider setValue:brightness];
+        [_hueSlider setValue:hue];
+        [_saturationSlider setValue:saturation];
+        [_brightnessSlider setValue:brightness];
     } else {
         CGFloat red;
         CGFloat green;
         CGFloat blue;
 
         [color getRed:&red green:&green blue:&blue alpha:NULL];
-        [hueSlider setValue:red];
-        [saturationSlider setValue:green];
-        [brightnessSlider setValue:blue];
+        [_hueSlider setValue:red];
+        [_saturationSlider setValue:green];
+        [_brightnessSlider setValue:blue];
     }
 
     if (self.usesAlpha) {
-        transparent.alpha = 1 - alphaSlider.value;
-        currentAlpha = alphaSlider.value;
+        _transparent.alpha = 1 - _alphaSlider.value;
+        _currentAlpha = _alphaSlider.value;
     }
 
     // hax ?
@@ -486,7 +491,7 @@ CGSize _size;
 
     NSString *saveValue;
     if (self.usesAlpha)
-        saveValue = [NSString stringWithFormat:@"%@:%f", [UIColor hexFromColor:color], currentAlpha]; //should be something like @"#a1a1a1:0.5" with the the decimal being the alpha you can ge the color and alpha seperately by [value componentsSeparatedByString:@":"]
+        saveValue = [NSString stringWithFormat:@"%@:%f", [UIColor hexFromColor:color], _currentAlpha]; //should be something like @"#a1a1a1:0.5" with the the decimal being the alpha you can ge the color and alpha seperately by [value componentsSeparatedByString:@":"]
     else
         saveValue = [UIColor hexFromColor:color]; // should be something like @"#a1a1a1"
 
