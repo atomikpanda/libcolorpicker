@@ -12,24 +12,22 @@
 #define MAX_ANGLE (M_PI*2)
 
 @interface PFHaloHueView ()
-    @property (assign) BOOL isKnobBeingTouched;
-    @property (assign) CGPoint barCenter;
-    @property (assign) CGPoint knobCenter;
-    @property (assign) float barRadius;
-    @property (assign) float knobRadius;
-    @property (assign) float knobAngle;
-    @property (nonatomic, retain) UIPanGestureRecognizer *gest;
+@property (assign) BOOL isKnobBeingTouched;
+@property (assign) CGPoint barCenter;
+@property (assign) CGPoint knobCenter;
+@property (assign) float barRadius;
+@property (assign) float knobRadius;
+@property (assign) float knobAngle;
+@property (nonatomic, retain) UIPanGestureRecognizer *gest;
 @end
 
 @implementation PFHaloHueView
 @synthesize isKnobBeingTouched, barCenter, knobCenter, barRadius, knobRadius, knobAngle, gest;
 
-- (id)initWithFrame:(CGRect)frame minValue:(float)minimumValue maxValue:(float)maximumValue value:(float)initialValue delegate:(id<PFHaloHueViewDelegate>)del;
-{
+- (id)initWithFrame:(CGRect)frame minValue:(float)minimumValue maxValue:(float)maximumValue value:(float)initialValue delegate:(id<PFHaloHueViewDelegate>)del {
     self = [super initWithFrame:frame];
 
-    if (self)
-    {
+    if (self) {
         knobRadius = 15;
 
         UIPanGestureRecognizer *pan = [UIPanGestureRecognizer new];
@@ -57,7 +55,6 @@
 //        else if (percentDone < 0) percentDone = percentDone+1;
 //
 //        knobAngle = MIN_ANGLE+(percentDone*(MAX_ANGLE-MIN_ANGLE));
-
     }
 
     return self;
@@ -79,36 +76,24 @@
 // }
 
 // - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-- (void)dragged:(UIPanGestureRecognizer *)pan
-{
+- (void)dragged:(UIPanGestureRecognizer *)pan {
+    if (pan.state == UIGestureRecognizerStateBegan) {
+        CGPoint touchLocationA = [self.gest locationInView:self];
+        isKnobBeingTouched = false;
+        CGFloat xDist = touchLocationA.x - knobCenter.x;
+        CGFloat yDist = touchLocationA.y - knobCenter.y;
 
-  if (pan.state == UIGestureRecognizerStateBegan)
-  {
-    CGPoint touchLocationA = [self.gest locationInView:self];
-    isKnobBeingTouched = false;
-    CGFloat xDist = touchLocationA.x - knobCenter.x;
-    CGFloat yDist = touchLocationA.y - knobCenter.y;
-
-    if (sqrt((xDist*xDist)+(yDist*yDist)) <= knobRadius) //if the touch is within the slider knob
-    {
-        isKnobBeingTouched = true;
+        if (sqrt((xDist * xDist) + (yDist * yDist)) <= knobRadius) //if the touch is within the slider knob
+            isKnobBeingTouched = true;
+        else
+            return;
     }
-    else {
-      return;
-    }
-  }
 
   if ((self.gest.state == UIGestureRecognizerStateChanged) ||
       (self.gest.state == UIGestureRecognizerStateEnded)) {
-
-
-
-
     // if (isKnobBeingTouched)
     // {
         CGPoint touchLocation = [self.gest locationInView:self];//[[touches anyObject] locationInView:self];
-
-
 
         float touchVector[2] = {touchLocation.x - knobCenter.x, touchLocation.y - knobCenter.y}; //gets the vector of the difference between the touch location and the knob center
         float tangentVector[2] = {knobCenter.y - barCenter.y, barCenter.x - knobCenter.x}; //gets a vector tangent to the circle at the center of the knob
@@ -141,17 +126,17 @@
 //     isKnobBeingTouched = false;
 // }
 
-- (float)value
-{
+- (float)value {
     float percentDone = ((knobAngle - MIN_ANGLE) / (MAX_ANGLE - MIN_ANGLE));
-    if (percentDone > 1) percentDone = percentDone - 1;
-    else if (percentDone < 0) percentDone = percentDone + 1;
+    if (percentDone > 1)
+        percentDone = percentDone - 1;
+    else if (percentDone < 0)
+        percentDone = percentDone + 1;
 
     return percentDone * (self.maxValue - self.minValue); // percentDone*(maxValue-minValue)
 }
 
-- (void)setValue:(float)val
-{
+- (void)setValue:(float)val {
     // if (val == 0) val = 0.0000001f;
     // if (val == 1) val = val - 0.0000001f;
     // if (val == 0.5) val = val - 0.0000001f;
@@ -177,8 +162,7 @@
     [self setNeedsDisplay];
 }
 
-// - (void)setValue:(float)val
-// {
+// - (void)setValue:(float)val {
 //     if (val == 0) val = 0.0000001f;
 //     if (val == 1) val = val - 0.0000001f;
 //     if (val == 0.5) val = val - 0.0000001f;
@@ -201,8 +185,7 @@
 //     [self setNeedsDisplay];
 // }
 
-- (float)hue
-{
+- (float)hue {
     float h = [self value];
     // if (h > 0.75f && h < 1)
     //     h = 1 - (fabsf(1 - (h * 2)) / 2);
@@ -216,15 +199,13 @@
     return h;
 }
 
-- (void)setDelegate:(id<PFHaloHueViewDelegate>)delegate
-{
+- (void)setDelegate:(id<PFHaloHueViewDelegate>)delegate {
     _delegate = delegate;
     if (_delegate && [_delegate respondsToSelector:@selector(hueChanged:)])
-    [_delegate hueChanged:[self hue]];
+        [_delegate hueChanged:[self hue]];
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
     barCenter.x = CGRectGetMidX(rect);
     barCenter.y = CGRectGetMidY(rect);
     barRadius = (CGRectGetHeight(rect) <= CGRectGetWidth(rect)) ? CGRectGetHeight(rect) / 2 : CGRectGetWidth(rect) / 2; //gets the width or height, whichever is smallest, and stores it in radius
@@ -296,12 +277,10 @@
     CGContextDrawPath(context, kCGPathEOFill);
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
+    self.gest = nil;
 
-  self.gest = nil;
-
-  [super dealloc];
+    [super dealloc];
 }
 
 @end

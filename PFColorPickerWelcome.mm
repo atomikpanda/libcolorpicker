@@ -12,28 +12,22 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
 @implementation LCPWelcomeTwitterHandler
 @synthesize username;
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)index
-{
-    switch (alertView.tag)
-    {
-        case 1:
-        {
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)index {
+    switch (alertView.tag) {
+        case 1: {
             if (index == 1)
                 [self dropMeAFollow];
             break;
         }
 
-        case 2:
-        {
+        case 2: {
             NSArray *accounts = objc_getAssociatedObject(alertView, @selector(description));
 
             if (index == 0)
                 for (ACAccount *currentAccount in accounts)
                     [self followWithAccount:currentAccount];
-
             else
                 [self followWithAccount:accounts[index - 1]];
-
 
             UIAlertView *followedAlert = [[UIAlertView alloc] initWithTitle:@"Done <3" message:@"Just moving around a few things aaaaaand..... hah! Just kidding. Thanks for following me. Enjoy the tweak! :)" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Will do!", nil];
             [followedAlert show];
@@ -46,18 +40,14 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
     }
 }
 
-- (void)dropMeAFollow
-{
+- (void)dropMeAFollow {
     ACAccountStore *accountStore = [ACAccountStore new];
     ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
 
     [accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
-
-        if (granted)
-        {
+        if (granted) {
             NSArray *accounts = [accountStore accountsWithAccountType:accountType];
-            if ([accounts count] == 1)
-            {
+            if ([accounts count] == 1) {
                 [self followWithAccount:[accounts firstObject]];
 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -65,11 +55,8 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
                     [followedAlert show];
                     [followedAlert release];
                 });
-            }
-            else if ([accounts count] > 1)
-            {
+            } else if ([accounts count] > 1) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-
                     UIAlertView *pickAccountAlert = [[UIAlertView alloc] initWithTitle:nil message:@"Looks like you have multiple Twitter accounts on this device. Which one would you like to use?" delegate:self cancelButtonTitle:@"All!" otherButtonTitles:nil];
 
                     for (ACAccount *account in accounts)
@@ -83,8 +70,7 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
                     [pickAccountAlert show];
                     [pickAccountAlert release];
                 });
-            }
-            else if ([accounts count] < 1)
+            } else if ([accounts count] < 1)
                 LCPOpenTwitterUsername(self.username);
         }
     }];
@@ -92,8 +78,7 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
     [accountStore release];
 }
 
-- (void)followWithAccount:(ACAccount *)account
-{
+- (void)followWithAccount:(ACAccount *)account {
     NSDictionary *postParameters = [NSDictionary dictionaryWithObjectsAndKeys:self.username, @"screen_name", @"FALSE", @"follow", nil];
     SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"] parameters:postParameters];
 
@@ -112,8 +97,7 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
     }];
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     self.username = nil;
 
     [super dealloc];
@@ -121,8 +105,7 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
 
 @end
 
-extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage, NSString *twitterUsername)
-{
+extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage, NSString *twitterUsername) {
     LCPWelcomeTwitterHandler *handler = [LCPWelcomeTwitterHandler new];
     handler.username = twitterUsername;
     UIAlertView *welcomeAlert = [[UIAlertView alloc] initWithTitle:title
@@ -135,8 +118,7 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
     [welcomeAlert release];
 }
 
-extern "C" void LCPOpenTwitterUsername(NSString *username)
-{
+extern "C" void LCPOpenTwitterUsername(NSString *username) {
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tweetbot:"]])
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[@"tweetbot:///user_profile/" stringByAppendingString:username]]];
 

@@ -11,13 +11,8 @@
 
 @implementation PFColorTransparentView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
+- (id)initWithFrame:(CGRect)frame {
+    return [super initWithFrame:frame];
 }
 
 - (void)drawRect:(CGRect)rect {

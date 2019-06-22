@@ -16,8 +16,7 @@
 @synthesize lastSelectedColor=_lastSelectedColor;
 @synthesize delegate=_delegate;
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -30,18 +29,15 @@
     return self;
 }
 
-+ (NSString *)cacheImageNameWithFrame:(CGRect)frame
-{
++ (NSString *)cacheImageNameWithFrame:(CGRect)frame {
     return [NSString stringWithFormat:@"/tmp/_PFColorPickerImage_%gx%g.png", frame.size.width, frame.size.height];
 }
 
-+ (UIColor *)colorWithHueForLocation:(CGFloat)location
-{
++ (UIColor *)colorWithHueForLocation:(CGFloat)location {
     return [UIColor colorWithHue:location saturation:1 brightness:1 alpha:1];
 }
 
-- (UIImage *)captureView
-{
+- (UIImage *)captureView {
     CGRect rect = [self frame];
 
     UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
@@ -53,8 +49,7 @@
     return img;
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
     float widthX = rect.size.width;
     float widthY = rect.size.height;
 
@@ -64,14 +59,11 @@
 
     UIImage *image = imageExists ? [[UIImage alloc] initWithContentsOfFile:[PFColorPicker cacheImageNameWithFrame:rect]] : nil;
 
-    if (!image || !CGSizeEqualToSize(image.size, rect.size))
-    {
+    if (!image || !CGSizeEqualToSize(image.size, rect.size)) {
         int size = 1;
     
-        for (float posY = 0; posY <= widthY; posY += size)
-        {
-            for (float posX = 0; posX <= widthX; posX += size)
-            {
+        for (float posY = 0; posY <= widthY; posY += size) {
+            for (float posX = 0; posX <= widthX; posX += size) {
                 float h = (posY / widthY);
                 float s = (((posX / widthX) <= 0.5 ? 1 : 1 - (posX / widthX))) * 2;
                 float b = (((posX / widthX) <= 0.5 ? (posX / widthX) : 1)) * 2;
@@ -81,34 +73,29 @@
             }
         }
         shouldSaveNewCache = YES;
-    }
-    
-    else if (image)
+    } else if (image) {
         [image drawInRect:rect];
+    }
     
     if (image)
         [image release];
 }
 
-- (void)saveCache
-{
-    if(shouldSaveNewCache)
-    {
-    NSData *imageData = UIImagePNGRepresentation([self captureView]);
-    [imageData writeToFile:[PFColorPicker cacheImageNameWithFrame:self.frame] atomically:YES];
-    shouldSaveNewCache = NO;
+- (void)saveCache {
+    if (shouldSaveNewCache) {
+        NSData *imageData = UIImagePNGRepresentation([self captureView]);
+        [imageData writeToFile:[PFColorPicker cacheImageNameWithFrame:self.frame] atomically:YES];
+        shouldSaveNewCache = NO;
     }
 }
 
-- (void)makeReadyForDisplay
-{
+- (void)makeReadyForDisplay {
     UIPanGestureRecognizer *drag = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(selectColor:)];
     [self addGestureRecognizer:drag];
     [self setUserInteractionEnabled:YES];
 }
 
-- (UIColor *)colorAtPoint:(CGPoint)point
-{
+- (UIColor *)colorAtPoint:(CGPoint)point {
     unsigned char pixel[4] = {0};
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -132,14 +119,12 @@
     return color;
 }
 
-- (void)selectColor:(UIPanGestureRecognizer*)gest
-{
+- (void)selectColor:(UIPanGestureRecognizer *)gest {
 	CGPoint point = [gest locationInView:self]; //where user stopped dragging on image
     [self useColorAtPoint:point];
 }
 
-- (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
-{
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch* touch = [touches anyObject];
     CGPoint point = [touch locationInView:self]; //where image was tapped
     [self useColorAtPoint:point];
@@ -151,20 +136,19 @@
     
     if (CGRectContainsPoint(r, point)) {
         UIColor *color = [self colorAtPoint:point];
-        if (!color) {
+        if (!color)
             return;
-        }
+
         const CGFloat *components = CGColorGetComponents(color.CGColor);
-        if (components[3]!=0) {
+        if (components[3] != 0) {
             if (_lastSelectedColor)
                 [_lastSelectedColor release];
             _lastSelectedColor = [color retain];
         }
     }
     
-    if ([_delegate respondsToSelector:@selector(pickedColor:)]) {
+    if ([_delegate respondsToSelector:@selector(pickedColor:)])
         [_delegate performSelector:@selector(pickedColor:) withObject:_lastSelectedColor];
-    }
 }
 
 /*
@@ -176,8 +160,7 @@
 }
 */
 
-- (void)dealloc
-{
+- (void)dealloc {
     [_lastSelectedColor release];
     [super dealloc];
 }

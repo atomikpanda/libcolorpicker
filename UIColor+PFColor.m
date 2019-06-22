@@ -56,7 +56,6 @@ UIColor *colorFromHex(NSString *hexString);
     return g;
 }
 
-
 - (CGFloat)blue {
     CGFloat b;
     [self getRed:NULL green:NULL blue:&b alpha:NULL];
@@ -94,6 +93,4 @@ UIColor *colorFromHex(NSString *hexString);
     return [UIColor colorWithHue:[self hue] saturation:[self saturation]*(1+(percent/100)) brightness:[self brightness]*(1-(percent/100)) alpha:[self alpha]];
 }
 
-
 @end
-

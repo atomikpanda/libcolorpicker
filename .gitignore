@@ -1,5 +1,5 @@
 _
 debs
 obj
-theos
+*theos
 *.deb
