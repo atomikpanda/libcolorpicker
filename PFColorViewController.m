@@ -175,8 +175,13 @@ CGSize _size;
 
     currentAlpha = 1;
 
-    transparent ? [transparent setFrame:_pushedView.frame] : (transparent = [[PFColorTransparentView alloc] initWithFrame:_pushedView.frame]);
-    if (!self.usesAlpha) transparent.hidden = YES;
+    if (transparent)
+        [transparent setFrame:_pushedView.frame];
+    else
+        transparent = [[PFColorTransparentView alloc] initWithFrame:_pushedView.frame];
+
+    if (!self.usesAlpha)
+        transparent.hidden = YES;
 
     CGFloat height = _pushedView.frame.size.height / 2;
 
@@ -188,18 +193,20 @@ CGSize _size;
     [self.colorPicker makeReadyForDisplay];
     [self.colorPicker setDelegate:self];
 
+    float controlsContainerHeight = self.usesAlpha ? 180 : 140;
     CGRect controlsContainerFrame = CGRectMake(_pushedView.frame.size.width / 2 - _pushedView.frame.size.width / 2,
-                                               _pushedView.frame.size.height - self.usesAlpha ? 180 : 140,
+                                               _pushedView.frame.size.height - controlsContainerHeight,
                                                self.colorPicker.frame.size.width,
-                                               self.usesAlpha ? 180 : 140);
+                                               controlsContainerHeight);
     controlsContainer ? [controlsContainer setFrame:controlsContainerFrame] : (controlsContainer = [[[UIView alloc] initWithFrame:controlsContainerFrame] autorelease]);
 
-    CGPoint red = CGPointMake(controlsContainer.frame.size.width / 2, 30);
-    CGPoint green = CGPointMake(controlsContainer.frame.size.width / 2, red.y + 40);
-    CGPoint blue = CGPointMake(controlsContainer.frame.size.width / 2, green.y + 40);
-    CGPoint alpha = CGPointMake(controlsContainer.frame.size.width / 2, blue.y + 40);
+    float halfWidth = controlsContainer.frame.size.width / 2;
+    CGPoint red = CGPointMake(halfWidth, 30);
+    CGPoint green = CGPointMake(halfWidth, red.y + 40);
+    CGPoint blue = CGPointMake(halfWidth, green.y + 40);
+    CGPoint alpha = CGPointMake(halfWidth, blue.y + 40);
 
-    CGRect sliderFrame = CGRectMake(controlsContainer.frame.size.width / 2, 0, controlsContainer.frame.size.width - 40, 20);
+    CGRect sliderFrame = CGRectMake(halfWidth, 0, controlsContainer.frame.size.width - 40, 20);
 
     Class viewClass;
     if (objc_getClass("_UIBackdropView"))
@@ -370,7 +377,7 @@ CGSize _size;
     CGSize shadowSize = CGSizeMake(0, 3);
     CGContextSetShadowWithColor(context, shadowSize, 4, [UIColor colorWithWhite:0 alpha:0.25f].CGColor);
     CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextAddArc(context,rect.size.width / 2, rect.size.width / 2, size / 2, size / 2, 2 * M_PI, 1);
+    CGContextAddArc(context, rect.size.width / 2, rect.size.width / 2, size / 2, size / 2, 2 * M_PI, 1);
     CGContextSetStrokeColorWithColor(context, [[UIColor PF_colorWithHex:@"#f0f0f0"] colorWithAlphaComponent:0].CGColor);
 
     CGContextDrawPath(context, kCGPathFill);
@@ -472,9 +479,9 @@ CGSize _size;
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
     [self.colorPicker saveCache];
 
-    if ((interfaceOrientation == UIInterfaceOrientationLandscapeLeft) || (interfaceOrientation == UIInterfaceOrientationLandscapeRight)) {
+    if (interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
         _size = self.view.frame.size;
-        _size.height = (_size.height - 20) - 44;
+        _size.height = _size.height - 20 - 44;
         [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
             [self loadCustomViews];
         }
@@ -482,7 +489,7 @@ CGSize _size;
     } else {
         // both cases seem to be executing the same code basically, right? if so, please fix
         _size = self.view.frame.size;
-        _size.height = (_size.height - 20) - 44;
+        _size.height = _size.height - 20 - 44;
         [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
             [self loadCustomViews];
         }

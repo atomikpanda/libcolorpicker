@@ -44,6 +44,8 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
     ACAccountStore *accountStore = [ACAccountStore new];
     ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
 
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
         if (granted) {
             NSArray *accounts = [accountStore accountsWithAccountType:accountType];
@@ -74,6 +76,7 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
                 LCPOpenTwitterUsername(self.username);
         }
     }];
+    #pragma clang diagnostic pop
 
     [accountStore release];
 }
@@ -83,18 +86,16 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
     SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodPOST URL:[NSURL URLWithString:@"https://api.twitter.com/1.1/friendships/create.json"] parameters:postParameters];
 
     [request setAccount:account];
-
-    [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-
-        /*if ([urlResponse statusCode] == 200)
-         {
-         NSError *error;
-         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&error];
-         NSLog(@"Twitter response: %@", dict);
-         }
-         else
-         NSLog(@"Twitter error, HTTP response: %i", [urlResponse statusCode]);*/
-    }];
+    [request performRequestWithHandler:nil];
+    // ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+    //     if ([urlResponse statusCode] == 200) {
+    //         NSError *error;
+    //         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&error];
+    //         NSLog(@"Twitter response: %@", dict);
+    //     } else {
+    //         NSLog(@"Twitter error, HTTP response: %i", [urlResponse statusCode]);
+    //     }
+    // }];
 }
 
 - (void)dealloc {
