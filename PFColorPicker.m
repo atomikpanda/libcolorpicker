@@ -76,9 +76,6 @@
     } else if (image) {
         [image drawInRect:rect];
     }
-    
-    if (image)
-        [image release];
 }
 
 - (void)saveCache {
@@ -138,13 +135,6 @@
         UIColor *color = [self colorAtPoint:point];
         if (!color)
             return;
-
-        const CGFloat *components = CGColorGetComponents(color.CGColor);
-        if (components[3] != 0) {
-            if (_lastSelectedColor)
-                [_lastSelectedColor release];
-            _lastSelectedColor = [color retain];
-        }
     }
     
     if ([_delegate respondsToSelector:@selector(pickedColor:)])
@@ -159,11 +149,6 @@
     // Drawing code
 }
 */
-
-- (void)dealloc {
-    [_lastSelectedColor release];
-    [super dealloc];
-}
 
 @end
 #endif

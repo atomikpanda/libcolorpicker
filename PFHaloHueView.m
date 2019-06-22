@@ -277,10 +277,4 @@
     CGContextDrawPath(context, kCGPathEOFill);
 }
 
-- (void)dealloc {
-    self.gest = nil;
-
-    [super dealloc];
-}
-
 @end

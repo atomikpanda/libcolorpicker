@@ -31,7 +31,6 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
 
             UIAlertView *followedAlert = [[UIAlertView alloc] initWithTitle:@"Done <3" message:@"Just moving around a few things aaaaaand..... hah! Just kidding. Thanks for following me. Enjoy the tweak! :)" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Will do!", nil];
             [followedAlert show];
-            [followedAlert release];
             break;
         }
 
@@ -55,7 +54,6 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     UIAlertView *followedAlert = [[UIAlertView alloc] initWithTitle:@"Done <3" message:@"Awesome. Thanks for following me ^-^" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"You're welcome <3", nil];
                     [followedAlert show];
-                    [followedAlert release];
                 });
             } else if ([accounts count] > 1) {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -70,15 +68,12 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
                     objc_setAssociatedObject(pickAccountAlert, @selector(description), accounts, OBJC_ASSOCIATION_RETAIN);
 
                     [pickAccountAlert show];
-                    [pickAccountAlert release];
                 });
             } else if ([accounts count] < 1)
                 LCPOpenTwitterUsername(self.username);
         }
     }];
     #pragma clang diagnostic pop
-
-    [accountStore release];
 }
 
 - (void)followWithAccount:(ACAccount *)account {
@@ -98,12 +93,6 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
     // }];
 }
 
-- (void)dealloc {
-    self.username = nil;
-
-    [super dealloc];
-}
-
 @end
 
 extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage, NSString *twitterUsername) {
@@ -114,9 +103,6 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
     welcomeAlert.tag = 1;
     objc_setAssociatedObject(welcomeAlert, @selector(show), handler, OBJC_ASSOCIATION_RETAIN);
     [welcomeAlert show];
-
-    [handler release];
-    [welcomeAlert release];
 }
 
 extern "C" void LCPOpenTwitterUsername(NSString *username) {

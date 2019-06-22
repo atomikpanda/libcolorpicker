@@ -41,11 +41,6 @@
     // UIGraphicsEndImageContext();
 }
 
-- (void)dealloc {
-    self.color = nil;
-    [super dealloc];
-}
-
 @end
 
 @interface PFColorLiteSlider ()
@@ -64,12 +59,12 @@
 
     self.style = s;
 
-    self.slider = [[[UISlider alloc] initWithFrame:internalFrame] autorelease];
+    self.slider = [[UISlider alloc] initWithFrame:internalFrame];
     self.slider.minimumValue = 0.0000001f;
     self.slider.maximumValue = 1.0;
     internalFrame.size.height = 10; // set to ten because we want a thin BG
     internalFrame.origin.y = ((frame.size.height - 10) / 2);
-    self.backgroundView = [[[PFColorSliderBackgroundView alloc] initWithFrame:internalFrame color:c style:s] autorelease];
+    self.backgroundView = [[PFColorSliderBackgroundView alloc] initWithFrame:internalFrame color:c style:s];
 
     [self addSubview:self.backgroundView];
     [self addSubview:self.slider];
@@ -161,12 +156,6 @@
     UIGraphicsEndImageContext();
 
     return image;
-}
-
-- (void)dealloc {
-    self.backgroundView = nil;
-    self.slider = nil;
-    [super dealloc];
 }
 
 @end

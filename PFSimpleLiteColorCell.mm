@@ -94,11 +94,6 @@
     }];
 }
 
-- (void)dealloc {
-    self.options = nil;
-    [super dealloc];
-}
-
 - (SEL)action {
     return @selector(openColorAlert);
 }

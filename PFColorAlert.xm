@@ -25,6 +25,14 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
 - (PFColorAlert *)init;
 @end
 
+@interface _UIBackdropViewSettings : NSObject
++ (id)settingsForStyle:(long long)style;
+@end
+
+@interface _UIBackdropView : UIView
+- (id)initWithFrame:(CGRect)frame autosizesToFitSuperview:(BOOL)fitsSuperview settings:(_UIBackdropViewSettings *)settings;
+@end
+
 @implementation PFColorAlertViewController
 
 - (BOOL)shouldAutorotate {
@@ -50,7 +58,7 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
 
     UIColor *startColor = [UIColor whiteColor];
 
-    self.darkeningWindow = [[[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds] autorelease];
+    self.darkeningWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.darkeningWindow.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4f];
 
     CGRect winFrame = [UIScreen mainScreen].bounds;
@@ -62,69 +70,52 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
     winFrame.size.height = winFrame.size.height - (winFrame.size.height * 0.09f);
 
 
-    self.popWindow = [[[UIWindow alloc] initWithFrame:winFrame] autorelease];
+    self.popWindow = [[UIWindow alloc] initWithFrame:winFrame];
     self.popWindow.layer.masksToBounds = true;
     self.popWindow.layer.cornerRadius = 15;
 
-    self.mainViewController = [[[PFColorAlertViewController alloc] init] autorelease];
+    self.mainViewController = [[PFColorAlertViewController alloc] init];
     self.mainViewController.view.frame = CGRectMake(0, 0, winFrame.size.width, winFrame.size.height);
 
     const CGRect mainFrame = self.mainViewController.view.frame;
 
-    Class blurCls;
-    if (objc_getClass("_UIBackdropView")) blurCls = objc_getClass("_UIBackdropView");
-    else blurCls = [UIView class];
-
-    if (blurCls != [UIView class]) {
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wobjc-method-access"
-        NSObject *backSettings = [objc_getClass("_UIBackdropViewSettings") settingsForStyle:2010];
-        self.blurView = (UIView *)[[[blurCls alloc] initWithFrame:CGRectZero autosizesToFitSuperview:YES settings:backSettings] autorelease];
-        #pragma clang diagnostic pop
+    if (%c(_UIBackdropView)) {
+        _UIBackdropViewSettings *backSettings = [%c(_UIBackdropViewSettings) settingsForStyle:2010];
+        self.blurView = [[%c(_UIBackdropView) alloc] initWithFrame:CGRectZero autosizesToFitSuperview:YES settings:backSettings];
     } else {
-        // UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-        // self.blurView = [[[UIVisualEffectView alloc] initWithEffect:blurEffect] autorelease];
-        // self.blurView.frame = CGRectMake(0, 0, mainFrame.size.width, mainFrame.size.height);
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wobjc-method-access"
-         self.blurView = [[[blurCls alloc] initWithFrame:mainFrame] autorelease];
-        #pragma clang diagnostic pop
-         self.blurView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9f];
+        self.blurView = [[UIView alloc] initWithFrame:mainFrame];
+        self.blurView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9f];
     }
 
-    [self.blurView removeFromSuperview]; // <-- not sure why you're doing this but okay ¯\_(ツ)_/¯
     [self.mainViewController.view addSubview:self.blurView];
 
-    CGRect haloViewFrame = CGRectMake((mainFrame.size.width / 2) - (((mainFrame.size.width / 3) * 2) / 2), (mainFrame.size.width / 6),
-        (mainFrame.size.width / 3) * 2, (mainFrame.size.width / 3) * 2);
+    float width = mainFrame.size.width / 6;
+    CGRect haloViewFrame = CGRectMake(width, width, width, width);
 
     // HUE HARDCODED !!
-    self.haloView = [[[PFHaloHueView alloc] initWithFrame:haloViewFrame minValue:0 maxValue:1 value:startColor.hue delegate:self] autorelease];
+    self.haloView = [[PFHaloHueView alloc] initWithFrame:haloViewFrame minValue:0 maxValue:1 value:startColor.hue delegate:self];
 
-    // [self.haloView makeReadyForDisplay];
-
-    [self.haloView removeFromSuperview];
     [self.mainViewController.view addSubview:self.haloView];
 
-    const CGRect sliderFrame = CGRectMake((mainFrame.size.width / 2) - (((mainFrame.size.width / 3) * 2) / 2),
-                                          haloViewFrame.origin.y + haloViewFrame.size.height, (mainFrame.size.width / 3) * 2, 40);
+    const CGRect sliderFrame = CGRectMake(width,
+                                          haloViewFrame.origin.y + haloViewFrame.size.height,
+                                          mainFrame.size.width / 6,
+                                          40);
 
-    self.saturationSlider = [[[PFColorLiteSlider alloc] initWithFrame:sliderFrame color:startColor style:PFSliderBackgroundStyleSaturation] autorelease];
+    self.saturationSlider = [[PFColorLiteSlider alloc] initWithFrame:sliderFrame color:startColor style:PFSliderBackgroundStyleSaturation];
     [self.mainViewController.view addSubview:self.saturationSlider];
 
     CGRect brightnessSliderFrame = sliderFrame;
     brightnessSliderFrame.origin.y = brightnessSliderFrame.origin.y + brightnessSliderFrame.size.height;
 
-    self.brightnessSlider = [[[PFColorLiteSlider alloc] initWithFrame:brightnessSliderFrame color:startColor style:PFSliderBackgroundStyleBrightness] autorelease];
+    self.brightnessSlider = [[PFColorLiteSlider alloc] initWithFrame:brightnessSliderFrame color:startColor style:PFSliderBackgroundStyleBrightness];
     [self.mainViewController.view addSubview:self.brightnessSlider];
 
     CGRect alphaSliderFrame = brightnessSliderFrame;
     alphaSliderFrame.origin.y = alphaSliderFrame.origin.y + alphaSliderFrame.size.height;
 
-    self.alphaSlider = [[[PFColorLiteSlider alloc] initWithFrame:alphaSliderFrame color:startColor style:PFSliderBackgroundStyleAlpha] autorelease];
+    self.alphaSlider = [[PFColorLiteSlider alloc] initWithFrame:alphaSliderFrame color:startColor style:PFSliderBackgroundStyleAlpha];
     [self.mainViewController.view addSubview:self.alphaSlider];
-
-    self.alphaSlider.hidden = NO; // defaulting to NO
 
     self.hexButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.hexButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -134,14 +125,13 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
     [self.mainViewController.view addSubview:self.hexButton];
 
     CGRect litePreviewViewFrame = CGRectMake(mainFrame.size.width / 2 - mainFrame.size.width / 6,
-                                             (haloViewFrame.origin.y + haloViewFrame.size.height - mainFrame.size.width / 6 * 2 - mainFrame.size.width / 6),
-                                             mainFrame.size.width / 6 * 2, mainFrame.size.width / 6 * 2);
+                                             (haloViewFrame.origin.y + haloViewFrame.size.height - mainFrame.size.width / 3 - mainFrame.size.width / 6),
+                                             mainFrame.size.width / 3,
+                                             mainFrame.size.width / 3);
 
     // HUE HARDCODED !!
-    self.litePreviewView = [[[PFColorLitePreviewView alloc] initWithFrame:litePreviewViewFrame
-                                                                mainColor:[UIColor colorWithHue:startColor.hue saturation:startColor.saturation brightness:startColor.brightness alpha:startColor.alpha] previousColor: startColor] autorelease];
-
-    [self.litePreviewView removeFromSuperview]; // why even xD adding view1 to view2 automatically removes view1 from its prior superview
+    self.litePreviewView = [[PFColorLitePreviewView alloc] initWithFrame:litePreviewViewFrame
+                                                               mainColor:[UIColor colorWithHue:startColor.hue saturation:startColor.saturation brightness:startColor.brightness alpha:startColor.alpha] previousColor: startColor];
     [self.mainViewController.view addSubview:self.litePreviewView];
 
     self.darkeningWindow.hidden = NO;
@@ -200,7 +190,7 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
 }
 
 + (PFColorAlert *)colorAlertWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha {
-    return [[[PFColorAlert alloc] initWithStartColor:startColor showAlpha:showAlpha] autorelease];
+    return [[PFColorAlert alloc] initWithStartColor:startColor showAlpha:showAlpha];
 }
 
 - (void)displayWithCompletion:(void (^)(UIColor *pickedColor))completionBlock {
@@ -209,8 +199,6 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
 
     self.completionBlock = completionBlock;
 
-    [self retain];
-
     [self.popWindow makeKeyAndVisible];
 
     [UIView animateWithDuration:0.3f animations:^{
@@ -218,7 +206,7 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
         self.popWindow.alpha = 1.0f;
     } completion:^(BOOL finished) {
         self.isOpen = YES;
-        UITapGestureRecognizer *tgr = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close)] autorelease];
+        UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close)];
         self.darkeningWindow.userInteractionEnabled = YES;
         [self.darkeningWindow addGestureRecognizer:tgr];
 
@@ -242,11 +230,9 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
                                                cancelButtonTitle:nil
                                                otherButtonTitles:@"OK", nil];
     [deprecated show];
-    [deprecated release];
 }
 
 - (void)setPrimaryColor:(UIColor *)primary {
-    //UIColor *pr = [primary retain];
     [self.litePreviewView updateWithColor:primary];
 
     [self.saturationSlider updateGraphicsWithColor:primary];
@@ -296,7 +282,6 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
     [prompt setAlertViewStyle:UIAlertViewStylePlainTextInput];
     [[prompt textFieldAtIndex:0] setText:[UIColor hexFromColor:self.litePreviewView.mainColor]];
     [prompt show];
-    [prompt release];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -321,25 +306,7 @@ extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMess
 
         self.popWindow.hidden = YES;
         self.isOpen = NO;
-
-        [self release];
     }];
-}
-
-- (void)dealloc {
-    self.popWindow = nil;
-    self.haloView = nil;
-    self.mainViewController = nil;
-    self.blurView = nil;
-    self.hexButton = nil;
-    self.darkeningWindow = nil;
-    self.brightnessSlider = nil;
-    self.saturationSlider = nil;
-    self.alphaSlider = nil;
-    self.litePreviewView = nil;
-    self.completionBlock = nil;
-
-    [super dealloc];
 }
 
 @end

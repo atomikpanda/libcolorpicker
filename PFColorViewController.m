@@ -15,7 +15,6 @@
 @interface PSViewController : UIViewController
 {
     UIViewController *_parentController;
-    id *_rootController;
     PSSpecifier *_specifier;
 }
 
@@ -151,7 +150,7 @@ CGSize _size;
 
     _size = size;
 
-    _pushedView = [[[UIPushedView alloc] initWithFrame:CGRectMake(0, 64, size.width, size.height - 64)] autorelease];
+    _pushedView = [[UIPushedView alloc] initWithFrame:CGRectMake(0, 64, size.width, size.height - 64)];
     _pushedView.alpha = 0;
     [self.view addSubview:_pushedView];
 
@@ -189,7 +188,10 @@ CGSize _size;
         height = height - 40;
 
     CGRect colorPickerFrame = CGRectMake(0, 0, _pushedView.frame.size.width, height);
-    self.colorPicker ? [self.colorPicker setFrame:colorPickerFrame] : (self.colorPicker = [[[PFColorPicker alloc] initWithFrame:colorPickerFrame] autorelease]);
+    if (self.colorPicker)
+        [self.colorPicker setFrame:colorPickerFrame];
+    else
+        self.colorPicker = [[PFColorPicker alloc] initWithFrame:colorPickerFrame];
     [self.colorPicker makeReadyForDisplay];
     [self.colorPicker setDelegate:self];
 
@@ -201,7 +203,7 @@ CGSize _size;
     if (controlsContainer)
         [controlsContainer setFrame:controlsContainerFrame];
     else
-        controlsContainer = [[[UIView alloc] initWithFrame:controlsContainerFrame] autorelease];
+        controlsContainer = [[UIView alloc] initWithFrame:controlsContainerFrame];
 
     float halfWidth = controlsContainer.frame.size.width / 2;
     CGPoint red = CGPointMake(halfWidth, 30);
@@ -218,7 +220,10 @@ CGSize _size;
         viewClass = [UIView class];
 
     CGRect backdropFrame = CGRectMake(0, 0, controlsContainer.frame.size.width, controlsContainer.frame.size.height);
-    backdrop ? [backdrop setFrame:backdropFrame] : (backdrop = [[[viewClass alloc] initWithFrame:backdropFrame] autorelease]);
+    if (backdrop)
+        [backdrop setFrame:backdropFrame];
+    else
+        backdrop = [[viewClass alloc] initWithFrame:backdropFrame];
 
 
     hexButton = [[UIBarButtonItem alloc] initWithTitle:@"#" style:UIBarButtonItemStylePlain target:self action:@selector(chooseHexColor)];
@@ -227,7 +232,10 @@ CGSize _size;
     if (viewClass == [UIView class])
         [backdrop setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5f]];
 
-    hueSlider ? [hueSlider setFrame:sliderFrame] : (hueSlider = [[[UISlider alloc] initWithFrame:sliderFrame] autorelease]);
+    if (hueSlider)
+        [hueSlider setFrame:sliderFrame];
+    else
+        hueSlider = [[UISlider alloc] initWithFrame:sliderFrame];
     [hueSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
     [hueSlider setCenter:red];
 
@@ -235,7 +243,10 @@ CGSize _size;
     [hueSlider setMinimumValue:0];
     hueSlider.continuous = YES;
 
-    saturationSlider ? [saturationSlider setFrame:sliderFrame] : (saturationSlider = [[[UISlider alloc] initWithFrame:sliderFrame] autorelease]);
+    if (saturationSlider)
+        [saturationSlider setFrame:sliderFrame];
+    else
+        saturationSlider = [[UISlider alloc] initWithFrame:sliderFrame];
     [saturationSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
     [saturationSlider setCenter:green];
 
@@ -243,7 +254,10 @@ CGSize _size;
     [saturationSlider setMinimumValue:0];
     saturationSlider.continuous = YES;
 
-    brightnessSlider ? [brightnessSlider setFrame:sliderFrame] : (brightnessSlider = [[[UISlider alloc] initWithFrame:sliderFrame] autorelease]);
+    if (brightnessSlider)
+        [brightnessSlider setFrame:sliderFrame];
+    else
+        brightnessSlider = [[UISlider alloc] initWithFrame:sliderFrame];
     [brightnessSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
     [brightnessSlider setCenter:blue];
 
@@ -251,7 +265,10 @@ CGSize _size;
     [brightnessSlider setMinimumValue:0];
     brightnessSlider.continuous = YES;
 
-    alphaSlider ? [alphaSlider setFrame:sliderFrame] : (alphaSlider = [[[UISlider alloc] initWithFrame:sliderFrame] autorelease]);
+    if (alphaSlider)
+        [alphaSlider setFrame:sliderFrame];
+    else
+        alphaSlider = [[UISlider alloc] initWithFrame:sliderFrame];
     [alphaSlider addTarget:self action:@selector(hueSliderChanged) forControlEvents:UIControlEventValueChanged];
     [alphaSlider setCenter:alpha];
 
@@ -340,7 +357,6 @@ CGSize _size;
         currentAlpha = loadedColor.alpha;
         alphaSlider.value = currentAlpha;
         [self pickedColor:loadedColor];
-        [[loadedColor retain] autorelease];
     }
 
 
@@ -360,7 +376,6 @@ CGSize _size;
     [prompt setAlertViewStyle:UIAlertViewStylePlainTextInput];
     [[prompt textFieldAtIndex:0] setText:[UIColor hexFromColor:_pushedView.backgroundColor]];
     [prompt show];
-    [prompt release];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -463,7 +478,7 @@ CGSize _size;
     NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.defaults]];
 
     if (!preferencesPlist)
-        preferencesPlist = [[NSMutableDictionary new] autorelease];
+        preferencesPlist = [NSMutableDictionary new];
 
     NSString *saveValue;
     if (self.usesAlpha)
@@ -509,21 +524,6 @@ CGSize _size;
         return UIInterfaceOrientationMaskPortrait;//UIInterfaceOrientationMaskAll;
     else
         return UIInterfaceOrientationMaskPortrait;
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void)dealloc {
-    self.colorPicker = nil;
-    self.defaults = nil;
-    self.key = nil;
-    self.postNotification = nil;
-    self.fallback = nil;
-
-    [super dealloc];
 }
 
 @end

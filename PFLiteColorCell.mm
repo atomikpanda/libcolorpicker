@@ -8,7 +8,6 @@
 @interface PSViewController : UIViewController
 {
     UIViewController *_parentController;
-    id *_rootController;
     PSSpecifier *_specifier;
 }
 
@@ -78,7 +77,7 @@
 @end
 
 static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    PFLiteColorCell *l = (PFLiteColorCell *)observer;
+    PFLiteColorCell *l = (__bridge PFLiteColorCell *)observer;
     [UIView animateWithDuration:0.45
                          animations:^{
                            [l updateCellDisplay];
@@ -175,7 +174,7 @@ static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observe
         );
     }
 
-    self.colorPreview = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 29, 29)] autorelease];
+    self.colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
     // _colorPreview = colorPreview;
     self.colorPreview.tag = 199; //Stop UIColors from overriding the color :P
     self.colorPreview.layer.cornerRadius = self.colorPreview.frame.size.width / 2;
@@ -192,8 +191,6 @@ static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observe
 
 - (void)dealloc {
     CFNotificationCenterRemoveEveryObserver(CFNotificationCenterGetDarwinNotifyCenter(), (void *)self);
-    self.colorPreview = nil;
-    [super dealloc];
 }
 
 @end

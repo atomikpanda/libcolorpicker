@@ -16,7 +16,8 @@
 
 - (void)setMainColor:(UIColor *)mc previousColor:(UIColor *)prev {
     self.mainColor = mc;
-    if (prev) self.previousColor = prev;
+    if (prev)
+        self.previousColor = prev;
 }
 
 - (id)initWithFrame:(CGRect)frame mainColor:(UIColor *)mc previousColor:(UIColor *)prev {
@@ -109,12 +110,6 @@
         CGContextSetFillColorWithColor(context, self.mainColor.CGColor);
         CGContextDrawPath(context, kCGPathEOFill);
     }
-}
-
-- (void)dealloc {
-    self.mainColor = nil;
-    self.previousColor = nil;
-    [super dealloc];
 }
 
 @end

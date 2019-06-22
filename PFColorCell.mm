@@ -7,7 +7,6 @@
 @interface PSViewController : UIViewController
 {
     UIViewController *_parentController;
-    id *_rootController;
     PSSpecifier *_specifier;
 }
 
@@ -49,38 +48,38 @@
 @implementation PFColorCell
 
 - (id)initWithStyle:(long long)style reuseIdentifier:(id)identifier specifier:(PSSpecifier *)specifier {
-	self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier specifier:specifier];
-	// if ([specifier respondsToSelector:@selector(properties)])
-	// if (specifier && [specifier properties][@"color_key"] && [specifier properties][@"color_defaults"])
-	// {
+    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier specifier:specifier];
+    // if ([specifier respondsToSelector:@selector(properties)])
+    // if (specifier && [specifier properties][@"color_key"] && [specifier properties][@"color_defaults"])
+    // {
 
-	// }
+    // }
 
-	return self;
+    return self;
 }
 
 - (SEL)action {
-	return @selector(openColorPicker);
+    return @selector(openColorPicker);
 }
 
 - (id)target {
-	return self;
+    return self;
 }
 
 - (SEL)cellAction {
-	return @selector(openColorPicker);
+    return @selector(openColorPicker);
 }
 
 - (id)cellTarget {
-	return self;
+    return self;
 }
 
 - (void)openColorPicker {
-	PSViewController *viewController = (PSViewController *) [self _viewControllerForAncestor];
+    PSViewController *viewController = (PSViewController *) [self _viewControllerForAncestor];
 
-	PFColorViewController *colorViewController = [[PFColorViewController alloc] initForContentSize:viewController.view.frame.size];
+    PFColorViewController *colorViewController = [[PFColorViewController alloc] initForContentSize:viewController.view.frame.size];
 
-	if (_specifier && [_specifier properties][@"color_key"] && [_specifier properties][@"color_defaults"]) {
+    if (_specifier && [_specifier properties][@"color_key"] && [_specifier properties][@"color_defaults"]) {
         PSSpecifier *specifier = _specifier;
         colorViewController.key = specifier.properties[@"color_key"];
         colorViewController.defaults = specifier.properties[@"color_defaults"];
@@ -92,32 +91,24 @@
     }
 
     colorViewController.view.frame = viewController.view.frame;
-	[viewController.navigationController pushViewController:colorViewController animated:YES];
-
-    [colorViewController release];
+    [viewController.navigationController pushViewController:colorViewController animated:YES];
 }
 
 - (void)didMoveToSuperview {
-	[super didMoveToSuperview];
+    [super didMoveToSuperview];
 
-	UIView *colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
-	colorPreview.tag = 199; //Stop UIColors from overriding the color :P
-	colorPreview.layer.cornerRadius = colorPreview.frame.size.width / 2;
-	colorPreview.layer.borderWidth = 2;
-	colorPreview.layer.borderColor = [UIColor lightGrayColor].CGColor;
-	NSString *fallback = _specifier.properties[@"color_fallback"] ? _specifier.properties[@"color_fallback"] : @"#a1a1a1";
-	colorPreview.backgroundColor = colorFromDefaultsWithKey([_specifier properties][@"color_defaults"], [_specifier properties][@"color_key"], fallback);
+    UIView *colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
+    colorPreview.tag = 199; //Stop UIColors from overriding the color :P
+    colorPreview.layer.cornerRadius = colorPreview.frame.size.width / 2;
+    colorPreview.layer.borderWidth = 2;
+    colorPreview.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    NSString *fallback = _specifier.properties[@"color_fallback"] ? _specifier.properties[@"color_fallback"] : @"#a1a1a1";
+    colorPreview.backgroundColor = colorFromDefaultsWithKey([_specifier properties][@"color_defaults"], [_specifier properties][@"color_key"], fallback);
 
-	[self setAccessoryView:colorPreview];
+    [self setAccessoryView:colorPreview];
 
-	[colorPreview release];
-
-	[_specifier setTarget:self];
-	[_specifier setButtonAction:@selector(openColorPicker)];
-}
-
-- (void)dealloc {
-	[super dealloc];
+    [_specifier setTarget:self];
+    [_specifier setButtonAction:@selector(openColorPicker)];
 }
 
 @end

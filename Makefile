@@ -6,11 +6,11 @@ include $(THEOS)/makefiles/common.mk
 
 LIBRARY_NAME = libcolorpicker
 
-$(LIBRARY_NAME)_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorPicker.m PFColorTransparentView.m PFColorViewController.m PFColorCell.mm PFColorAlert.mm PFHaloHueView.m PFColorLitePreviewView.m PFColorLiteSlider.m PFLiteColorCell.mm PFSimpleLiteColorCell.mm PFColorPickerWelcome.mm
-
+$(LIBRARY_NAME)_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorPicker.m PFColorTransparentView.m PFColorViewController.m PFColorCell.mm PFColorAlert.xm PFHaloHueView.m PFColorLitePreviewView.m PFColorLiteSlider.m PFLiteColorCell.mm PFSimpleLiteColorCell.mm PFColorPickerWelcome.mm
 $(LIBRARY_NAME)_FRAMEWORKS = UIKit CoreGraphics Foundation Social Accounts
 $(LIBRARY_NAME)_PRIVATE_FRAMEWORKS = Preferences
 $(LIBRARY_NAME)_LDFLAGS += -Wl,-segalign,4000
+$(LIBRARY_NAME)_CFLAGS = -fobjc-arc
 
 after-install::
 	install.exec "killall -9 Preferences"
