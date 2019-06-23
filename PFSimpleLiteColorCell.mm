@@ -86,13 +86,13 @@
         // save hexString to your plist if desired
 
         [prefsDict setObject:hexString forKey:self.options[kKey]];
-
         [prefsDict writeToFile:plistPath atomically:YES];
 
-        if (self.options[kPostNotification])
+        NSString *notification = self.options[kPostNotification];
+        if (notification)
             CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
-                            (CFStringRef)self.options[kPostNotification],
-                            (CFStringRef)self.options[kPostNotification],
+                            (CFStringRef)notification,
+                            (CFStringRef)notification,
                             NULL,
                             YES);
     }];

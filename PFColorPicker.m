@@ -13,9 +13,6 @@
 #if TARGET_OS_IPHONE
 @implementation PFColorPicker
 
-@synthesize lastSelectedColor=_lastSelectedColor;
-@synthesize delegate=_delegate;
-
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
