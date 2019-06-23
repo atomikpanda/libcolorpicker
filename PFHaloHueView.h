@@ -17,5 +17,5 @@
 @property (assign, getter = value, setter = setValue:) float value;
 @property (assign) float minValue;
 @property (assign) float maxValue;
-@property (nonatomic, assign) id<PFHaloHueViewDelegate> delegate;
+@property (nonatomic, retain) id<PFHaloHueViewDelegate> delegate;
 @end

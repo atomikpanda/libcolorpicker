@@ -7,22 +7,19 @@
 //
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+@protocol PFColorPickerDelegate <NSObject>
+- (void)pickedColor:(UIColor *)color;
+@end
+
 
 @interface PFColorPicker : UIView
 {
 	BOOL shouldSaveNewCache;
 }
-
-@property (nonatomic, assign) id delegate;
+@property (nonatomic, retain) id<PFColorPickerDelegate> delegate;
 @property (nonatomic, readonly, retain) UIColor *lastSelectedColor;
-
 - (id)initWithFrame:(CGRect)frame;
 - (void)makeReadyForDisplay;
 - (void)saveCache;
-@end
-
-
-@protocol PFColorPickerDelegate <NSObject>
-- (void)pickedColor:(UIColor *)color;
 @end
 #endif
