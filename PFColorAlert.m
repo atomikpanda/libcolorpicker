@@ -52,8 +52,10 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
     [self.darkeningWindow makeKeyAndVisible];
 
     self.popWindow.rootViewController = self.mainViewController;
-    // self.darkeningWindow.windowLevel = UIWindowLevelAlert - 2;
-    // self.popWindow.windowLevel = UIWindowLevelAlert - 1;
+#ifndef DEBUG
+    self.darkeningWindow.windowLevel = UIWindowLevelAlert - 2;
+    self.popWindow.windowLevel = UIWindowLevelAlert - 1;
+#endif
     self.popWindow.backgroundColor = UIColor.clearColor;
     self.popWindow.hidden = NO;
     self.popWindow.alpha = 0.0f;
