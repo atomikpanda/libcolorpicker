@@ -46,7 +46,6 @@
     CGRect haloViewFrame = CGRectMake(padding, padding, width, width);
 
     _haloView = [[PFHaloHueView alloc] initWithFrame:haloViewFrame minValue:0 maxValue:1 value:startColor.hue delegate:self];
-
     [self.view addSubview:_haloView];
 
     const CGRect sliderFrame = CGRectMake(padding,
@@ -92,7 +91,6 @@
     [_brightnessSlider.slider addTarget:self action:@selector(brightnessChanged:) forControlEvents:UIControlEventValueChanged];
     [_alphaSlider.slider addTarget:self action:@selector(alphaChanged:) forControlEvents:UIControlEventValueChanged];
 
-    // [self setPrimaryColor:startColor];
     _alphaSlider.hidden = !showAlpha;
 
     return self;

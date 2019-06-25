@@ -106,12 +106,6 @@
     return [self value];
 }
 
-- (void)setDelegate:(id<PFHaloHueViewDelegate>)delegate {
-    _delegate = delegate;
-    if (delegate && [delegate respondsToSelector:@selector(hueChanged:)])
-        [delegate hueChanged:[self hue]];
-}
-
 - (void)drawRect:(CGRect)rect {
     _barCenter.x = CGRectGetMidX(rect);
     _barCenter.y = CGRectGetMidY(rect);
