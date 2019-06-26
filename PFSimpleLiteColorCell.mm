@@ -9,7 +9,7 @@
 @property (nonatomic, retain) PFColorAlert *alert;
 @end
 
-#define kPostNotification @"kPostNotification"
+#define kPostNotification @"PostNotification"
 #define kKey @"key"
 #define kDefaults @"defaults"
 #define kAlpha @"alpha"
