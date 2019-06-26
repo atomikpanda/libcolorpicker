@@ -46,9 +46,7 @@
     if (!prefsDict)
         prefsDict = [NSMutableDictionary dictionary];
 
-    UIColor *color = LCPParseColorString([prefsDict objectForKey:self.options[kKey]], self.options[kFallback]); // this color will be used at startup
-
-    return color;
+    return LCPParseColorString([prefsDict objectForKey:self.options[kKey]], self.options[kFallback]); // this color will be used at startup
 }
 
 - (void)didMoveToSuperview {
