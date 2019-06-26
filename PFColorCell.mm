@@ -2,58 +2,12 @@
 #import "PSSpecifier.h"
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
-
-
-@interface PSViewController : UIViewController
-{
-    UIViewController *_parentController;
-    PSSpecifier *_specifier;
-}
-
-- (void)statusBarWillAnimateByHeight:(double)arg1;
-- (_Bool)canBeShownFromSuspendedState;
-- (void)formSheetViewDidDisappear;
-- (void)formSheetViewWillDisappear;
-- (void)popupViewDidDisappear;
-- (void)popupViewWillDisappear;
-- (void)handleURL:(id)arg1;
-- (void)pushController:(id)arg1;
-- (void)didWake;
-- (void)didUnlock;
-- (void)willUnlock;
-- (void)didLock;
-- (void)suspend;
-- (void)willBecomeActive;
-- (void)willResignActive;
-- (id)readPreferenceValue:(id)arg1;
-- (void)setPreferenceValue:(id)arg1 specifier:(id)arg2;
-- (id)specifier;
-- (void)setSpecifier:(id)arg1;
-- (void)dealloc;
-- (id)rootController;
-- (void)setRootController:(id)arg1;
-- (id)parentController;
-- (void)setParentController:(id)arg1;
-
-@end
-
 #import "ColorPicker.h"
 
 @interface PFColorCell : PSTableCell
 @end
 
 @implementation PFColorCell
-
-- (id)initWithStyle:(long long)style reuseIdentifier:(id)identifier specifier:(PSSpecifier *)specifier {
-    self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier specifier:specifier];
-    // if ([specifier respondsToSelector:@selector(properties)])
-    // if (specifier && [specifier properties][@"color_key"] && [specifier properties][@"color_defaults"])
-    // {
-
-    // }
-
-    return self;
-}
 
 - (SEL)action {
     return @selector(openColorPicker);
@@ -72,7 +26,7 @@
 }
 
 - (void)openColorPicker {
-    PSViewController *viewController = (PSViewController *)[self _viewControllerForAncestor];
+    UIViewController *viewController = [self _viewControllerForAncestor];
     PFColorViewController *colorViewController = [[PFColorViewController alloc] initForContentSize:viewController.view.frame.size];
 
     if (_specifier) {

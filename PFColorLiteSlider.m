@@ -20,7 +20,6 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-    // UIGraphicsBeginImageContextWithOptions(CGSizeMake(rect.size.width, 10), NO, [UIScreen mainScreen].scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
 
     for (int x = 0; x < rect.size.width; x++) {
@@ -35,9 +34,6 @@
 
         CGContextFillRect(context, CGRectMake(x, 0, 1, rect.size.height));
     }
-
-    // UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    // UIGraphicsEndImageContext();
 }
 
 @end
@@ -93,33 +89,7 @@
         self.slider.value = color.brightness;
     else if (self.style == PFSliderBackgroundStyleAlpha)
         self.slider.value = color.alpha;
-
-    // self.backgroundColor = [UIColor colorWithPatternImage:[self trackImageWithColor:[UIColor purpleColor]]];
 }
-
-// - (UIImage *)trackImageWithColor:(UIColor *)color {
-//     CGRect rect = self.bounds;
-//     rect.size.height = 10;
-//     UIGraphicsBeginImageContextWithOptions(CGSizeMake(rect.size.width, 10), NO, [UIScreen mainScreen].scale);
-//     CGContextRef context = UIGraphicsGetCurrentContext();
-
-//     for (int x = 0; x < rect.size.width; x++) {
-//         float percent = 100-(((rect.size.width - x)/rect.size.width)*100.f);
-
-//         if (self.style == PFSliderBackgroundStyleSaturation)
-//             [[UIColor colorWithHue:[color hue] saturation:percent/100 brightness:1 alpha:1] setFill];
-//         else if (self.style == PFSliderBackgroundStyleBrightness)
-//             [[UIColor colorWithHue:[color hue] saturation:1 brightness:percent/100 alpha:1] setFill];
-//         else if (self.style == PFSliderBackgroundStyleBrightness)
-//             [[UIColor colorWithHue:[color hue] saturation:1 brightness:percent/100 alpha:1] setFill];
-
-//         CGContextFillRect(context, CGRectMake(x, 0, 1, rect.size.height));
-//     }
-
-//     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-//     UIGraphicsEndImageContext();
-//     return image;
-// }
 
 - (UIImage *)thumbImageWithColor:(UIColor *)color {
     CGFloat size = 28.0f;
@@ -128,28 +98,15 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 6);
 
-    // CGContextSetFillColorWithColor(context, CGColorCreate(cs, components));
     CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 0.3);
 
     CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, 0, 2 * M_PI, 1);
 
     CGContextDrawPath(context, kCGPathStroke);
 
-    // CGContextScaleCTM(context, 0.8, 0.8);
-
     CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3 - 3, 0, 2 * M_PI, 1);
     CGContextSetFillColorWithColor(context, color.CGColor);
     CGContextDrawPath(context, kCGPathEOFill);
-
-    // CGContextSetShadow(context, CGSizeMake(0, 0), 0);
-    // CGContextTranslateCTM(context, 0, rect.size.height);
-    // CGContextScaleCTM(context, 1, -1);
-    // CGContextSetRGBFillColor(context, 0.0, 0.0, 0.0, 1.0);
-    // CGContextSetLineWidth(context, 2.0);
-    // CGContextSelectFont(context, "Helvetica Neue Bold", 15.0, kCGEncodingMacRoman);
-    // CGContextSetCharacterSpacing(context, 1.7);
-    // CGContextSetTextDrawingMode(context, kCGTextFill);
-    // CGContextShowTextAtPoint(context, 10, 15, [NSString stringWithCharacters:&letter length:1].UTF8String, 1);
 
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

@@ -2,35 +2,30 @@
 #import <CoreGraphics/CoreGraphics.h>
 
 @interface PFColorLitePreviewView ()
-
 @end
 
 @implementation PFColorLitePreviewView
-@synthesize mainColor;
-@synthesize previousColor;
 
 - (void)updateWithColor:(UIColor *)color {
     self.mainColor = color;
     [self setNeedsDisplay];
 }
 
-- (void)setMainColor:(UIColor *)mc previousColor:(UIColor *)prev {
-    self.mainColor = mc;
-    if (prev)
-        self.previousColor = prev;
+- (void)setMainColor:(UIColor *)mainColor previousColor:(UIColor *)prevColor {
+    self.mainColor = mainColor;
+    if (prevColor)
+        self.previousColor = prevColor;
 }
 
-- (id)initWithFrame:(CGRect)frame mainColor:(UIColor *)mc previousColor:(UIColor *)prev {
+- (id)initWithFrame:(CGRect)frame mainColor:(UIColor *)mainColor previousColor:(UIColor *)prevColor {
     self = [super initWithFrame:frame];
 
     if (self) {
-        self.mainColor = mc;
+        self.mainColor = mainColor;
 
-        if (prev)
-            self.previousColor = prev;
+        if (prevColor)
+            self.previousColor = prevColor;
         [self setBackgroundColor:[UIColor clearColor]];
-
-        [self setNeedsDisplay];
     }
 
     return self;
@@ -41,21 +36,9 @@
         self.mainColor = [UIColor whiteColor];
 
     CGContextRef context = UIGraphicsGetCurrentContext();
-
-    // CGContextSetLineWidth(context, 4.0);
-    // CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 0.4);
-    // CGContextAddArc(context, rect.size.width/2, rect.size.height/2, rect.size.width/2, 0, 2*M_PI, 1);
-    // CGContextDrawPath(context, kCGPathStroke);
-    //
-    // CGContextAddArc(context, rect.size.width/2, rect.size.height/2, rect.size.width/2, 0, 2*M_PI, 1);
-    // CGContextSetFillColorWithColor(context, _mainColor.CGColor);
-    // CGContextDrawPath(context, kCGPathFillStroke);
-
     CGContextScaleCTM(context, 1, 1);
-
     CGContextSetLineWidth(context, (rect.size.width / 5) / 2);
 
-    // CGContextSetFillColorWithColor(context, CGColorCreate(cs, components));
     CGContextSetRGBStrokeColor(context, 0.0f, 0.0f, 0.0f, 0.3f);
 
     CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, 0, 2 * M_PI, 1);
@@ -84,14 +67,6 @@
 
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-
-    //   float topOffset = 0.f;
-    // // CGContextRef context = UIGraphicsGetCurrentContext();
-    //
-    // CGContextTranslateCTM(context, 0, topOffset);
-    // CGContextSetFillColorWithColor(context, [[UIColor colorWithPatternImage:img] CGColor]);
-    // CGContextTranslateCTM(context, 0, (-1*topOffset));
-    // CGContextFillEllipseInRect(context, CGRectMake(0, topOffset, rect.size.width/2, rect.size.height/2));
 
     CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, 0, 2 * M_PI, 1);
     CGContextSetFillColorWithColor(context, [UIColor colorWithPatternImage:img].CGColor);

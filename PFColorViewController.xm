@@ -7,44 +7,10 @@
 //
 #import "PSSpecifier.h"
 
-@interface UIViewController()
+@interface UIViewController ()
 - (id)initForContentSize:(CGSize)size;
 @end
 
-
-@interface PSViewController : UIViewController
-{
-    UIViewController *_parentController;
-    PSSpecifier *_specifier;
-}
-
-- (void)statusBarWillAnimateByHeight:(double)arg1;
-- (_Bool)canBeShownFromSuspendedState;
-- (void)formSheetViewDidDisappear;
-- (void)formSheetViewWillDisappear;
-- (void)popupViewDidDisappear;
-- (void)popupViewWillDisappear;
-- (void)handleURL:(id)arg1;
-- (void)pushController:(id)arg1;
-- (void)didWake;
-- (void)didUnlock;
-- (void)willUnlock;
-- (void)didLock;
-- (void)suspend;
-- (void)willBecomeActive;
-- (void)willResignActive;
-- (id)readPreferenceValue:(id)arg1;
-- (void)setPreferenceValue:(id)arg1 specifier:(id)arg2;
-- (id)specifier;
-- (void)setSpecifier:(id)arg1;
-- (void)dealloc;
-- (id)rootController;
-- (void)setRootController:(id)arg1;
-- (id)parentController;
-- (void)setParentController:(id)arg1;
-- (id)initForContentSize:(CGSize)size;
-
-@end
 
 #if TARGET_OS_IPHONE
 #import "PFColorViewController.h"
@@ -60,7 +26,8 @@
 
 - (void)setFrame:(CGRect)frame {
     frame.origin.y = 64;
-    if (self.superview) frame.size.height = self.superview.frame.size.height - 64;
+    if (self.superview)
+        frame.size.height = self.superview.frame.size.height - 64;
     [super setFrame:frame];
 }
 
@@ -105,41 +72,12 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
     _alphaSlider.value = color.alpha;
 
     return color;
-    // NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", def]];
-    // //light gray fallback
-    // UIColor *fallbackColor = [UIColor PF_colorWithHex:self.fallback];
-
-    // if(preferencesPlist&&[preferencesPlist objectForKey:aKey]) {
-    //     NSString *value = [preferencesPlist objectForKey:aKey];
-    //     NSArray *colorAndOrAlpha = [value componentsSeparatedByString:@":"];
-    //     if([value rangeOfString:@":"].location != NSNotFound) {
-
-    //     if([colorAndOrAlpha objectAtIndex:1]) {
-    //         currentAlpha = [colorAndOrAlpha[1] floatValue];
-    //         _alphaSlider.value = [colorAndOrAlpha[1] floatValue];
-    //     }
-    //     }
-    //     else {
-    //         currentAlpha = 1;
-    //         _alphaSlider.value = 1;
-    //     }
-
-    //     if(!value) return fallbackColor;
-
-    //     NSString *color = colorAndOrAlpha[0];
-
-    //     return [[UIColor PF_colorWithHex:color] colorWithAlphaComponent:currentAlpha];
-    // }
-    // else {
-    //     return fallbackColor;
-    // }
-
 }
 
 #define isiPhone4 ([[UIScreen mainScreen] bounds].size.height == 480)
 
 - (id)initForContentSize:(CGSize)size {
-    if ([[PSViewController class] instancesRespondToSelector:@selector(initForContentSize:)])
+    if ([%c(PSViewController) instancesRespondToSelector:@selector(initForContentSize:)])
         self = [super initForContentSize:size];
     else
         self = [super init];
@@ -483,7 +421,6 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
         _currentAlpha = _alphaSlider.value;
     }
 
-    // hax ?
     NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.defaults]];
 
     if (!preferencesPlist)

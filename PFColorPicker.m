@@ -15,14 +15,8 @@
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-        //CAGradientLayer *bgLayer = [PFColorPicker rainbowGradient];
-        //bgLayer.frame = self.bounds;
-        //[self.layer insertSublayer:bgLayer atIndex:0];
+    if (self)
         [self setBackgroundColor:UIColor.clearColor];
-        
-    }
     return self;
 }
 
