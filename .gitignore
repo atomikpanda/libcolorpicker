@@ -1,5 +1,6 @@
 _
 debs
+packages/*
 obj
 *theos
 *.deb
