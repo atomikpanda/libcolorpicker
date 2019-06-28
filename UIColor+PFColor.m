@@ -25,7 +25,11 @@ UIColor *colorFromHex(NSString *hexString);
 }
 
 + (NSString *)hexFromColor:(UIColor *)color {
-    const CGFloat *components = CGColorGetComponents(color.CGColor);
+    return [color hexFromColor];
+}
+
+- (NSString *)hexFromColor {
+    const CGFloat *components = CGColorGetComponents(self.CGColor);
     CGFloat r = components[0];
     CGFloat g = components[1];
     CGFloat b = components[2];
