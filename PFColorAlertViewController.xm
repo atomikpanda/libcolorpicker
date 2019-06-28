@@ -145,6 +145,27 @@
     [_alphaSlider updateGraphicsWithColor:color];
 }
 
+- (void)chooseHexColor {
+    UIAlertView *prompt = [[UIAlertView alloc] initWithTitle:@"Hex Color"
+                                                     message:@"Enter a hex color or copy it to your pasteboard."
+                                                    delegate:self
+                                           cancelButtonTitle:@"Close"
+                                           otherButtonTitles:@"Set", @"Copy", nil];
+    prompt.delegate = self;
+    [prompt setAlertViewStyle:UIAlertViewStylePlainTextInput];
+    [[prompt textFieldAtIndex:0] setText:[UIColor hexFromColor:[self getColor]]];
+    [prompt show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        if ([[alertView textFieldAtIndex:0].text hasPrefix:@"#"] && [UIColor PF_colorWithHex:[alertView textFieldAtIndex:0].text])
+            [self setPrimaryColor:[UIColor PF_colorWithHex:[alertView textFieldAtIndex:0].text]];
+    } else if (buttonIndex == 2) {
+        [[UIPasteboard generalPasteboard] setString:[UIColor hexFromColor:[self getColor]]];
+    }
+}
+
 - (BOOL)shouldAutorotate {
     return NO;
 }
