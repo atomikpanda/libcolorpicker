@@ -1,8 +1,9 @@
 Package: org.thebigboss.libcolorpicker
 Name: libcolorpicker
 Depends:
-Version: 1.6.2
+Version: 1.6.3
 Replaces: me.nepeta.libcolorpicker
+Provides: me.nepeta.libcolorpicker
 Architecture: iphoneos-arm
 Description: An awesome library of some sort!!
 Maintainer: Bailey Seymour
