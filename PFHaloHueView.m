@@ -17,6 +17,9 @@
     float _barRadius;
     float _knobAngle;
     PFHaloKnobView *_knob;
+    float _mid;
+    float _maxLength;
+    float _paddingBounds;
 }
 @end
 
@@ -30,6 +33,8 @@
     self = [super initWithFrame:frame];
 
     if (self) {
+        _paddingBounds = 55.0f;
+
         _knob = [[PFHaloKnobView alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
         [self addSubview:_knob];
 
@@ -55,6 +60,14 @@
 
 - (void)dragged:(UIPanGestureRecognizer *)gesture {
     CGPoint touchLocation = [gesture locationInView:self];
+
+    // FIXME: stop the angle from jumping around when sliding finger far away from knob
+    // This works better but still requires a magic number for padding the slide distance
+    float dx = _mid - touchLocation.x;
+    float dy = _mid - touchLocation.y;
+    float touchLength = sqrt(dx * dx + dy * dy);
+    if (touchLength > _maxLength)
+        return;
 
     // Gets the vector of the difference between the touch location and the knob center
     float touchVector[2] = {touchLocation.x - _knob.center.x, touchLocation.y - _knob.center.y};
@@ -156,6 +169,9 @@
         CGContextRotateCTM(context, -incr);
     }
     // ---
+
+    _mid = self.frame.size.width / 2;
+    _maxLength = _mid + _paddingBounds;
 }
 
 @end
