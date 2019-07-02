@@ -3,12 +3,13 @@
 
 @interface PFColorSliderBackgroundView : UIView
 @property (nonatomic, retain) UIColor *color;
+@property (nonatomic, assign) CGFloat hue;
 @property (assign) PFSliderBackgroundStyle style;
 - (id)initWithFrame:(CGRect)frame color:(UIColor *)color style:(PFSliderBackgroundStyle)s;
 @end
 
 @implementation PFColorSliderBackgroundView
-@synthesize color;
+@synthesize color=_color, hue=_hue;
 
 - (id)initWithFrame:(CGRect)frame color:(UIColor *)col style:(PFSliderBackgroundStyle)s {
     self = [super initWithFrame:frame];
@@ -19,6 +20,11 @@
     return self;
 }
 
+- (void)setColor:(UIColor *)color {
+    _color = color;
+    self.hue = color.hue;
+}
+
 - (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
 
@@ -26,11 +32,11 @@
         float percent = 100 - (((rect.size.width - x) / rect.size.width) * 100.f);
 
         if (self.style == PFSliderBackgroundStyleSaturation)
-            [[UIColor colorWithHue:[self.color hue] saturation:(percent / 100) brightness:1 alpha:1] setFill];
+            [[UIColor colorWithHue:self.hue saturation:(percent / 100) brightness:1 alpha:1] setFill];
         else if (self.style == PFSliderBackgroundStyleBrightness)
-            [[UIColor colorWithHue:[self.color hue] saturation:1 brightness:(percent / 100) alpha:1] setFill];
+            [[UIColor colorWithHue:self.hue saturation:1 brightness:(percent / 100) alpha:1] setFill];
         else if (self.style == PFSliderBackgroundStyleAlpha)
-            [[UIColor colorWithHue:self.color.hue saturation:self.color.saturation brightness:self.color.brightness alpha:(percent / 100)] setFill];
+            [[UIColor colorWithHue:self.hue saturation:self.color.saturation brightness:self.color.brightness alpha:(percent / 100)] setFill];
 
         CGContextFillRect(context, CGRectMake(x, 0, 1, rect.size.height));
     }
@@ -70,17 +76,23 @@
 }
 
 - (void)updateGraphicsWithColor:(UIColor *)color {
+    [self updateGraphicsWithColor:color hue:color.hue];
+}
+
+- (void)updateGraphicsWithColor:(UIColor *)color hue:(CGFloat)hue {
+    // The hue parameter is used since UIColor defaults the hue to 0 if there is no saturation
     if (self.style == PFSliderBackgroundStyleSaturation)
-        [self.slider setThumbImage:[self thumbImageWithColor:[UIColor colorWithHue:color.hue saturation:color.saturation brightness:1 alpha:1]] forState:UIControlStateNormal];
+        [self.slider setThumbImage:[self thumbImageWithColor:[UIColor colorWithHue:hue saturation:color.saturation brightness:1 alpha:1]] forState:UIControlStateNormal];
     else if (self.style == PFSliderBackgroundStyleBrightness)
-        [self.slider setThumbImage:[self thumbImageWithColor:[UIColor colorWithHue:color.hue saturation:1 brightness:color.brightness alpha:1]] forState:UIControlStateNormal];
+        [self.slider setThumbImage:[self thumbImageWithColor:[UIColor colorWithHue:hue saturation:1 brightness:color.brightness alpha:1]] forState:UIControlStateNormal];
     else if (self.style == PFSliderBackgroundStyleAlpha)
-        [self.slider setThumbImage:[self thumbImageWithColor:[UIColor colorWithHue:color.hue saturation:color.saturation brightness:color.brightness alpha:color.alpha]] forState:UIControlStateNormal];
+        [self.slider setThumbImage:[self thumbImageWithColor:[UIColor colorWithHue:hue saturation:color.saturation brightness:color.brightness alpha:color.alpha]] forState:UIControlStateNormal];
 
     self.slider.maximumTrackTintColor = [UIColor clearColor];
     self.slider.minimumTrackTintColor = [UIColor clearColor];
 
     self.backgroundView.color = color;
+    self.backgroundView.hue = hue;
     [self.backgroundView setNeedsDisplay];
 
     if (self.style == PFSliderBackgroundStyleSaturation)

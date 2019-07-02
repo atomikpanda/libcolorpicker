@@ -120,9 +120,9 @@
 - (void)hueChanged:(float)hue {
     UIColor *color = [UIColor colorWithHue:hue saturation:_litePreviewView.mainColor.saturation brightness:_litePreviewView.mainColor.brightness alpha:_litePreviewView.mainColor.alpha];
     [_litePreviewView updateWithColor:color];
-    [_saturationSlider updateGraphicsWithColor:color];
-    [_brightnessSlider updateGraphicsWithColor:color];
-    [_alphaSlider updateGraphicsWithColor:color];
+    [_saturationSlider updateGraphicsWithColor:color hue:hue];
+    [_brightnessSlider updateGraphicsWithColor:color hue:hue];
+    [_alphaSlider updateGraphicsWithColor:color hue:hue];
 }
 
 - (void)saturationChanged:(UISlider *)slider {
