@@ -118,11 +118,13 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 }
 
 - (void)showWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha completion:(void (^)(UIColor *pickedColor))completionBlock {
-    UIAlertView *deprecated = [[UIAlertView alloc] initWithTitle:@"libcolorpicker" message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it."
-                                                        delegate:nil
-                                               cancelButtonTitle:nil
-                                               otherButtonTitles:@"OK", nil];
-    [deprecated show];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"libcolorpicker"
+                                                                             message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it."
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)close {

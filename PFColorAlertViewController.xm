@@ -172,7 +172,9 @@
 }
 
 - (void)presentPasteHexStringQuestion:(NSString *)pasteboard {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Detected pasted color" message:@"It seems like your pasteboard consists of a hex color. Would you like to use it?" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Detected pasted color"
+                                                                             message:@"It seems like your pasteboard consists of a hex color. Would you like to use it?"
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
     
     // Set from hex color
     [alertController addAction:[UIAlertAction actionWithTitle:@"Use pasteboard" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
