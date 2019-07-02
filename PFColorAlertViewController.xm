@@ -108,8 +108,6 @@
     [_brightnessSlider updateGraphicsWithColor:primary];
     [_alphaSlider updateGraphicsWithColor:primary];
 
-    // THIS LINE SHOULD BE ACTIVE BUT DISABLED IT FOR NOW
-    // UNTIL WE CAN GET THE HUE SLIDER WORKING
     [_haloView setValue:primary.hue];
 }
 
@@ -146,24 +144,31 @@
 }
 
 - (void)chooseHexColor {
-    UIAlertView *prompt = [[UIAlertView alloc] initWithTitle:@"Hex Color"
-                                                     message:@"Enter a hex color or copy it to your pasteboard."
-                                                    delegate:self
-                                           cancelButtonTitle:@"Close"
-                                           otherButtonTitles:@"Set", @"Copy", nil];
-    prompt.delegate = self;
-    [prompt setAlertViewStyle:UIAlertViewStylePlainTextInput];
-    [[prompt textFieldAtIndex:0] setText:[UIColor hexFromColor:[self getColor]]];
-    [prompt show];
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        if ([[alertView textFieldAtIndex:0].text hasPrefix:@"#"] && [UIColor PF_colorWithHex:[alertView textFieldAtIndex:0].text])
-            [self setPrimaryColor:[UIColor PF_colorWithHex:[alertView textFieldAtIndex:0].text]];
-    } else if (buttonIndex == 2) {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Hex Color" message:@"Enter a hex color or copy it to your pasteboard." preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.text = [UIColor hexFromColor:[self getColor]];
+    }];
+    
+    // Set from hex color
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Set" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        UITextField *textField = [alertController textFields].firstObject;
+        if (!textField) return;
+        
+        NSString *userHexString = textField.text;
+        if ([userHexString hasPrefix:@"#"] && [UIColor PF_colorWithHex:userHexString])
+            [self setPrimaryColor:[UIColor PF_colorWithHex:userHexString]];
+    }]];
+    
+    // Copy to pasteboard
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Copy" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [[UIPasteboard generalPasteboard] setString:[UIColor hexFromColor:[self getColor]]];
-    }
+    }]];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)presentPasteHexStringQuestion:(NSString *)pasteboard {
