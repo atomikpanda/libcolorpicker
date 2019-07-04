@@ -83,6 +83,8 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
     self.completionBlock = completionBlock;
 
+    [self retain];
+
     [self.popWindow makeKeyAndVisible];
 
     [UIView animateWithDuration:0.3f animations:^{
@@ -94,11 +96,13 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close)];
         self.darkeningWindow.userInteractionEnabled = YES;
         [self.darkeningWindow addGestureRecognizer:tapGesture];
+        [tapGesture release];
 
         NSString *prefPath = @"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist";
         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:prefPath];
+
         if (!dict)
-            dict = [NSMutableDictionary new];
+            dict = [[NSMutableDictionary new] autorelease];
 
         NSString *kDidShow = @"didShowWelcomeScreen";
         if (!dict[kDidShow]) {
@@ -123,8 +127,11 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     
     [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+
     UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
     [rootViewController presentViewController:alertController animated:YES completion:nil];
+    [alertController release];
+
 }
 
 - (void)close {
@@ -140,7 +147,17 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
         self.popWindow.hidden = YES;
         self.isOpen = NO;
+
+        [self release];
     }];
+}
+
+- (void)dealloc {
+    [self.mainViewController release];
+    [self.popWindow release];
+    [self.darkeningWindow release];
+
+    [super dealloc];
 }
 
 @end
