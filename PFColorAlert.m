@@ -21,7 +21,7 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 }
 
 - (PFColorAlert *)initWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha {
-    self = [super init];
+    self = [[super init] autorelease];
 
     self.isOpen = NO;
 
@@ -130,7 +130,6 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
     UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
     [rootViewController presentViewController:alertController animated:YES completion:nil];
-    [alertController release];
 
 }
 
