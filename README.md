@@ -72,18 +72,18 @@ add a new dictionary in your preference's specifier plist like this (also see ex
 #### Showing the alert (Advanced):
 **this way can be used inside any application like a UIAlertView and is fully customizable.**
 
-```
-NSString *readFromKey = @"someCoolKey"; //  (You want to load from prefs probably)
-NSString *fallbackHex = @"#ff0000";  // (You want to load from prefs probably)
+```objective-c
+NSString *loadedHexColor = @"#00ff00"; //  (You want to load from prefs probably)
+NSString *fallbackHex = @"#ff0000";
 
-UIColor *startColor = LCPParseColorString(readFromKey, fallbackHex); // this color will be used at startup
+UIColor *startColor = LCPParseColorString(loadedHexColor, fallbackHex); // this color will be used when the alert is displayed
 PFColorAlert *alert = [PFColorAlert colorAlertWithStartColor:startColor showAlpha:YES];
 
 // show alert and set completion callback
 [alert displayWithCompletion:
 	^void (UIColor *pickedColor) {
 		// save pickedColor or do something with it
-		NSString *hexString = [UIColor hexFromColor:pickedColor];
+		NSString *hexString = [UIColor PF_hexFromColor:pickedColor];
 		hexString = [hexString stringByAppendingFormat:@":%f", pickedColor.alpha];
 		// you probably want to save hexString to your prefs
 		// maybe post a notification here if you need to
@@ -91,7 +91,7 @@ PFColorAlert *alert = [PFColorAlert colorAlertWithStartColor:startColor showAlph
 ```
 ##### Reading saved color later on (From Tweak):
 
-```
+```objective-c
 NSDictionary *prefsDict = ... // assuming this holds your prefs
 NSString *coolColorHex = [prefsDict objectForKey:@"someCoolKey"]; // assuming that the key has a value saved like #FFFFFF:0.75423
 
@@ -180,11 +180,11 @@ Next, Place the libcolorpicker.dylib in TweakPreferencesFolder/lib/
 Next, Add the following to your Preference Bundle's Makefile:
 
 	$(shell install_name_tool -id /usr/lib/libcolorpicker_PUTTWEAKNAMEHERE.dylib lib/libcolorpicker.dylib)
-
+	
 	TWEAKNAMEPREFERENCES_LDFLAGS = -Llib -lcolorpicker
-
+	
 	include $(THEOS_MAKE_PATH)/bundle.mk
-
+	
 	internal-stage::
 	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
 	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/usr/lib/$(ECHO_END)
