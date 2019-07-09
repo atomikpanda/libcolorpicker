@@ -17,11 +17,11 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 @implementation PFColorAlert
 
 + (PFColorAlert *)colorAlertWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha {
-    return [[PFColorAlert alloc] initWithStartColor:startColor showAlpha:showAlpha];
+    return [[[PFColorAlert alloc] initWithStartColor:startColor showAlpha:showAlpha] autorelease];
 }
 
 - (PFColorAlert *)initWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha {
-    self = [[super init] autorelease];
+    self = [super init];
 
     self.isOpen = NO;
 
@@ -146,8 +146,6 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
         self.popWindow.hidden = YES;
         self.isOpen = NO;
-
-        [self release];
     }];
 }
 
@@ -155,6 +153,7 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
     [self.mainViewController release];
     [self.popWindow release];
     [self.darkeningWindow release];
+    self.completionBlock = nil;
 
     [super dealloc];
 }
