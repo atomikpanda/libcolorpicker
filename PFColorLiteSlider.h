@@ -10,4 +10,5 @@ typedef enum PFSliderBackgroundStyle : NSUInteger {
 @property (nonatomic, retain) UISlider *slider;
 - (id)initWithFrame:(CGRect)frame color:(UIColor *)c style:(PFSliderBackgroundStyle)s;
 - (void)updateGraphicsWithColor:(UIColor *)color;
+- (void)updateGraphicsWithColor:(UIColor *)color hue:(CGFloat)hue;
 @end
