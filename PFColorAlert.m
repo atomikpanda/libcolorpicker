@@ -17,7 +17,7 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 @implementation PFColorAlert
 
 + (PFColorAlert *)colorAlertWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha {
-    return [[PFColorAlert alloc] initWithStartColor:startColor showAlpha:showAlpha];
+    return [[[PFColorAlert alloc] initWithStartColor:startColor showAlpha:showAlpha] autorelease];
 }
 
 - (PFColorAlert *)initWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha {
@@ -83,6 +83,8 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
     self.completionBlock = completionBlock;
 
+    [self retain];
+
     [self.popWindow makeKeyAndVisible];
 
     [UIView animateWithDuration:0.3f animations:^{
@@ -94,11 +96,13 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close)];
         self.darkeningWindow.userInteractionEnabled = YES;
         [self.darkeningWindow addGestureRecognizer:tapGesture];
+        [tapGesture release];
 
         NSString *prefPath = @"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist";
         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:prefPath];
+
         if (!dict)
-            dict = [NSMutableDictionary new];
+            dict = [[NSMutableDictionary new] autorelease];
 
         NSString *kDidShow = @"didShowWelcomeScreen";
         if (!dict[kDidShow]) {
@@ -131,6 +135,15 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
         self.popWindow.hidden = YES;
         self.isOpen = NO;
     }];
+}
+
+- (void)dealloc {
+    [self.mainViewController release];
+    [self.popWindow release];
+    [self.darkeningWindow release];
+    self.completionBlock = nil;
+
+    [super dealloc];
 }
 
 @end
