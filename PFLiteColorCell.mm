@@ -5,11 +5,10 @@
 
 @interface PFLiteColorCell : PSTableCell
 @property (nonatomic, retain) UIView *colorPreview;
-@property (nonatomic, assign) CFNotificationCallback callBack;
 - (void)updateCellDisplay;
 @end
 
-@interface UIColor()
+@interface UIColor ()
 + (NSString *)hexFromColor:(UIColor *)color;
 @end
 
@@ -19,13 +18,10 @@ static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observe
                      animations:^{
                            [cell updateCellDisplay];
                         }
-     completion:^(BOOL finished){}];
-
+     completion:nil];
 }
 
 @implementation PFLiteColorCell
-
-@synthesize colorPreview;
 
 - (id)initWithStyle:(long long)style reuseIdentifier:(id)identifier specifier:(PSSpecifier *)specifier {
     return [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier specifier:specifier];
@@ -73,6 +69,8 @@ static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observe
 }
 
 - (void)dealloc {
+    [super dealloc];
+
     CFNotificationCenterRemoveEveryObserver(CFNotificationCenterGetDarwinNotifyCenter(), (void *)self);
 }
 
