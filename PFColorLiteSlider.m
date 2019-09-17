@@ -9,7 +9,6 @@
 @end
 
 @implementation PFColorSliderBackgroundView
-@synthesize color=_color, hue=_hue;
 
 - (id)initWithFrame:(CGRect)frame color:(UIColor *)col style:(PFSliderBackgroundStyle)s {
     self = [super initWithFrame:frame];
@@ -44,14 +43,33 @@
 
 @end
 
+
+@interface UISlider (Private)
+- (UIView *)_minTrackView;
+- (UIView *)_maxTrackView;
+@end
+
+@interface PFSlider : UISlider
+@end
+
+@implementation PFSlider
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+
+    [self _minTrackView].hidden = YES;
+    [self _maxTrackView].hidden = YES;
+}
+
+@end
+
+
 @interface PFColorLiteSlider ()
 @property (nonatomic, retain) PFColorSliderBackgroundView *backgroundView;
 @property (assign) PFSliderBackgroundStyle style;
 @end
 
 @implementation PFColorLiteSlider
-@synthesize backgroundView;
-@synthesize slider;
 
 - (id)initWithFrame:(CGRect)frame color:(UIColor *)c style:(PFSliderBackgroundStyle)s {
     self = [super initWithFrame:frame];
@@ -60,9 +78,10 @@
 
     self.style = s;
 
-    self.slider = [[UISlider alloc] initWithFrame:internalFrame];
+    self.slider = [[PFSlider alloc] initWithFrame:internalFrame];
     self.slider.minimumValue = 0.0000001f;
     self.slider.maximumValue = 1.0;
+
     internalFrame.size.height = 10; // set to ten because we want a thin BG
     internalFrame.origin.y = ((frame.size.height - 10) / 2);
     self.backgroundView = [[PFColorSliderBackgroundView alloc] initWithFrame:internalFrame color:c style:s];
