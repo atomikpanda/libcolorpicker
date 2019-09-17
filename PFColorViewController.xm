@@ -301,10 +301,13 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
         [self pickedColor:_loadedColor];
     }
 
-    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-        [_pushedView setAlpha:1];
-    }
-    completion:nil];
+    [UIView animateWithDuration:0.2
+                          delay:0
+                        options:UIViewAnimationOptionTransitionCrossDissolve
+                     animations:^{
+                            [_pushedView setAlpha:1];
+                        }
+                     completion:nil];
 }
 
 - (void)viewDidLoad {

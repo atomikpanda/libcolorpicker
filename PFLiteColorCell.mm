@@ -69,11 +69,10 @@ static void PFLiteColorCellNotifCB(CFNotificationCenterRef center, void *observe
 }
 
 - (void)dealloc {
-    [super dealloc];
-
     [self.colorPreview release];
 
     CFNotificationCenterRemoveEveryObserver(CFNotificationCenterGetDarwinNotifyCenter(), (void *)self);
+    [super dealloc];
 }
 
 @end
