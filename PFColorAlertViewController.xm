@@ -41,7 +41,7 @@
 
     [self.view addSubview:_blurView];
 
-    float padding = frame.size.width / 6;
+    float padding = frame.size.width / 8;
     float width = frame.size.width - padding * 2;
     CGRect haloViewFrame = CGRectMake(padding, padding, width, width);
 
@@ -49,7 +49,7 @@
     [self.view addSubview:_haloView];
 
     const CGRect sliderFrame = CGRectMake(padding,
-                                          haloViewFrame.origin.y + haloViewFrame.size.height,
+                                          haloViewFrame.origin.y + haloViewFrame.size.height + padding / 2,
                                           width,
                                           40);
 
@@ -76,15 +76,17 @@
     [self.view addSubview:_hexButton];
 
     float halfWidth = frame.size.width / 2;
-    CGRect litePreviewViewFrame = CGRectMake(halfWidth - padding,
-                                             haloViewFrame.origin.y + haloViewFrame.size.height - halfWidth,
-                                             padding * 2,
-                                             padding * 2);
+    float previewPadding = padding * 2;
+    float previewWidth = previewPadding * 2;
+    CGRect litePreviewViewFrame = CGRectMake(halfWidth - previewPadding,
+                                             haloViewFrame.origin.y + haloViewFrame.size.height / 2 - previewWidth / 2,
+                                             previewWidth,
+                                             previewWidth);
 
     _litePreviewView = [[PFColorLitePreviewView alloc] initWithFrame:litePreviewViewFrame
                                                            mainColor:startColor
                                                        previousColor:startColor];
-    [self.view addSubview:_litePreviewView];
+    [self.view insertSubview:_litePreviewView belowSubview:_haloView];
 
 
     [_saturationSlider.slider addTarget:self action:@selector(saturationChanged:) forControlEvents:UIControlEventValueChanged];

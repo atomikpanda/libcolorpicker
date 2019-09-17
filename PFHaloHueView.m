@@ -36,7 +36,7 @@
         // 55.0f on iPhone 6/7/8
         _paddingBounds = [UIScreen mainScreen].bounds.size.width / 6.8f;
 
-        _knob = [[PFHaloKnobView alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+        _knob = [[PFHaloKnobView alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
         [self addSubview:_knob];
 
         UIPanGestureRecognizer *gesture = [UIPanGestureRecognizer new];

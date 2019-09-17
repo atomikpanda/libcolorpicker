@@ -1,9 +1,6 @@
 #import "PFColorLitePreviewView.h"
 #import <CoreGraphics/CoreGraphics.h>
 
-@interface PFColorLitePreviewView ()
-@end
-
 @implementation PFColorLitePreviewView
 
 - (void)updateWithColor:(UIColor *)color {
@@ -35,22 +32,27 @@
     if (!self.mainColor)
         self.mainColor = [UIColor whiteColor];
 
+    float halfWidth = rect.size.width / 2;
+    float halfHeight = rect.size.height / 2;
+    float oneThirdWidth = rect.size.width / 3;
+
+    float twoPi = M_PI * 2;
+    float threePi = M_PI * 3;
+    float halfPi = M_PI / 2;
+
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextScaleCTM(context, 1, 1);
-    CGContextSetLineWidth(context, (rect.size.width / 5) / 2);
-
+    CGContextSetLineWidth(context, halfWidth / 5);
     CGContextSetRGBStrokeColor(context, 0.0f, 0.0f, 0.0f, 0.3f);
 
-    CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, 0, 2 * M_PI, 1);
-
+    CGContextAddArc(context, halfWidth, halfHeight, oneThirdWidth, 0, twoPi, 1);
     CGContextDrawPath(context, kCGPathStroke);
-
-    CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, 0, 2 * M_PI, 1);
+    CGContextAddArc(context, halfWidth, halfHeight, oneThirdWidth, 0, twoPi, 1);
 
     UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
 
-    int kHeight = 11;
-    int kWidth = 11;
+    int kHeight = 12;
+    int kWidth = 12;
     NSArray *colors = [NSArray arrayWithObjects:
                         [UIColor whiteColor],
                         [UIColor grayColor],
@@ -68,20 +70,19 @@
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 
-    CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, 0, 2 * M_PI, 1);
     CGContextSetFillColorWithColor(context, [UIColor colorWithPatternImage:img].CGColor);
     CGContextDrawPath(context, kCGPathEOFill);
 
     if (self.previousColor) {
-        CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, (M_PI * 3) + (M_PI / 2), (M_PI / 2), 1);
+        CGContextAddArc(context, halfWidth, halfHeight, oneThirdWidth, threePi + halfPi, halfPi, 1);
         CGContextSetFillColorWithColor(context, self.mainColor.CGColor);
         CGContextDrawPath(context, kCGPathEOFill);
 
-        CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, (M_PI * 2) / 4, (M_PI * 3) / 2, 0);
+        CGContextAddArc(context, halfWidth, halfHeight, oneThirdWidth, halfPi, threePi / 2, 0);
         CGContextSetFillColorWithColor(context, self.previousColor.CGColor);
         CGContextDrawPath(context, kCGPathEOFill);
     } else {
-        CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, 0, 2 * M_PI, 1);
+        CGContextAddArc(context, halfWidth, halfHeight, oneThirdWidth, 0, twoPi, 1);
         CGContextSetFillColorWithColor(context, self.mainColor.CGColor);
         CGContextDrawPath(context, kCGPathEOFill);
     }

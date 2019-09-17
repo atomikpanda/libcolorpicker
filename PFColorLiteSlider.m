@@ -66,6 +66,8 @@
     internalFrame.size.height = 10; // set to ten because we want a thin BG
     internalFrame.origin.y = ((frame.size.height - 10) / 2);
     self.backgroundView = [[PFColorSliderBackgroundView alloc] initWithFrame:internalFrame color:c style:s];
+    self.backgroundView.layer.cornerRadius = 5;
+    self.backgroundView.layer.masksToBounds = YES;
 
     [self addSubview:self.backgroundView];
     [self addSubview:self.slider];
@@ -104,19 +106,18 @@
 }
 
 - (UIImage *)thumbImageWithColor:(UIColor *)color {
-    CGFloat size = 28.0f;
+    CGFloat size = 36.0f;
     CGRect rect = CGRectMake(0.0f, 0.0f, size, size);
     UIGraphicsBeginImageContextWithOptions(rect.size, NO, [UIScreen mainScreen].scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetLineWidth(context, 6);
+    CGContextSetLineWidth(context, 3.5);
 
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 0.3);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 0.4);
 
     CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3, 0, 2 * M_PI, 1);
-
     CGContextDrawPath(context, kCGPathStroke);
 
-    CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3 - 3, 0, 2 * M_PI, 1);
+    CGContextAddArc(context, rect.size.width / 2, rect.size.height / 2, rect.size.width / 3 - 1, 0, 2 * M_PI, 1);
     CGContextSetFillColorWithColor(context, color.CGColor);
     CGContextDrawPath(context, kCGPathEOFill);
 
