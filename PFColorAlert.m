@@ -6,7 +6,7 @@
 extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage, NSString *twitterUsername);
 
 
-@interface PFColorAlert()
+@interface PFColorAlert ()
 @property (nonatomic, retain) UIWindow *darkeningWindow;
 @property (nonatomic, retain) PFColorAlertViewController *mainViewController;
 @property (nonatomic, assign) BOOL isOpen;
@@ -25,10 +25,18 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
     self.isOpen = NO;
 
-    self.darkeningWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.darkeningWindow.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4f];
-
     CGRect winFrame = [UIScreen mainScreen].bounds;
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    if (orientation == UIDeviceOrientationLandscapeLeft ||
+        orientation == UIDeviceOrientationLandscapeRight ||
+        orientation == UIDeviceOrientationFaceUp) {
+        float _width = winFrame.size.width;
+        winFrame.size.width = winFrame.size.height;
+        winFrame.size.height = _width;
+    }
+
+    self.darkeningWindow = [[UIWindow alloc] initWithFrame:winFrame];
+    self.darkeningWindow.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4f];
 
     float winWidthCalc = winFrame.size.width * 0.09f;
     float winHeightCalc = winFrame.size.height * 0.09f;
@@ -61,10 +69,6 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
     self.popWindow.alpha = 0.0f;
 
     [self makeViewDynamic:self.popWindow];
-    CGRect popWindowFrame = self.popWindow.frame;
-    popWindowFrame.origin.y = ([UIScreen mainScreen].bounds.size.height - popWindowFrame.size.height) / 2;
-
-    self.popWindow.frame = popWindowFrame;
 
     return self;
 }
