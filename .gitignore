@@ -1,4 +1,7 @@
 _
+.DS_Store
+debian-binary
+*.txt
 debs
 packages/*
 obj
