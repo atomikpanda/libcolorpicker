@@ -11,6 +11,7 @@
 @interface UIColor (PFColor)
 + (UIColor *)PF_colorWithHex:(NSString *)hexString;
 + (NSString *)hexFromColor:(UIColor *)color;
+- (NSString *)hexFromColor;
 @property (nonatomic, assign, readonly) CGFloat alpha;
 @property (nonatomic, assign, readonly) CGFloat red;
 @property (nonatomic, assign, readonly) CGFloat green;

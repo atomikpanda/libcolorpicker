@@ -110,6 +110,16 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
             [dict setObject:@YES forKey:kDidShow];
             [dict writeToFile:prefPath atomically:YES];
         }
+
+        if (objc_getClass("UIAlertController")) {
+            NSString *pasteboard = [UIPasteboard generalPasteboard].string;
+            if (!pasteboard || [pasteboard isEqualToString:[[self.mainViewController getColor] hexFromColor]])
+                return;
+
+            NSRange range = [pasteboard rangeOfString:@"^#(?:[0-9a-fA-F]{3}){1,2}$" options:NSRegularExpressionSearch];
+            if (range.location != NSNotFound)
+                [self.mainViewController presentPasteHexStringQuestion:pasteboard];   
+        }
     }];
 }
 

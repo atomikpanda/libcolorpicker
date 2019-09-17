@@ -3,4 +3,5 @@
 - (float)topMostSliderLastYCoordinate;
 - (void)setPrimaryColor:(UIColor *)primary;
 - (UIColor *)getColor;
+- (void)presentPasteHexStringQuestion:(NSString *)pasteboard;
 @end
