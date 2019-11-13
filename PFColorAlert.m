@@ -1,6 +1,7 @@
 #import "PFColorAlert.h"
 #import "PFColorAlertViewController.h"
 #import "UIColor+PFColor.h"
+#import "UIKitAdditions.h"
 #import <objc/runtime.h>
 
 extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage, NSString *twitterUsername);
@@ -12,7 +13,6 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 @property (nonatomic, assign) BOOL isOpen;
 @property (nonatomic, copy) void (^completionBlock)(UIColor *pickedColor);
 @end
-
 
 @implementation PFColorAlert
 
@@ -35,7 +35,14 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
         winFrame.size.height = _width;
     }
 
-    self.darkeningWindow = [[UIWindow alloc] initWithFrame:winFrame];
+    if (@available(iOS 13, *)) {
+        NSSet<UIScene *> *connectedScenes = [[UIApplication sharedApplication] connectedScenes];
+        UIScene *firstScene = [[connectedScenes allObjects] objectAtIndex:0];
+        self.darkeningWindow = [[UIWindow alloc] initWithWindowScene: firstScene];
+        self.darkeningWindow.frame = winFrame;
+    } else {
+        self.darkeningWindow = [[UIWindow alloc] initWithFrame:winFrame];
+    }
     self.darkeningWindow.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4f];
 
     float winWidthCalc = winFrame.size.width * 0.09f;
@@ -47,7 +54,14 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
     winFrame.size.width = winFrame.size.width - winWidthCalc;
     winFrame.size.height = winFrame.size.height - winHeightCalc;
 
-    self.popWindow = [[UIWindow alloc] initWithFrame:winFrame];
+    if (@available(iOS 13, *)) {
+        NSSet<UIScene *> *connectedScenes = [[UIApplication sharedApplication] connectedScenes];
+        UIScene *firstScene = [[connectedScenes allObjects] objectAtIndex:0];
+        self.popWindow = [[UIWindow alloc] initWithWindowScene: firstScene];
+        self.popWindow.frame = winFrame;
+    } else {
+        self.popWindow = [[UIWindow alloc] initWithFrame:winFrame];
+    }
     self.popWindow.layer.masksToBounds = true;
     self.popWindow.layer.cornerRadius = 15;
 
