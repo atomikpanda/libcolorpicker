@@ -38,7 +38,7 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
     if (@available(iOS 13, *)) {
         NSSet<UIScene *> *connectedScenes = [[UIApplication sharedApplication] connectedScenes];
         UIScene *firstScene = [[connectedScenes allObjects] objectAtIndex:0];
-        self.darkeningWindow = [[UIWindow alloc] initWithWindowScene: firstScene];
+        self.darkeningWindow = [[UIWindow alloc] initWithWindowScene:firstScene];
         self.darkeningWindow.frame = winFrame;
     } else {
         self.darkeningWindow = [[UIWindow alloc] initWithFrame:winFrame];
@@ -49,15 +49,14 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
     float winHeightCalc = winFrame.size.height * 0.09f;
 
     winFrame.origin.x = winWidthCalc / 2;
-    winFrame.origin.y = winHeightCalc / 2;
 
-    winFrame.size.width = winFrame.size.width - winWidthCalc;
-    winFrame.size.height = winFrame.size.height - winHeightCalc;
+    winFrame.size.width -= winWidthCalc;
+    winFrame.size.height -= winHeightCalc;
 
     if (@available(iOS 13, *)) {
         NSSet<UIScene *> *connectedScenes = [[UIApplication sharedApplication] connectedScenes];
         UIScene *firstScene = [[connectedScenes allObjects] objectAtIndex:0];
-        self.popWindow = [[UIWindow alloc] initWithWindowScene: firstScene];
+        self.popWindow = [[UIWindow alloc] initWithWindowScene:firstScene];
         self.popWindow.frame = winFrame;
     } else {
         self.popWindow = [[UIWindow alloc] initWithFrame:winFrame];
@@ -65,7 +64,8 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
     self.popWindow.layer.masksToBounds = true;
     self.popWindow.layer.cornerRadius = 15;
 
-    self.mainViewController = [[PFColorAlertViewController alloc] initWithViewFrame:CGRectMake(0, 0, winFrame.size.width, winFrame.size.height)
+    CGRect mainFrame = CGRectMake(0, 0, winFrame.size.width, winFrame.size.height);
+    self.mainViewController = [[PFColorAlertViewController alloc] initWithViewFrame:mainFrame
                                                                          startColor:startColor
                                                                           showAlpha:showAlpha];
 
@@ -91,6 +91,8 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
     CGRect dynamicFrame = view.frame;
     dynamicFrame.size.height = [self.mainViewController topMostSliderLastYCoordinate] +
                                self.mainViewController.view.frame.size.width / 6;
+    dynamicFrame.origin.y = [UIScreen mainScreen].bounds.size.height / 2 -
+                             dynamicFrame.size.height / 2;
 
     view.frame = dynamicFrame;
 }
