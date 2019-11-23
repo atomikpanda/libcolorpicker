@@ -9,6 +9,7 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
 @interface PFColorAlert ()
 @property (nonatomic, retain) UIWindow *darkeningWindow;
+@property (nonatomic, retain) UIWindow *previousKeyWindow;
 @property (nonatomic, retain) PFColorAlertViewController *mainViewController;
 @property (nonatomic, assign) BOOL isOpen;
 @property (nonatomic, copy) void (^completionBlock)(UIColor *pickedColor);
@@ -71,6 +72,8 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
     self.darkeningWindow.hidden = NO;
     self.darkeningWindow.alpha = 0.0f;
+
+    self.previousKeyWindow = [UIApplication sharedApplication].keyWindow;
     [self.darkeningWindow makeKeyAndVisible];
 
     self.popWindow.rootViewController = self.mainViewController;
@@ -164,6 +167,7 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
         self.popWindow.hidden = YES;
         self.isOpen = NO;
+        [self.previousKeyWindow makeKeyAndVisible];
     }];
 }
 
