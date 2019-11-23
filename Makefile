@@ -1,4 +1,8 @@
-ARCHS = armv7 armv7s arm64 arm64e
+ifneq ($(arm64e),)
+	ARCHS = arm64e
+else
+	ARCHS = armv7 armv7s arm64
+endif
 
 TARGET = iphone:clang:9.2:6.0
 
