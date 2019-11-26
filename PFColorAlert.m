@@ -5,7 +5,7 @@
 #import <objc/runtime.h>
 
 extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage, NSString *twitterUsername);
-
+#define degreesToRadians(x) ((x) * M_PI / 180.0)
 
 @interface PFColorAlert ()
 @property (nonatomic, retain) UIWindow *darkeningWindow;
@@ -27,13 +27,15 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
     self.isOpen = NO;
 
     CGRect winFrame = [UIScreen mainScreen].bounds;
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    if (orientation == UIDeviceOrientationLandscapeLeft ||
-        orientation == UIDeviceOrientationLandscapeRight ||
-        orientation == UIDeviceOrientationFaceUp) {
-        float _width = winFrame.size.width;
+    CGFloat deviceHeight = winFrame.size.height;
+    /* `statusBarOrientation` is deprecated as of iOS 13. However, it
+        seems to be the only reliable way to get the device rotation.
+        All other ways fail in one way or another. */
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    if (UIInterfaceOrientationIsLandscape(orientation)) {
+        deviceHeight = winFrame.size.width;
         winFrame.size.width = winFrame.size.height;
-        winFrame.size.height = _width;
+        winFrame.size.height = deviceHeight;
     }
 
     if (@available(iOS 13, *)) {
@@ -85,17 +87,21 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
     self.popWindow.hidden = NO;
     self.popWindow.alpha = 0.0f;
 
-    [self makeViewDynamic:self.popWindow];
+    [self makeViewDynamic:self.popWindow deviceHeight:deviceHeight];
 
     return self;
 }
 
-- (void)makeViewDynamic:(UIView *)view {
+- (void)makeViewDynamic:(UIView *)view deviceHeight:(CGFloat)deviceHeight {
     CGRect dynamicFrame = view.frame;
     dynamicFrame.size.height = [self.mainViewController topMostSliderLastYCoordinate] +
                                self.mainViewController.view.frame.size.width / 6;
-    dynamicFrame.origin.y = [UIScreen mainScreen].bounds.size.height / 2 -
-                             dynamicFrame.size.height / 2;
+    dynamicFrame.origin.y = deviceHeight / 2 - dynamicFrame.size.height / 2;
+
+    // Rotate 180 deg on iPad if using it upside down
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad &&
+        [UIDevice currentDevice].orientation == UIDeviceOrientationPortraitUpsideDown)
+        view.transform = CGAffineTransformMakeRotation(degreesToRadians(180));
 
     view.frame = dynamicFrame;
 }
