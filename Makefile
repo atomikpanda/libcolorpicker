@@ -1,9 +1,4 @@
-ifneq ($(arm64e),)
-	ARCHS = arm64e
-else
-	ARCHS = armv7 armv7s arm64
-endif
-
+ARCHS = armv7 armv7s arm64 arm64e
 TARGET = iphone:clang:9.2:6.0
 
 include $(THEOS)/makefiles/common.mk
