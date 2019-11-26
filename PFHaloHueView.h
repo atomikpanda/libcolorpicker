@@ -17,6 +17,7 @@
            minValue:(float)minimumValue
            maxValue:(float)maximumValue
               value:(float)initialValue
+          tintColor:(UIColor *)tintColor
            delegate:(id<PFHaloHueViewDelegate>)delegate;
 @property (assign, getter = value, setter = setValue:) float value;
 @property (assign) float minValue;

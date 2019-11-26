@@ -15,7 +15,8 @@
 
 @implementation PFHaloKnobView
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame
+          tintColor:(UIColor *)tintColor {
     self = [super initWithFrame:frame];
 
     if (self) {
@@ -23,13 +24,14 @@
 
         float doubleBorderWidth = borderWidth * 2;
         CGRect circleFrame = CGRectMake(borderWidth, borderWidth,
-                                        self.frame.size.width - doubleBorderWidth, self.frame.size.width - doubleBorderWidth);
+                                        self.frame.size.width - doubleBorderWidth,
+                                        self.frame.size.width - doubleBorderWidth);
         _colorView = [[UIView alloc] initWithFrame:circleFrame];
         _colorView.layer.cornerRadius = circleFrame.size.width / 2.0;
         _colorView.layer.masksToBounds = true;
         [self addSubview:_colorView];
 
-        self.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.4];
+        self.backgroundColor = [tintColor colorWithAlphaComponent:0.4f];
     }
     return self;
 }

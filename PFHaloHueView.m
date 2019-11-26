@@ -29,6 +29,7 @@
            minValue:(float)minimumValue
            maxValue:(float)maximumValue
               value:(float)initialValue
+          tintColor:(UIColor *)tintColor
            delegate:(id<PFHaloHueViewDelegate>)delegate {
     self = [super initWithFrame:frame];
 
@@ -36,7 +37,8 @@
         // 55.0f on iPhone 6/7/8
         _paddingBounds = [UIScreen mainScreen].bounds.size.width / 6.8f;
 
-        _knob = [[PFHaloKnobView alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
+        _knob = [[PFHaloKnobView alloc] initWithFrame:CGRectMake(0, 0, 29, 29)
+                                            tintColor:tintColor];
         [self addSubview:_knob];
 
         UIPanGestureRecognizer *gesture = [UIPanGestureRecognizer new];

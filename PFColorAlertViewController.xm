@@ -11,8 +11,19 @@
     PFColorLiteSlider *_brightnessSlider;
     PFColorLiteSlider *_saturationSlider;
     PFColorLiteSlider *_alphaSlider;
-    PFColorLitePreviewView *_litePreviewView;   
+    PFColorLitePreviewView *_litePreviewView;
+    UIColor *_tintColor;
 }
+@end
+
+typedef enum UIUserInterfaceStyle : NSInteger {
+    UIUserInterfaceStyleUnspecified,
+    UIUserInterfaceStyleLight,
+    UIUserInterfaceStyleDark
+} UIUserInterfaceStyle;
+
+@interface UITraitCollection (iOS12_13)
+@property (nonatomic, readonly) UIUserInterfaceStyle userInterfaceStyle;
 @end
 
 @interface _UIBackdropViewSettings : NSObject
@@ -20,7 +31,9 @@
 @end
 
 @interface _UIBackdropView : UIView
-- (id)initWithFrame:(CGRect)frame autosizesToFitSuperview:(BOOL)fitsSuperview settings:(_UIBackdropViewSettings *)settings;
+- (id)initWithFrame:(CGRect)frame
+autosizesToFitSuperview:(BOOL)fitsSuperview
+           settings:(_UIBackdropViewSettings *)settings;
 @end
 
 
@@ -29,11 +42,22 @@
 - (id)initWithViewFrame:(CGRect)frame startColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha {
     self = [super init];
 
+    _tintColor = UIColor.blackColor;
     self.view.frame = frame;
 
     if (%c(_UIBackdropView)) {
-        _UIBackdropViewSettings *backSettings = [%c(_UIBackdropViewSettings) settingsForStyle:2010];
-        _blurView = [[%c(_UIBackdropView) alloc] initWithFrame:CGRectZero autosizesToFitSuperview:YES settings:backSettings];
+        int style = 2010;
+        if (@available(iOS 13, *)) {
+            if ([UIScreen mainScreen].traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                _tintColor = UIColor.whiteColor;
+                style = 1100;
+            }
+        }
+
+        _UIBackdropViewSettings *backSettings = [%c(_UIBackdropViewSettings) settingsForStyle:style];
+        _blurView = [[%c(_UIBackdropView) alloc] initWithFrame:CGRectZero
+                                       autosizesToFitSuperview:YES
+                                                      settings:backSettings];
     } else {
         _blurView = [[UIView alloc] initWithFrame:frame];
         _blurView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9f];
@@ -45,31 +69,41 @@
     float width = frame.size.width - padding * 2;
     CGRect haloViewFrame = CGRectMake(padding, padding, width, width);
 
-    _haloView = [[PFHaloHueView alloc] initWithFrame:haloViewFrame minValue:0 maxValue:1 value:startColor.hue delegate:self];
+    _haloView = [[PFHaloHueView alloc] initWithFrame:haloViewFrame
+                                            minValue:0
+                                            maxValue:1
+                                               value:startColor.hue
+                                           tintColor:_tintColor
+                                            delegate:self];
     [self.view addSubview:_haloView];
 
-    const CGRect sliderFrame = CGRectMake(padding,
-                                          haloViewFrame.origin.y + haloViewFrame.size.height + padding / 2,
-                                          width,
-                                          40);
+    CGRect sliderFrame = CGRectMake(padding,
+                                    haloViewFrame.origin.y + haloViewFrame.size.height + padding / 2,
+                                    width,
+                                    40);
 
-    _saturationSlider = [[PFColorLiteSlider alloc] initWithFrame:sliderFrame color:startColor style:PFSliderBackgroundStyleSaturation];
+    _saturationSlider = [[PFColorLiteSlider alloc] initWithFrame:sliderFrame
+                                                           color:startColor
+                                                       tintColor:_tintColor
+                                                           style:PFSliderBackgroundStyleSaturation];
     [self.view addSubview:_saturationSlider];
 
-    CGRect brightnessSliderFrame = sliderFrame;
-    brightnessSliderFrame.origin.y = brightnessSliderFrame.origin.y + brightnessSliderFrame.size.height;
-
-    _brightnessSlider = [[PFColorLiteSlider alloc] initWithFrame:brightnessSliderFrame color:startColor style:PFSliderBackgroundStyleBrightness];
+    sliderFrame.origin.y = sliderFrame.origin.y + sliderFrame.size.height;
+    _brightnessSlider = [[PFColorLiteSlider alloc] initWithFrame:sliderFrame
+                                                           color:startColor
+                                                       tintColor:_tintColor
+                                                           style:PFSliderBackgroundStyleBrightness];
     [self.view addSubview:_brightnessSlider];
 
-    CGRect alphaSliderFrame = brightnessSliderFrame;
-    alphaSliderFrame.origin.y = alphaSliderFrame.origin.y + alphaSliderFrame.size.height;
-
-    _alphaSlider = [[PFColorLiteSlider alloc] initWithFrame:alphaSliderFrame color:startColor style:PFSliderBackgroundStyleAlpha];
+    sliderFrame.origin.y = sliderFrame.origin.y + sliderFrame.size.height;
+    _alphaSlider = [[PFColorLiteSlider alloc] initWithFrame:sliderFrame
+                                                      color:startColor
+                                                   tintColor:_tintColor
+                                                      style:PFSliderBackgroundStyleAlpha];
     [self.view addSubview:_alphaSlider];
 
     _hexButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_hexButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [_hexButton setTitleColor:_tintColor forState:UIControlStateNormal];
     [_hexButton addTarget:self action:@selector(chooseHexColor) forControlEvents:UIControlEventTouchUpInside];
     [_hexButton setTitle:@"#" forState:UIControlStateNormal];
     _hexButton.frame = CGRectMake(self.view.frame.size.width - (25 + 10), 10, 25, 25);
@@ -84,6 +118,7 @@
                                              previewWidth);
 
     _litePreviewView = [[PFColorLitePreviewView alloc] initWithFrame:litePreviewViewFrame
+                                                           tintColor:_tintColor
                                                            mainColor:startColor
                                                        previousColor:startColor];
     [self.view insertSubview:_litePreviewView belowSubview:_haloView];

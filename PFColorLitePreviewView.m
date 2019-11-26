@@ -1,24 +1,31 @@
 #import "PFColorLitePreviewView.h"
 #import <CoreGraphics/CoreGraphics.h>
 
-@implementation PFColorLitePreviewView
+@implementation PFColorLitePreviewView {
+    UIColor *_tintColor;
+}
 
 - (void)updateWithColor:(UIColor *)color {
     self.mainColor = color;
     [self setNeedsDisplay];
 }
 
-- (void)setMainColor:(UIColor *)mainColor previousColor:(UIColor *)prevColor {
+- (void)setMainColor:(UIColor *)mainColor
+       previousColor:(UIColor *)prevColor {
     self.mainColor = mainColor;
     if (prevColor)
         self.previousColor = prevColor;
 }
 
-- (id)initWithFrame:(CGRect)frame mainColor:(UIColor *)mainColor previousColor:(UIColor *)prevColor {
+- (id)initWithFrame:(CGRect)frame
+          tintColor:(UIColor *)tintColor
+          mainColor:(UIColor *)mainColor
+      previousColor:(UIColor *)prevColor {
     self = [super initWithFrame:frame];
 
     if (self) {
         self.mainColor = mainColor;
+        _tintColor = tintColor;
 
         if (prevColor)
             self.previousColor = prevColor;
@@ -43,7 +50,9 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextScaleCTM(context, 1, 1);
     CGContextSetLineWidth(context, halfWidth / 5);
-    CGContextSetRGBStrokeColor(context, 0.0f, 0.0f, 0.0f, 0.3f);
+    CGFloat red, green, blue;
+    [_tintColor getRed:&red green:&green blue:&blue alpha:nil];
+    CGContextSetRGBStrokeColor(context, red, green, blue, 0.3f);
 
     CGContextAddArc(context, halfWidth, halfHeight, oneThirdWidth, 0, twoPi, 1);
     CGContextDrawPath(context, kCGPathStroke);
@@ -53,16 +62,12 @@
 
     int kHeight = 12;
     int kWidth = 12;
-    NSArray *colors = [NSArray arrayWithObjects:
-                        [UIColor whiteColor],
-                        [UIColor grayColor],
-                        nil];
-
+    NSArray *colors = @[UIColor.whiteColor, UIColor.grayColor];
     for (int row = 0; row < rect.size.height; row += kHeight) {
         int index = row % (kHeight * 2) == 0 ? 0 : 1;
 
         for (int col = 0; col < rect.size.width; col += kWidth) {
-            [[colors objectAtIndex:index++ % 2] setFill];
+            [colors[index++ % 2] setFill];
             UIRectFill(CGRectMake(col, row, kWidth, kHeight));
         }
     }

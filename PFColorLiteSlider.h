@@ -8,7 +8,10 @@ typedef enum PFSliderBackgroundStyle : NSUInteger {
 
 @interface PFColorLiteSlider : UIView
 @property (nonatomic, retain) UISlider *slider;
-- (id)initWithFrame:(CGRect)frame color:(UIColor *)c style:(PFSliderBackgroundStyle)s;
+- (id)initWithFrame:(CGRect)frame
+              color:(UIColor *)color
+          tintColor:(UIColor *)tintColor
+              style:(PFSliderBackgroundStyle)style;
 - (void)updateGraphicsWithColor:(UIColor *)color;
 - (void)updateGraphicsWithColor:(UIColor *)color hue:(CGFloat)hue;
 @end
