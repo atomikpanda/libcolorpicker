@@ -26,7 +26,7 @@
 }
 
 - (void)setLCPOptions {
-    self.options = [self.specifier properties][@"libcolorpicker"];
+    self.options = [[self.specifier properties][@"libcolorpicker"] mutableCopy];
     if (!self.options)
         self.options = [NSMutableDictionary dictionary];
 
