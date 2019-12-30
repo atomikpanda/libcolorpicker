@@ -32,11 +32,12 @@
 
     if (!self.options[kPostNotification]) {
         NSString *option = [NSString stringWithFormat:@"%@_%@_libcolorpicker_refreshn",
-                                                          self.options[kDefaults], self.options[kKey]];
+                                                      self.options[kDefaults], self.options[kKey]];
         [self.options setObject:option forKey:kPostNotification];
     }
 
-    [(PSSpecifier *)self.specifier setProperty:self.options[kPostNotification] forKey:@"NotificationListener"];
+    [(PSSpecifier *)self.specifier setProperty:self.options[kPostNotification]
+                                        forKey:@"NotificationListener"];
 }
 
 - (UIColor *)previewColor {
