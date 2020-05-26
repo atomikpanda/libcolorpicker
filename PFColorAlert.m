@@ -4,7 +4,10 @@
 #import "UIKitAdditions.h"
 #import <objc/runtime.h>
 
-extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage, NSString *twitterUsername);
+extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
+                                      NSString *title,
+                                      NSString *welcomeMessage,
+                                      NSString *twitterUsername);
 #define degreesToRadians(x) ((x) * M_PI / 180.0)
 
 @interface PFColorAlert ()
@@ -135,7 +138,10 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
         NSString *kDidShow = @"didShowWelcomeScreen";
         if (!dict[kDidShow]) {
-            LCPShowTwitterFollowAlert(@"Welcome to libcolorpicker!", @"Hey there! Thanks for installing libcolorpicker (the color picker library for devs)! If you'd like to follow our team on Twitter for more updates, tweak giveaways and other cool stuff, hit the button below!", @"PixelFireDev");
+            LCPShowTwitterFollowAlert(self.mainViewController,
+                                      @"Welcome to libcolorpicker!",
+                                      @"Hey there! Thanks for installing libcolorpicker (the color picker library for devs)! If you'd like to follow our team on Twitter for more updates, tweak giveaways and other cool stuff, hit the button below!",
+                                      @"PixelFireDev");
             [dict setObject:@YES forKey:kDidShow];
             [dict writeToFile:prefPath atomically:YES];
         }
@@ -147,12 +153,14 @@ extern void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage,
 
             NSRange range = [pasteboard rangeOfString:@"^#(?:[0-9a-fA-F]{3}){1,2}$" options:NSRegularExpressionSearch];
             if (range.location != NSNotFound)
-                [self.mainViewController presentPasteHexStringQuestion:pasteboard];   
+                [self.mainViewController presentPasteHexStringQuestion:pasteboard];
         }
     }];
 }
 
-- (void)showWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha completion:(void (^)(UIColor *pickedColor))completionBlock {
+- (void)showWithStartColor:(UIColor *)startColor
+                 showAlpha:(BOOL)showAlpha
+                completion:(void (^)(UIColor *pickedColor))completionBlock {
     UIAlertView *deprecated = [[UIAlertView alloc] initWithTitle:@"libcolorpicker" message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it."
                                                         delegate:nil
                                                cancelButtonTitle:nil

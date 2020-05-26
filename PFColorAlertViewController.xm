@@ -4,7 +4,7 @@
 #import "PFColorLiteSlider.h"
 #import "UIColor+PFColor.h"
 
-@interface PFColorAlertViewController () <PFHaloHueViewDelegate> { 
+@interface PFColorAlertViewController () <PFHaloHueViewDelegate> {
     PFHaloHueView *_haloView;
     UIView *_blurView;
     UIButton *_hexButton;
@@ -16,11 +16,13 @@
 }
 @end
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 100000
 typedef enum UIUserInterfaceStyle : NSInteger {
     UIUserInterfaceStyleUnspecified,
     UIUserInterfaceStyleLight,
     UIUserInterfaceStyleDark
 } UIUserInterfaceStyle;
+#endif
 
 @interface UITraitCollection (iOS12_13)
 @property (nonatomic, readonly) UIUserInterfaceStyle userInterfaceStyle;
@@ -145,8 +147,6 @@ autosizesToFitSuperview:(BOOL)fitsSuperview
     [_brightnessSlider updateGraphicsWithColor:primary];
     [_alphaSlider updateGraphicsWithColor:primary];
 
-    // THIS LINE SHOULD BE ACTIVE BUT DISABLED IT FOR NOW
-    // UNTIL WE CAN GET THE HUE SLIDER WORKING
     [_haloView setValue:primary.hue];
 }
 
@@ -183,36 +183,88 @@ autosizesToFitSuperview:(BOOL)fitsSuperview
 }
 
 - (void)chooseHexColor {
-    UIAlertView *prompt = [[UIAlertView alloc] initWithTitle:@"Hex Color"
-                                                     message:@"Enter a hex color or copy it to your pasteboard."
-                                                    delegate:self
-                                           cancelButtonTitle:@"Close"
-                                           otherButtonTitles:@"Set", @"Copy", nil];
-    prompt.delegate = self;
-    [prompt setAlertViewStyle:UIAlertViewStylePlainTextInput];
-    [[prompt textFieldAtIndex:0] setText:[UIColor hexFromColor:[self getColor]]];
-    [prompt show];
+    NSString *title = @"Hex Color";
+    NSString *message = @"Enter a hex color or copy it to your pasteboard.";
+    NSString *cancelText = @"Close";
+    NSString *setText = @"Set";
+    NSString *copyText = @"Copy";
+
+    if (%c(UIAlertController)) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+                                                                                 message:message
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+            textField.placeholder = @"#123456";
+        }];
+
+        // Set
+        [alertController addAction:[UIAlertAction actionWithTitle:setText
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction *_Nonnull action) {
+            NSString *text = alertController.textFields.firstObject.text;
+            UIColor *color;
+            if ([text hasPrefix:@"#"] && (color = [UIColor PF_colorWithHex:text]))
+                [self setPrimaryColor:color];
+        }]];
+
+        // Copy
+        [alertController addAction:[UIAlertAction actionWithTitle:copyText
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction *_Nonnull action) {
+            [[UIPasteboard generalPasteboard] setString:[UIColor hexFromColor:[self getColor]]];
+        }]];
+
+        [alertController addAction:[UIAlertAction actionWithTitle:cancelText
+                                                            style:UIAlertActionStyleCancel
+                                                          handler:nil]];
+
+        [self presentViewController:alertController animated:YES completion:nil];
+    } else {
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        UIAlertView *prompt = [[UIAlertView alloc] initWithTitle:title
+                                                         message:message
+                                                        delegate:self
+                                               cancelButtonTitle:cancelText
+                                               otherButtonTitles:setText, copyText, nil];
+        prompt.delegate = self;
+        [prompt setAlertViewStyle:UIAlertViewStylePlainTextInput];
+        [[prompt textFieldAtIndex:0] setText:[UIColor hexFromColor:[self getColor]]];
+        [prompt show];
+        #pragma clang diagnostic pop
+    }
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
-        if ([[alertView textFieldAtIndex:0].text hasPrefix:@"#"] && [UIColor PF_colorWithHex:[alertView textFieldAtIndex:0].text])
-            [self setPrimaryColor:[UIColor PF_colorWithHex:[alertView textFieldAtIndex:0].text]];
+        NSString *text = [alertView textFieldAtIndex:0].text;
+        UIColor *color;
+        if ([text hasPrefix:@"#"] && (color = [UIColor PF_colorWithHex:text]))
+            [self setPrimaryColor:color];
     } else if (buttonIndex == 2) {
         [[UIPasteboard generalPasteboard] setString:[UIColor hexFromColor:[self getColor]]];
     }
 }
+#pragma clang diagnostic pop
 
 - (void)presentPasteHexStringQuestion:(NSString *)pasteboard {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Detected pasted color" message:@"It seems like your pasteboard consists of a hex color. Would you like to use it?" preferredStyle:UIAlertControllerStyleAlert];
-    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Detected pasted color"
+                                                                             message:@"It seems like your pasteboard consists of a hex color. Would you like to use it?"
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+
     // Set from hex color
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Use pasteboard" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Use pasteboard"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *_Nonnull action) {
         [self setPrimaryColor:[UIColor PF_colorWithHex:pasteboard]];
     }]];
-    
-    [alertController addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleCancel handler:nil]];
-    
+
+    [alertController addAction:[UIAlertAction actionWithTitle:@"No"
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:nil]];
+
     [self presentViewController:alertController animated:YES completion:nil];
 }
 

@@ -314,6 +314,8 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
     [super viewDidLoad];
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 - (void)chooseHexColor {
     UIAlertView *prompt = [[UIAlertView alloc] initWithTitle:@"Hex Color" message:@"Enter a hex color or copy it to your pasteboard." delegate:self cancelButtonTitle:@"Close" otherButtonTitles:@"Set", @"Copy", nil];
     prompt.delegate = self;
@@ -330,6 +332,7 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
         [[UIPasteboard generalPasteboard] setString:[UIColor hexFromColor:_pushedView.backgroundColor]];
     }
 }
+#pragma clang diagnostic pop
 
 + (UIImage *)thumbImageWithColor:(UIColor *)color letter:(unichar)letter {
     CGFloat size = 28.0f;
@@ -349,10 +352,15 @@ UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *f
     CGContextScaleCTM(context, 1, -1);
     CGContextSetRGBFillColor(context, 0.0f, 0.0f, 0.0f, 1.0f);
     CGContextSetLineWidth(context, 2.0f);
-    CGContextSelectFont(context, "Helvetica Neue Bold", 15.0f, kCGEncodingMacRoman);
+
     CGContextSetCharacterSpacing(context, 1.7f);
     CGContextSetTextDrawingMode(context, kCGTextFill);
+
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    CGContextSelectFont(context, "Helvetica Neue Bold", 15.0f, kCGEncodingMacRoman);
     CGContextShowTextAtPoint(context, 10, 15, [NSString stringWithCharacters:&letter length:1].UTF8String, 1);
+    #pragma clang diagnostic pop
 
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

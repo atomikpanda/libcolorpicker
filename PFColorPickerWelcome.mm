@@ -95,14 +95,43 @@ extern "C" void LCPOpenTwitterUsername(NSString *username);
 
 @end
 
-extern "C" void LCPShowTwitterFollowAlert(NSString *title, NSString *welcomeMessage, NSString *twitterUsername) {
-    LCPWelcomeTwitterHandler *handler = [LCPWelcomeTwitterHandler new];
-    handler.username = twitterUsername;
-    UIAlertView *welcomeAlert = [[UIAlertView alloc] initWithTitle:title
-                                                           message:welcomeMessage ? welcomeMessage : @"Hey there! Thanks for installing my tweak! If you'd like to follow me on Twitter for more updates, tweak giveaways and other cool stuff, hit the button below!" delegate:handler cancelButtonTitle:@"No thanks!" otherButtonTitles:@"I'd love to!", nil];
-    welcomeAlert.tag = 1;
-    objc_setAssociatedObject(welcomeAlert, @selector(show), handler, OBJC_ASSOCIATION_RETAIN);
-    [welcomeAlert show];
+extern "C" void LCPShowTwitterFollowAlert(UIViewController *viewController,
+                                          NSString *title,
+                                          NSString *welcomeMessage,
+                                          NSString *twitterUsername) {
+    NSString *okChoice = @"I'd love to!";
+    NSString *noThanks = @"No thanks";
+
+    if (UIAlertController.class) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:welcomeMessage
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+
+        UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:okChoice
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction *action) {
+            LCPOpenTwitterUsername(twitterUsername);
+        }];
+
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:noThanks
+                                                               style:UIAlertActionStyleCancel
+                                                             handler:nil];
+
+        [alert addAction:defaultAction];
+        [alert addAction:cancelAction];
+        [viewController presentViewController:alert animated:YES completion:nil];
+    } else {
+        LCPWelcomeTwitterHandler *handler = [LCPWelcomeTwitterHandler new];
+        handler.username = twitterUsername;
+        UIAlertView *welcomeAlert = [[UIAlertView alloc] initWithTitle:title
+                                                               message:welcomeMessage
+                                                              delegate:handler
+                                                     cancelButtonTitle:noThanks
+                                                     otherButtonTitles:okChoice, nil];
+        welcomeAlert.tag = 1;
+        objc_setAssociatedObject(welcomeAlert, @selector(show), handler, OBJC_ASSOCIATION_RETAIN);
+        [welcomeAlert show];
+    }
 }
 
 extern "C" void LCPOpenTwitterUsername(NSString *username) {
