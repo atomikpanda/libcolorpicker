@@ -1,9 +1,9 @@
 Package: org.thebigboss.libcolorpicker
 Name: libcolorpicker
 Depends: firmware (>= 6.0)
-Version: 1.6.8
-Replaces: me.nepeta.libcolorpicker
-Provides: me.nepeta.libcolorpicker
+Version: 1.6.9
+Replaces: me.nepeta.libcolorpicker, ws.hbang.alderis
+Provides: me.nepeta.libcolorpicker, ws.hbang.alderis
 Architecture: iphoneos-arm
 Description: An awesome library of some sort!!
 Maintainer: Bailey Seymour
