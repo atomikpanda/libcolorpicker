@@ -39,7 +39,7 @@ UIColor *colorFromHex(NSString *hexString);
 #pragma mark Components
 - (CGFloat)alpha {
     CGFloat a;
-    [self getWhite:NULL alpha:&a];
+    [self getRed:NULL green:NULL blue:NULL alpha:&a];
     return a;
 }
 
