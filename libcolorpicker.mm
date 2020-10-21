@@ -166,6 +166,20 @@ UIColor *LCPParseColorString(NSString *colorStringFromPrefs, NSString *colorStri
     //fallback
     UIColor *fallbackColor = colorFromHex(colorStringFallback);
     CGFloat currentAlpha = 1.0f;
+    NSString *value = colorStringFallback;
+    if (value && value.length){
+        NSArray *colorAndOrAlpha = [value componentsSeparatedByString:@":"];
+        if ([value rangeOfString:@":"].location != NSNotFound) {
+            if ([colorAndOrAlpha objectAtIndex:1])
+                currentAlpha = [colorAndOrAlpha[1] floatValue];
+            else
+                currentAlpha = 1.0f;
+        }
+        NSString *color = colorAndOrAlpha[0];
+        fallbackColor = [colorFromHex(color) colorWithAlphaComponent:currentAlpha];
+    }
+    
+    currentAlpha = 1.0f;
 
     if (colorStringFromPrefs && colorStringFromPrefs.length > 0) {
         NSString *value = colorStringFromPrefs;
