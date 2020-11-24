@@ -9,7 +9,6 @@
 @property (nonatomic, retain) PFColorAlert *alert;
 @end
 
-#define kPostNotification @"PostNotification"
 #define kKey @"key"
 #define kDefaults @"defaults"
 #define kAlpha @"alpha"
@@ -26,6 +25,8 @@
 }
 
 - (void)setLCPOptions {
+    [[self.specifier properties] addEntriesFromDictionary:[self.specifier properties][@"libcolorpicker"]];
+
     self.options = [[self.specifier properties][@"libcolorpicker"] mutableCopy];
     if (!self.options)
         self.options = [NSMutableDictionary dictionary];
@@ -41,37 +42,20 @@
 }
 
 - (UIColor *)previewColor {
-    NSString *plistPath =  [NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.options[kDefaults]];
-
-    NSMutableDictionary *prefsDict = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
-    if (!prefsDict)
-        prefsDict = [NSMutableDictionary dictionary];
-
-    return LCPParseColorString([prefsDict objectForKey:self.options[kKey]], self.options[kFallback]); // this color will be used at startup
-}
-
-- (void)didMoveToSuperview {
-    [self setLCPOptions];
-
-    [super didMoveToSuperview];
-
-    [self.specifier setTarget:self];
-    [self.specifier setButtonAction:@selector(openColorAlert)];
+    if(!self.specifier) return [UIColor clearColor];
+    SEL sel=((PSSpecifier*)self.specifier)->getter;
+    id target=[self viewController];
+    if(!target ||![target respondsToSelector:sel]) return [UIColor clearColor];
+    id value=((id (*)(id, SEL, id))[target methodForSelector:sel])(target, sel, self.specifier);
+    return LCPParseColorString(value, self.options[kFallback]); // this color will be used at startup
 }
 
 - (void)openColorAlert {
     if (!self.options[kDefaults] || !self.options[kKey] || !self.options[kFallback])
         return;
+    
+    UIColor *startColor = [self previewColor]; // this color will be used at startup
 
-    // HBLogDebug(@"Loading with options %@", self.options);
-
-    NSString *plistPath =  [NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", self.options[kDefaults]];
-
-    NSMutableDictionary *prefsDict = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
-    if (!prefsDict)
-        prefsDict = [NSMutableDictionary dictionary];
-
-    UIColor *startColor = LCPParseColorString([prefsDict objectForKey:self.options[kKey]], self.options[kFallback]); // this color will be used at startup
     BOOL showAlpha = self.options[kAlpha] ? [self.options[kAlpha] boolValue] : NO;
     self.alert = [PFColorAlert colorAlertWithStartColor:startColor
                                               showAlpha:showAlpha];
@@ -84,17 +68,21 @@
         // ^^ parse fallback to ^red
         // save hexString to your plist if desired
 
-        [prefsDict setObject:hexString forKey:self.options[kKey]];
-        [prefsDict writeToFile:plistPath atomically:YES];
+        SEL sel=((PSSpecifier*)self.specifier)->setter;
+        id target=[self viewController];
+        ((void (*)(id, SEL, id, id))[target methodForSelector:sel])(target, sel, hexString, self.specifier);
+        [self updateCellDisplay];
 
-        NSString *notification = self.options[kPostNotification];
-        if (notification)
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
-                            (CFStringRef)notification,
-                            (CFStringRef)notification,
-                            NULL,
-                            YES);
     }];
+}
+
+- (void)didMoveToSuperview {
+    [self setLCPOptions];
+
+    [super didMoveToSuperview];
+
+    [self.specifier setTarget:self];
+    [self.specifier setButtonAction:@selector(openColorAlert)];
 }
 
 - (SEL)action {
@@ -113,4 +101,19 @@
     return self;
 }
 
+-(BOOL)canReload{
+    return YES;
+}
+
+-(void)reloadWithSpecifier:(id)specifier animated:(BOOL)animated{
+    [self updateCellDisplay];
+}
+
+- (id)viewController{
+    id ret=self;
+    while((ret=[ret nextResponder])){
+        if([ret isKindOfClass:[UIViewController class]]) return ret;
+    }
+    return nil;
+}
 @end
