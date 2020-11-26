@@ -24,9 +24,6 @@ $(LIBRARY_NAME)_FRAMEWORKS = UIKit CoreGraphics Foundation Social Accounts
 $(LIBRARY_NAME)_PRIVATE_FRAMEWORKS = Preferences
 $(LIBRARY_NAME)_LDFLAGS += -Wl,-segalign,4000
 $(LIBRARY_NAME)_CFLAGS = -fobjc-arc -Wno-error=deprecated-declarations
-PFColorAlert.m_CFLAGS = -fno-objc-arc
-PFSimpleLiteColorCell.mm_CFLAGS = -fno-objc-arc
-PFLiteColorCell.mm_CFLAGS = -fno-objc-arc
 
 after-install::
 	install.exec "killall -9 Preferences"
