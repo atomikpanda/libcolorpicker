@@ -4,7 +4,6 @@
 #import "PSSpecifier.h"
 
 @interface PFSimpleLiteColorCell()
-- (void)openColorAlert;
 @property (nonatomic, retain) NSMutableDictionary *options;
 @property (nonatomic, retain) PFColorAlert *alert;
 @end
@@ -28,17 +27,7 @@
     [[self.specifier properties] addEntriesFromDictionary:[self.specifier properties][@"libcolorpicker"]];
 
     self.options = [[self.specifier properties][@"libcolorpicker"] mutableCopy];
-    if (!self.options)
-        self.options = [NSMutableDictionary dictionary];
-
-    if (!self.options[kPostNotification]) {
-        NSString *option = [NSString stringWithFormat:@"%@_%@_libcolorpicker_refreshn",
-                                                      self.options[kDefaults], self.options[kKey]];
-        [self.options setObject:option forKey:kPostNotification];
-    }
-
-    [(PSSpecifier *)self.specifier setProperty:self.options[kPostNotification]
-                                        forKey:@"NotificationListener"];
+    if (!self.options) self.options = [NSMutableDictionary dictionary];
 }
 
 - (UIColor *)previewColor {

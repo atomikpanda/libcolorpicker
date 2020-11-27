@@ -1,6 +1,18 @@
 # libcolorpicker
 [<img src="http://git.pixelfiredev.com/ci/projects/3/status.png?ref=master">](http://git.pixelfiredev.com/ci/projects/3?ref=master)
 
+# The re-new libcolorpicker:
+
+#### changelog
+* Using native method to read/write pref value, now you can implement your own getter/setter.
+* Providing native reload interface, now cell won't reproduce when reloading specifier.
+* fix a bug which cause alpha of fallback is always 1.
+* fix a bug which cause alpha is always 0 on some low version device.
+* fix building issues with specific sdk.
+* fully use arc.
+* add a script by which you can test on simulator.
+* remove some legacy code to lower size of package.
+
 # The new libcolorpicker:
 
 The new libcolorpicker `PFColorAlert` is focused on being lightweight, portable, and easy to use.

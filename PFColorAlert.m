@@ -82,10 +82,10 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
     [self.darkeningWindow makeKeyAndVisible];
 
     self.popWindow.rootViewController = self.mainViewController;
-#ifndef DEBUG
+
     self.darkeningWindow.windowLevel = UIWindowLevelAlert - 2;
     self.popWindow.windowLevel = UIWindowLevelAlert - 1;
-#endif
+
     self.popWindow.backgroundColor = UIColor.clearColor;
     self.popWindow.hidden = NO;
     self.popWindow.alpha = 0.0f;
@@ -158,11 +158,7 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
 - (void)showWithStartColor:(UIColor *)startColor
                  showAlpha:(BOOL)showAlpha
                 completion:(void (^)(UIColor *pickedColor))completionBlock {
-    UIAlertView *deprecated = [[UIAlertView alloc] initWithTitle:@"libcolorpicker" message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it."
-                                                        delegate:nil
-                                               cancelButtonTitle:nil
-                                               otherButtonTitles:@"OK", nil];
-    [deprecated show];
+
 }
 
 - (void)close {
