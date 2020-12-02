@@ -15,7 +15,7 @@
 
 @implementation PFSimpleLiteColorCell
 
-- (id)initWithStyle:(long long)style reuseIdentifier:(id)identifier specifier:(PSSpecifier *)specifier {
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(id)identifier specifier:(PSSpecifier *)specifier {
     self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
 
     [self setLCPOptions];

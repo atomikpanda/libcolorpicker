@@ -88,6 +88,6 @@
 - (void)longPressed:(id)arg1;
 - (_Bool)canBecomeFirstResponder;
 - (void)dealloc;
-- (id)initWithStyle:(long long)arg1 reuseIdentifier:(id)arg2 specifier:(id)arg3;
+- (id)initWithStyle:(UITableViewCellStyle)arg1 reuseIdentifier:(id)arg2 specifier:(id)arg3;
 
 @end
