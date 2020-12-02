@@ -26,15 +26,16 @@ $(LIBRARY_NAME)_LDFLAGS += -Wl,-segalign,4000
 $(LIBRARY_NAME)_CFLAGS = -fobjc-arc -Wno-error=deprecated-declarations
 PFColorPickerWelcome.mm_CFLAGS = -Wno-deprecated-declarations
 
-after-install::
-	install.exec "killall -9 Preferences"
-
 include $(THEOS)/makefiles/common.mk
 include $(THEOS_MAKE_PATH)/library.mk
 ifdef SIMULATOR
 include $(THEOS)/makefiles/locatesim.mk
 endif
 
+after-install::
+	install.exec "killall -9 Preferences"
+
+	
 ifneq (,$(filter x86_64 i386,$(ARCHS)))
 setup:: all
 	@[ -d $(PL_SIMULATOR_BUNDLES_PATH) ] || sudo mkdir -p $(PL_SIMULATOR_BUNDLES_PATH)
