@@ -10,14 +10,7 @@ else
 	endif
 endif
 
-
-
-ifdef SIMULATOR
-LIBRARY_NAME = libcolorpicker-sim
-else
 LIBRARY_NAME = libcolorpicker
-endif
-
 
 $(LIBRARY_NAME)_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorAlert.m PFColorAlertViewController.xm PFHaloHueView.m PFHaloKnobView.m PFColorLitePreviewView.m PFColorLiteSlider.m PFLiteColorCell.mm PFSimpleLiteColorCell.mm PFColorPickerWelcome.mm QMDLPFSimpleLiteColorCell.mm
 $(LIBRARY_NAME)_FRAMEWORKS = UIKit CoreGraphics Foundation Social Accounts
