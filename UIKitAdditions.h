@@ -1,3 +1,4 @@
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 130000
 @interface UIScene : NSObject
 @end
 
@@ -6,9 +7,10 @@
 @end
 
 @interface UIWindow (NewiOSMethods)
--(instancetype) initWithWindowScene:(UIScene *)scene;
+- (instancetype)initWithWindowScene:(UIWindowScene *)windowScene;
 @end
 
 @interface UIApplication (NewiOSMethods)
 -(id)connectedScenes;
 @end
+#endif

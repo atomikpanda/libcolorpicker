@@ -44,7 +44,7 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
     if (@available(iOS 13, *)) {
         NSSet<UIScene *> *connectedScenes = [[UIApplication sharedApplication] connectedScenes];
         UIScene *firstScene = [[connectedScenes allObjects] objectAtIndex:0];
-        self.darkeningWindow = [[UIWindow alloc] initWithWindowScene:firstScene];
+        self.darkeningWindow = [[UIWindow alloc] initWithWindowScene:(UIWindowScene*)firstScene];
         self.darkeningWindow.frame = winFrame;
     } else {
         self.darkeningWindow = [[UIWindow alloc] initWithFrame:winFrame];
@@ -62,7 +62,7 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
     if (@available(iOS 13, *)) {
         NSSet<UIScene *> *connectedScenes = [[UIApplication sharedApplication] connectedScenes];
         UIScene *firstScene = [[connectedScenes allObjects] objectAtIndex:0];
-        self.popWindow = [[UIWindow alloc] initWithWindowScene:firstScene];
+        self.popWindow = [[UIWindow alloc] initWithWindowScene:(UIWindowScene*)firstScene];
         self.popWindow.frame = winFrame;
     } else {
         self.popWindow = [[UIWindow alloc] initWithFrame:winFrame];
