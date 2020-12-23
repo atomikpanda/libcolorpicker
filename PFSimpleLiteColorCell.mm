@@ -57,6 +57,13 @@
         // ^^ parse fallback to ^red
         // save hexString to your plist if desired
 
+        {
+            SEL sel=((PSSpecifier*)self.specifier)->getter;
+            id target=[self viewController];
+            id value=((id (*)(id, SEL, id))[target methodForSelector:sel])(target, sel, self.specifier);
+            if([value isEqualToString:hexString]) return;
+        }
+        
         SEL sel=((PSSpecifier*)self.specifier)->setter;
         id target=[self viewController];
         ((void (*)(id, SEL, id, id))[target methodForSelector:sel])(target, sel, hexString, self.specifier);
