@@ -63,7 +63,7 @@
             id value=((id (*)(id, SEL, id))[target methodForSelector:sel])(target, sel, self.specifier);
             if([value isEqualToString:hexString]) return;
         }
-        
+
         SEL sel=((PSSpecifier*)self.specifier)->setter;
         id target=[self viewController];
         ((void (*)(id, SEL, id, id))[target methodForSelector:sel])(target, sel, hexString, self.specifier);
@@ -102,6 +102,7 @@
 }
 
 -(void)reloadWithSpecifier:(id)specifier animated:(BOOL)animated{
+    [self performSelector:@selector(setSpecifier:) withObject:specifier];
     [self updateCellDisplay];
 }
 
