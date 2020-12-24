@@ -3,7 +3,7 @@
 @end
 
 @interface UIWindowScene
-@property (nonatomic, retain) NSSet<UIWindow *> *windows;
+@property (nonatomic, retain) NSArray<UIWindow *> *windows;
 @end
 
 @interface UIWindow (NewiOSMethods)
