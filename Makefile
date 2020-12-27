@@ -1,6 +1,5 @@
 ifdef SIMULATOR
-TARGET = simulator:clang:11.2:9.0
-ARCHS = x86_64
+TARGET = simulator:clang:11.2:8.0
 else
 	TARGET = iphone:clang:11.2:7.0
 	ifneq ($(debug),0)
@@ -28,20 +27,16 @@ endif
 after-install::
 	install.exec "killall -9 Preferences"
 
-	
-ifneq (,$(filter x86_64 i386,$(ARCHS)))
 setup:: all
-	@[ -d $(PL_SIMULATOR_BUNDLES_PATH) ] || sudo mkdir -p $(PL_SIMULATOR_BUNDLES_PATH)
-	@[ -d $(PL_SIMULATOR_PLISTS_PATH) ] || sudo mkdir -p $(PL_SIMULATOR_PLISTS_PATH)
 	@[ -d $(PL_SIMULATOR_ROOT)/usr/lib ] || sudo mkdir -p $(PL_SIMULATOR_ROOT)/usr/lib
+	@sudo rm -f $(PL_SIMULATOR_ROOT)/usr/lib/$(LIBRARY_NAME).dylib
 	@sudo cp -v $(THEOS_OBJ_DIR)/$(LIBRARY_NAME).dylib $(PL_SIMULATOR_ROOT)/usr/lib
 	@sudo codesign -f -s - $(PL_SIMULATOR_ROOT)/usr/lib/$(LIBRARY_NAME).dylib
-	@sudo ln -s $(PL_SIMULATOR_ROOT)/usr/lib/$(LIBRARY_NAME).dylib /usr/lib/$(LIBRARY_NAME).dylib ||true
-	@resim 
-endif
+	@[ -f /usr/lib/$(LIBRARY_NAME).dylib ] || sudo ln -s $(PL_SIMULATOR_ROOT)/usr/lib/$(LIBRARY_NAME).dylib /usr/lib/$(LIBRARY_NAME).dylib || true
+	@[ -f /usr/lib/$(LIBRARY_NAME).dylib ] || echo -e "\x1b[1;35m>> warning: create symlink in /usr/lib yourself if needed\x1b[m" || true
+	@resim
 
 remove:: 
-	@[ ! -d $(PL_SIMULATOR_BUNDLES_PATH) ] || sudo rm -r $(PL_SIMULATOR_BUNDLES_PATH)
-	@[ ! -d $(PL_SIMULATOR_PLISTS_PATH) ] || sudo rm -r $(PL_SIMULATOR_PLISTS_PATH)
 	@sudo rm -f $(PL_SIMULATOR_ROOT)/usr/lib/$(LIBRARY_NAME).dylib
-	@resim 
+	@sudo rm -f /usr/lib/$(LIBRARY_NAME).dylib
+	@resim
