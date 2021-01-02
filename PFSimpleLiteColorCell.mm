@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import <objc/runtime.h>
 #import "libcolorpicker.h"
 #import "PSSpecifier.h"
 
@@ -8,6 +9,7 @@
 @property (nonatomic, retain) PFColorAlert *alert;
 @end
 
+#define kPostNotification @"PostNotification"
 #define kKey @"key"
 #define kDefaults @"defaults"
 #define kAlpha @"alpha"
@@ -25,8 +27,18 @@
 
 - (void)setLCPOptions {
     [[self.specifier properties] addEntriesFromDictionary:[self.specifier properties][@"libcolorpicker"]];
+    if([self isKindOfClass:objc_getClass("HBColorPickerTableCell")]){
+        self.options = [NSMutableDictionary dictionary];
+        self.options[kDefaults]=[self.specifier properties][kDefaults];
+        self.options[kKey]=[self.specifier properties][kKey];
+        self.options[kAlpha]=[self.specifier properties][@"showAlphaSlider"];
+        self.options[kFallback]=[self.specifier properties][@"default"];
+        self.options[kPostNotification]=[self.specifier properties][kPostNotification];
+    }
+    else{
+        self.options = [[self.specifier properties][@"libcolorpicker"] mutableCopy];
+    }
 
-    self.options = [[self.specifier properties][@"libcolorpicker"] mutableCopy];
     if (!self.options) self.options = [NSMutableDictionary dictionary];
 }
 
