@@ -11,11 +11,11 @@ endif
 
 LIBRARY_NAME = libcolorpicker
 
-$(LIBRARY_NAME)_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorAlert.m PFColorAlertViewController.xm PFHaloHueView.m PFHaloKnobView.m PFColorLitePreviewView.m PFColorLiteSlider.m PFLiteColorCell.mm PFSimpleLiteColorCell.mm PFColorPickerWelcome.mm PFSimpleLiteColorCell_.mm
-$(LIBRARY_NAME)_FRAMEWORKS = UIKit CoreGraphics Foundation Social Accounts
-$(LIBRARY_NAME)_PRIVATE_FRAMEWORKS = Preferences
-$(LIBRARY_NAME)_LDFLAGS += -Wl,-segalign,4000
-$(LIBRARY_NAME)_CFLAGS = -fobjc-arc -Wno-error=deprecated-declarations
+libcolorpicker_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorAlert.m PFColorAlertViewController.xm PFHaloHueView.m PFHaloKnobView.m PFColorLitePreviewView.m PFColorLiteSlider.m PFLiteColorCell.mm PFSimpleLiteColorCell.mm PFColorPickerWelcome.mm PFSimpleLiteColorCell_.mm
+libcolorpicker_FRAMEWORKS = UIKit CoreGraphics Foundation Social Accounts
+libcolorpicker_PRIVATE_FRAMEWORKS = Preferences
+libcolorpicker_LDFLAGS += -Wl,-segalign,4000
+libcolorpicker_CFLAGS = -fobjc-arc -Wno-error=deprecated-declarations
 PFColorPickerWelcome.mm_CFLAGS = -Wno-deprecated-declarations
 
 include $(THEOS)/makefiles/common.mk
