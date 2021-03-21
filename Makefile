@@ -20,15 +20,12 @@ PFColorPickerWelcome.mm_CFLAGS = -Wno-deprecated-declarations
 
 include $(THEOS)/makefiles/common.mk
 include $(THEOS_MAKE_PATH)/library.mk
-ifdef SIMULATOR
-include $(THEOS)/makefiles/locatesim.mk
-endif
 
 after-install::
 	install.exec "killall -9 Preferences"
 
 setup::
-	@[ -f /usr/lib/$(LIBRARY_NAME).dylib ] || sudo ln -s $(PL_SIMJECT_ROOT)/usr/lib/$(LIBRARY_NAME).dylib /usr/lib/$(LIBRARY_NAME).dylib || true
+	@[ -f /usr/lib/$(LIBRARY_NAME).dylib ] || sudo ln -s /opt/simject/usr/lib/$(LIBRARY_NAME).dylib /usr/lib/$(LIBRARY_NAME).dylib || true
 	@[ -f /usr/lib/$(LIBRARY_NAME).dylib ] || echo -e "\x1b[1;35m>> warning: create symlink in /usr/lib yourself if needed\x1b[m" || true
 
 remove:: 
