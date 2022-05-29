@@ -9,8 +9,6 @@ else
 	endif
 endif
 
-include $(THEOS)/makefiles/common.mk
-
 LIBRARY_NAME = libcolorpicker
 
 libcolorpicker_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorAlert.m PFColorAlertViewController.xm PFHaloHueView.m PFHaloKnobView.m PFColorLitePreviewView.m PFColorLiteSlider.m PFLiteColorCell.mm PFSimpleLiteColorCell.mm PFColorPickerWelcome.mm PFSimpleLiteColorCell_.mm
@@ -20,7 +18,7 @@ libcolorpicker_LDFLAGS += -Wl,-segalign,4000
 libcolorpicker_CFLAGS = -fobjc-arc -Wno-error=deprecated-declarations
 PFColorPickerWelcome.mm_CFLAGS = -Wno-deprecated-declarations
 
-
+include $(THEOS)/makefiles/common.mk
 include $(THEOS_MAKE_PATH)/library.mk
 
 after-install::
