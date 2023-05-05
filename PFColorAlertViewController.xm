@@ -22,10 +22,12 @@ typedef enum UIUserInterfaceStyle : NSInteger {
     UIUserInterfaceStyleLight,
     UIUserInterfaceStyleDark
 } UIUserInterfaceStyle;
+#elif __IPHONE_OS_VERSION_MAX_ALLOWED < 120000
+#define UIUserInterfaceStyleDark 2
 #endif
 
-@interface UITraitCollection (iOS12_13)
-@property (nonatomic, readonly) UIUserInterfaceStyle userInterfaceStyle;
+@interface UITraitCollection_
+@property (nonatomic, readonly) NSInteger userInterfaceStyle __TVOS_AVAILABLE(10_0) __WATCHOS_PROHIBITED; // unspecified: UIUserInterfaceStyleUnspecified
 @end
 
 @interface _UIBackdropViewSettings : NSObject
@@ -50,7 +52,7 @@ autosizesToFitSuperview:(BOOL)fitsSuperview
     if (%c(_UIBackdropView)) {
         int style = 2010;
         if (@available(iOS 13, *)) {
-            if ([UIScreen mainScreen].traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            if (((UITraitCollection_*)[UIScreen mainScreen].traitCollection).userInterfaceStyle == UIUserInterfaceStyleDark) {
                 _tintColor = UIColor.whiteColor;
                 style = 1100;
             }

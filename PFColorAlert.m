@@ -21,7 +21,7 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
 @implementation PFColorAlert
 
 + (PFColorAlert *)colorAlertWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha {
-    return [[[PFColorAlert alloc] initWithStartColor:startColor showAlpha:showAlpha] autorelease];
+    return [[PFColorAlert alloc] initWithStartColor:startColor showAlpha:showAlpha];
 }
 
 - (PFColorAlert *)initWithStartColor:(UIColor *)startColor showAlpha:(BOOL)showAlpha {
@@ -44,7 +44,7 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
     if (@available(iOS 13, *)) {
         NSSet<UIScene *> *connectedScenes = [[UIApplication sharedApplication] connectedScenes];
         UIScene *firstScene = [[connectedScenes allObjects] objectAtIndex:0];
-        self.darkeningWindow = [[UIWindow alloc] initWithWindowScene:firstScene];
+        self.darkeningWindow = [[UIWindow alloc] initWithWindowScene:(UIWindowScene*)firstScene];
         self.darkeningWindow.frame = winFrame;
     } else {
         self.darkeningWindow = [[UIWindow alloc] initWithFrame:winFrame];
@@ -62,7 +62,7 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
     if (@available(iOS 13, *)) {
         NSSet<UIScene *> *connectedScenes = [[UIApplication sharedApplication] connectedScenes];
         UIScene *firstScene = [[connectedScenes allObjects] objectAtIndex:0];
-        self.popWindow = [[UIWindow alloc] initWithWindowScene:firstScene];
+        self.popWindow = [[UIWindow alloc] initWithWindowScene:(UIWindowScene*)firstScene];
         self.popWindow.frame = winFrame;
     } else {
         self.popWindow = [[UIWindow alloc] initWithFrame:winFrame];
@@ -82,10 +82,10 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
     [self.darkeningWindow makeKeyAndVisible];
 
     self.popWindow.rootViewController = self.mainViewController;
-#ifndef DEBUG
+
     self.darkeningWindow.windowLevel = UIWindowLevelAlert - 2;
     self.popWindow.windowLevel = UIWindowLevelAlert - 1;
-#endif
+
     self.popWindow.backgroundColor = UIColor.clearColor;
     self.popWindow.hidden = NO;
     self.popWindow.alpha = 0.0f;
@@ -115,8 +115,6 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
 
     self.completionBlock = completionBlock;
 
-    [self retain];
-
     [self.popWindow makeKeyAndVisible];
 
     [UIView animateWithDuration:0.3f animations:^{
@@ -128,13 +126,12 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(close)];
         self.darkeningWindow.userInteractionEnabled = YES;
         [self.darkeningWindow addGestureRecognizer:tapGesture];
-        [tapGesture release];
 
-        NSString *prefPath = @"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist";
+        NSString *prefPath = @THEOS_PACKAGE_INSTALL_PREFIX"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist";
         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:prefPath];
 
         if (!dict)
-            dict = [[NSMutableDictionary new] autorelease];
+            dict = [NSMutableDictionary new] ;
 
         NSString *kDidShow = @"didShowWelcomeScreen";
         if (!dict[kDidShow]) {
@@ -161,11 +158,7 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
 - (void)showWithStartColor:(UIColor *)startColor
                  showAlpha:(BOOL)showAlpha
                 completion:(void (^)(UIColor *pickedColor))completionBlock {
-    UIAlertView *deprecated = [[UIAlertView alloc] initWithTitle:@"libcolorpicker" message:@"Hey! It appears like this preference bundle is trying to use deprecated methods to invoke the color picker and requires an update. Please inform the dev of this tweak about it."
-                                                        delegate:nil
-                                               cancelButtonTitle:nil
-                                               otherButtonTitles:@"OK", nil];
-    [deprecated show];
+
 }
 
 - (void)close {
@@ -183,15 +176,6 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
         self.isOpen = NO;
         [self.previousKeyWindow makeKeyAndVisible];
     }];
-}
-
-- (void)dealloc {
-    [self.mainViewController release];
-    [self.popWindow release];
-    [self.darkeningWindow release];
-    self.completionBlock = nil;
-
-    [super dealloc];
 }
 
 @end

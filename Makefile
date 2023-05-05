@@ -1,26 +1,32 @@
-ifdef DEBUG
-	ARCHS = arm64
-	TARGET = iphone:clang:11.2
+ifdef SIMULATOR
+TARGET = simulator:clang:latest:8.0
 else
-	ARCHS = armv7 armv7s arm64 arm64e
-	TARGET = iphone:clang:9.2:6.0
+	TARGET = iphone:clang:latest:7.0
+	ifneq ($(debug),0)
+		ARCHS= arm64 arm64e
+	else
+		ARCHS= armv7 arm64 arm64e
+	endif
 endif
-
-
-include $(THEOS)/makefiles/common.mk
 
 LIBRARY_NAME = libcolorpicker
 
-$(LIBRARY_NAME)_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorPicker.m PFColorTransparentView.m PFColorViewController.xm PFColorCell.mm PFColorAlert.m PFColorAlertViewController.xm PFHaloHueView.m PFHaloKnobView.m PFColorLitePreviewView.m PFColorLiteSlider.m PFLiteColorCell.mm PFSimpleLiteColorCell.mm PFColorPickerWelcome.mm
-$(LIBRARY_NAME)_FRAMEWORKS = UIKit CoreGraphics Foundation Social Accounts
-$(LIBRARY_NAME)_PRIVATE_FRAMEWORKS = Preferences
-$(LIBRARY_NAME)_LDFLAGS += -Wl,-segalign,4000
-$(LIBRARY_NAME)_CFLAGS = -fobjc-arc
-PFColorAlert.m_CFLAGS = -fno-objc-arc
-PFSimpleLiteColorCell.mm_CFLAGS = -fno-objc-arc
-PFLiteColorCell.mm_CFLAGS = -fno-objc-arc
+libcolorpicker_FILES = libcolorpicker.mm UIColor+PFColor.m PFColorAlert.m PFColorAlertViewController.xm PFHaloHueView.m PFHaloKnobView.m PFColorLitePreviewView.m PFColorLiteSlider.m PFLiteColorCell.mm PFSimpleLiteColorCell.mm PFColorPickerWelcome.mm PFSimpleLiteColorCell_.mm
+libcolorpicker_FRAMEWORKS = UIKit CoreGraphics Foundation Social Accounts
+libcolorpicker_PRIVATE_FRAMEWORKS = Preferences
+libcolorpicker_LDFLAGS += -Wl,-segalign,4000
+libcolorpicker_CFLAGS = -fobjc-arc -Wno-error=deprecated-declarations
+PFColorPickerWelcome.mm_CFLAGS = -Wno-deprecated-declarations
+
+include $(THEOS)/makefiles/common.mk
+include $(THEOS_MAKE_PATH)/library.mk
 
 after-install::
 	install.exec "killall -9 Preferences"
 
-include $(THEOS_MAKE_PATH)/library.mk
+setup::
+	@[ -f $(SIMULATOR_ROOT)/usr/lib/$(LIBRARY_NAME).dylib ] || sudo ln -s /opt/simject/usr/lib/$(LIBRARY_NAME).dylib $(SIMULATOR_ROOT)/usr/lib/$(LIBRARY_NAME).dylib || true
+	@[ -f $(SIMULATOR_ROOT)/usr/lib/$(LIBRARY_NAME).dylib ] || echo -e "\x1b[1;35m>> warning: create symlink in $(SIMULATOR_ROOT)/usr/lib yourself if needed\x1b[m" || true
+
+remove:: 
+	@sudo rm -f $(SIMULATOR_ROOT)/usr/lib/$(LIBRARY_NAME).dylib

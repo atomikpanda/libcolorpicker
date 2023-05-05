@@ -136,56 +136,19 @@ UIColor *colorFromHex(NSString *hexString) {
 
 // do not use this method anymore
 UIColor *colorFromDefaultsWithKey(NSString *defaults, NSString *key, NSString *fallback) {
-    NSMutableDictionary *preferencesPlist = [NSMutableDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", defaults]];
-    //fallback
-    UIColor *fallbackColor = colorFromHex(fallback);
-    CGFloat currentAlpha = 1.0f;
+    return nil;
+}
 
-    if (preferencesPlist && [preferencesPlist objectForKey:key]) {
-        NSString *value = [preferencesPlist objectForKey:key];
-        NSArray *colorAndOrAlpha = [value componentsSeparatedByString:@":"];
-        if ([value rangeOfString:@":"].location != NSNotFound) {
-            if ([colorAndOrAlpha objectAtIndex:1])
-                currentAlpha = [colorAndOrAlpha[1] floatValue];
-            else
-                currentAlpha = 1;
-        }
-
-        if (!value)
-            return fallbackColor;
-
-        NSString *color = colorAndOrAlpha[0];
-
-        return [colorFromHex(color) colorWithAlphaComponent:currentAlpha];
-    } else {
-        return fallbackColor;
-    }
+UIColor *_parseColorString(NSString *colorStringWithAlpha){
+    if ([colorStringWithAlpha rangeOfString:@":"].location == NSNotFound) 
+        colorStringWithAlpha=[NSString stringWithFormat:@"%@:1.0",colorStringWithAlpha];
+    NSArray *colorAndAlpha = [colorStringWithAlpha componentsSeparatedByString:@":"];
+    NSString *colorString = colorAndAlpha[0];
+    CGFloat alpha = [colorAndAlpha[1] floatValue];
+    return [colorFromHex(colorString) colorWithAlphaComponent:alpha];
 }
 
 UIColor *LCPParseColorString(NSString *colorStringFromPrefs, NSString *colorStringFallback) {
-    //fallback
-    UIColor *fallbackColor = colorFromHex(colorStringFallback);
-    CGFloat currentAlpha = 1.0f;
-
-    if (colorStringFromPrefs && colorStringFromPrefs.length > 0) {
-        NSString *value = colorStringFromPrefs;
-        if (!value || value.length == 0)
-            return fallbackColor;
-
-        NSArray *colorAndOrAlpha = [value componentsSeparatedByString:@":"];
-        if ([value rangeOfString:@":"].location != NSNotFound) {
-            if ([colorAndOrAlpha objectAtIndex:1])
-                currentAlpha = [colorAndOrAlpha[1] floatValue];
-            else
-                currentAlpha = 1.0f;
-        }
-
-        if (!value)
-            return fallbackColor;
-
-        NSString *color = colorAndOrAlpha[0];
-        return [colorFromHex(color) colorWithAlphaComponent:currentAlpha];
-    } else {
-        return fallbackColor;
-    }
+    if(colorStringFromPrefs) return _parseColorString(colorStringFromPrefs);
+    return _parseColorString(colorStringFallback);
 }
