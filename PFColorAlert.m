@@ -127,7 +127,7 @@ extern void LCPShowTwitterFollowAlert(UIViewController *viewController,
         self.darkeningWindow.userInteractionEnabled = YES;
         [self.darkeningWindow addGestureRecognizer:tapGesture];
 
-        NSString *prefPath = @"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist";
+        NSString *prefPath = @THEOS_PACKAGE_INSTALL_PREFIX"/var/mobile/Library/Preferences/com.pixelfiredev.libcolorpicker.plist";
         NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:prefPath];
 
         if (!dict)
